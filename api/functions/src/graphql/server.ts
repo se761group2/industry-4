@@ -3,7 +3,6 @@ import cors from 'cors';
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
-// const schema = fs.readFileSync(process.execPath);
 const schema = fs.readFileSync(
   path.resolve(__dirname, './schema.graphql'),
   'utf8'
