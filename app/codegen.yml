@@ -1,0 +1,10 @@
+overwrite: true
+schema: "http://localhost:5001/industry4-uoa/us-central1/graph"
+documents: null
+generates:
+    src/types/types.ts:
+        plugins:
+            - typescript
+    src/types/schema.json:
+        plugins:
+            - fragment-matcher

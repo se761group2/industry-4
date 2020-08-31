@@ -26,8 +26,24 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test --passWithNoTests",
+    "eject": "react-scripts eject",
+    "lint": "eslint '*/**/*.{js,ts,tsx}'",
+    "lint:fix": "eslint '*/**/*.{js,ts,tsx}' --fix",
+    "generateTypes:local": "apollo client:codegen --target=typescript --endpoint=http://localhost:5001/zorbit/us-central1/graph --outputFlat src/types"
+  },
+  "lint-staged": {
+    "*.+(js|jsx|ts|tsx)": [
+      "eslint --fix"
+    ],
+    "*.+(json|css|html|md)": [
+      "prettier --write"
+    ]
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!@apollo)"
+    ]
   },
   "eslintConfig": {
     "extends": "react-app"

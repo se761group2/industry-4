@@ -1,0 +1,19 @@
+type User {
+  id: ID!
+  displayName: String
+  email: String!
+}
+
+type Query {
+  user(id: ID!): User
+}
+
+type Mutation {
+ 
+}
+
+interface MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+}
