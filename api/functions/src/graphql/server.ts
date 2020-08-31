@@ -3,6 +3,7 @@ import cors from 'cors';
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
+import { resolvers } from './resolvers';
 const schema = fs.readFileSync(
   path.resolve(__dirname, './schema.graphql'),
   'utf8'
@@ -14,8 +15,8 @@ export function ConstructGraphQLServer() {
   app.options('*');
 
   const apolloServer = new ApolloServer({
-    // typeDefs: schema as any,
-    // resolvers,
+    typeDefs: schema as any,
+    resolvers,
     context: (ctx) => {
       // Debug the request context here if needed.
       return ctx;
