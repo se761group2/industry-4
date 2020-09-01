@@ -7,9 +7,9 @@ interface ContainerProps {
 
 const ExploreContainer: React.FC<ContainerProps> = ({ name }) => {
     return (
-        <div className="container flex items-center justify-center bg-gray-300 h-full">
-            <div className="shadow-xl bg-white max-w-sm px-16 py-4 rounded-full">
-                <strong className="text-purple-700">{name}</strong>
+        <div className="container bg-gray-400 h-full flex items-center justify-center">
+            <div className="bg-white max-w-sm px-16 py-4 rounded-full shadow-xl">
+                <strong className="text-purple-600">{name}</strong>
                 <p>
                     Explore{" "}
                     <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">
