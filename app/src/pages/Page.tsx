@@ -3,9 +3,13 @@ import React from "react";
 import { useParams } from "react-router";
 import ExploreContainer from "../components/ExploreContainer";
 import "./Page.css";
+import { useQuery } from "@apollo/client";
+import { GetUserById } from "../types/GetUserById";
+import { GET_USER_BY_ID } from "../common/graphql/queries/users";
 
 const Page: React.FC = () => {
     const { name } = useParams<{ name: string }>();
+    const dummyUserQuery = useQuery<GetUserById>(GET_USER_BY_ID, { variables: { id: "dummy" } });
 
     return (
         <IonPage>
@@ -24,7 +28,9 @@ const Page: React.FC = () => {
                         <IonTitle size="large">{name}</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-                <ExploreContainer name={name} />
+                <ExploreContainer
+                    name={dummyUserQuery.loading ? "Loading..." : dummyUserQuery.data?.user?.email || "??"}
+                />
             </IonContent>
         </IonPage>
     );

@@ -15,6 +15,21 @@ export type Scalars = {
   Float: number;
 };
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  updateUser?: Maybe<MutationResponse>;
+};
+
+export type MutationUpdateUserArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationResponse = {
+  code: Scalars['String'];
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   user?: Maybe<User>;
@@ -27,8 +42,14 @@ export type QueryUserArgs = {
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
-  displayName?: Maybe<Scalars['String']>;
   email: Scalars['String'];
+};
+
+export type UserUpdatedResponse = MutationResponse & {
+  __typename?: 'UserUpdatedResponse';
+  code: Scalars['String'];
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -153,7 +174,10 @@ export type ResolversTypes = ResolversObject<{
   ID: ResolverTypeWrapper<Scalars['ID']>;
   User: ResolverTypeWrapper<User>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  Mutation: ResolverTypeWrapper<{}>;
+  MutationResponse: ResolversTypes['UserUpdatedResponse'];
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  UserUpdatedResponse: ResolverTypeWrapper<UserUpdatedResponse>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -162,7 +186,32 @@ export type ResolversParentTypes = ResolversObject<{
   ID: Scalars['ID'];
   User: User;
   String: Scalars['String'];
+  Mutation: {};
+  MutationResponse: ResolversParentTypes['UserUpdatedResponse'];
   Boolean: Scalars['Boolean'];
+  UserUpdatedResponse: UserUpdatedResponse;
+}>;
+
+export type MutationResolvers<
+  ContextType = GraphQLContext,
+  ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']
+> = ResolversObject<{
+  updateUser?: Resolver<
+    Maybe<ResolversTypes['MutationResponse']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateUserArgs, 'id'>
+  >;
+}>;
+
+export type MutationResponseResolvers<
+  ContextType = GraphQLContext,
+  ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']
+> = ResolversObject<{
+  __resolveType: TypeResolveFn<'UserUpdatedResponse', ParentType, ContextType>;
+  code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 }>;
 
 export type QueryResolvers<
@@ -182,18 +231,26 @@ export type UserResolvers<
   ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']
 > = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  displayName?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
 
+export type UserUpdatedResponseResolvers<
+  ContextType = GraphQLContext,
+  ParentType extends ResolversParentTypes['UserUpdatedResponse'] = ResolversParentTypes['UserUpdatedResponse']
+> = ResolversObject<{
+  code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+}>;
+
 export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
+  Mutation?: MutationResolvers<ContextType>;
+  MutationResponse?: MutationResponseResolvers;
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  UserUpdatedResponse?: UserUpdatedResponseResolvers<ContextType>;
 }>;
 
 /**

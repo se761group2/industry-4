@@ -1,6 +1,5 @@
 type User {
   id: ID!
-  displayName: String
   email: String!
 }
 
@@ -12,4 +11,14 @@ interface MutationResponse {
   code: String!
   success: Boolean!
   message: String!
+}
+
+type UserUpdatedResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+}
+
+type Mutation {
+  updateUser(id: ID!): MutationResponse
 }
