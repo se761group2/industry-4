@@ -1,0 +1,15 @@
+### Compiled JavaScript files
+src/**/*.js
+src/**/*.js.map
+
+# Compiled JavaScript files
+lib
+lib/**/*.js
+lib/**/*.js.map
+
+# Typescript v1 declaration files
+typings/
+
+node_modules/
+.env
+.runtimeconfig.json

@@ -1,0 +1,7 @@
+{
+  "name": "industry4",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}

@@ -1,0 +1,24 @@
+type User {
+  id: ID!
+  email: String!
+}
+
+type Query {
+  user(id: ID!): User
+}
+
+interface MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+}
+
+type UserUpdatedResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+}
+
+type Mutation {
+  updateUser(id: ID!): MutationResponse
+}
