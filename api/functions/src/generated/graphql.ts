@@ -42,10 +42,22 @@ export type Query = {
   __typename?: 'Query';
   user?: Maybe<User>;
   machines?: Maybe<Array<Maybe<Machine>>>;
+  machine?: Maybe<Machine>;
+  sensor?: Maybe<Sensor>;
 };
 
 
 export type QueryUserArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryMachineArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QuerySensorArgs = {
   id: Scalars['ID'];
 };
 
@@ -239,6 +251,8 @@ export type MutationResponseResolvers<ContextType = GraphQLContext, ParentType e
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
   machines?: Resolver<Maybe<Array<Maybe<ResolversTypes['Machine']>>>, ParentType, ContextType>;
+  machine?: Resolver<Maybe<ResolversTypes['Machine']>, ParentType, ContextType, RequireFields<QueryMachineArgs, 'id'>>;
+  sensor?: Resolver<Maybe<ResolversTypes['Sensor']>, ParentType, ContextType, RequireFields<QuerySensorArgs, 'id'>>;
 }>;
 
 export type SampleChunkResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['SampleChunk'] = ResolversParentTypes['SampleChunk']> = ResolversObject<{
