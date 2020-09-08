@@ -18,4 +18,32 @@ export const queryResolvers: QueryResolvers = {
       ...userData,
     };
   },
+
+  machine: async (parent, args) => {
+    const machine = await firestore.doc(`machines/${args.id}`).get();
+
+    const machineData = addIdToDoc(machine);
+
+    if(!machineData) {
+      return undefined;
+    }
+
+    return {
+      ...machineData,
+    }
+  },
+
+  sensor: async (parent, args) => {
+    const sensor = await firestore.doc(`sensors/${args.id}`).get();
+
+    const sensorData = addIdToDoc(sensor);
+
+    if(!sensorData) {
+      return undefined;
+    }
+
+    return {
+      ...sensorData,
+    }
+  },
 };
