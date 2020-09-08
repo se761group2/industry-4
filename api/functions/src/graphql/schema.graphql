@@ -47,7 +47,7 @@ type User {
 
 type Query {
   user(id: ID!): User
-  machines: [Machine]
+  machines: [Machine!]!
   machine(id: ID!): Machine
   sensor(id: ID!): Sensor
 }
