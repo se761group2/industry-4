@@ -49,8 +49,7 @@ type Query {
   user(id: ID!): User
   machines: [Machine]
   machine(id: ID!): Machine
-  sensors(machineID: ID!): [Sensor]
-  sensor(machineID: ID, id: ID!): Sensor
+  sensor(id: ID!): Sensor
 }
 
 interface MutationResponse {
