@@ -1,10 +1,53 @@
+enum Unit {
+  MPS2
+  MPS2_RMS
+}
+
+enum Status {
+  Nominal
+  Moderate
+  Critical
+}
+
+scalar Date
+
+type Machine {
+  id: ID!
+  name: String!
+  healthStatus: Status
+  sensors: [Sensor!]!
+}
+
+type Sensor {
+  id: ID!
+  name: String!
+  healthStatus: Status
+  signals: [Signal!]!
+}
+
+type Signal {
+  id: ID!
+  unit: Unit!
+  threshold: Float,
+  values: [SampleChunk]
+}
+
+type SampleChunk {
+  timestamp: Date!,
+  timeStepSecs: Float!,
+  samples: [Float]!
+}
+
 type User {
   id: ID!
+  username: String!
   email: String!
+  phoneNumber: String!
 }
 
 type Query {
   user(id: ID!): User
+  machines: [Machine]
 }
 
 interface MutationResponse {
