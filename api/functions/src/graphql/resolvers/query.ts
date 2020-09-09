@@ -42,7 +42,7 @@ export const queryResolvers: QueryResolvers = {
   },
 
   sensor: async (parent, args) => {
-    const sensor = await firestore.doc(`sensors/${args.id}`).get();
+    const sensor = await firestore.doc(`machines/${args.machineId}/sensors/${args.id}`).get();
 
     const sensorData = addIdToDoc(sensor);
 
