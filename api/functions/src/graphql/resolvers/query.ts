@@ -27,10 +27,18 @@ export const queryResolvers: QueryResolvers = {
     if(!machineData) {
       return undefined;
     }
-
+    
     return {
       ...machineData,
     }
+  },
+
+  machines: async (parent, args) => {
+    const machineDocs =  (
+      await firestore.collection(`machines`).get())
+      .docs.map(addIdToDoc);
+      
+    return machineDocs;
   },
 
   sensor: async (parent, args) => {
