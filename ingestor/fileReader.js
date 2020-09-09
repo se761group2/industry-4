@@ -9,3 +9,4 @@
 
 /* if over threshold, run notification() function */
 /* TODO add checker for notification frequency */
+
