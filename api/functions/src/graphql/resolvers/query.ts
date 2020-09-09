@@ -52,6 +52,7 @@ export const queryResolvers: QueryResolvers = {
 
     return {
       ...sensorData,
+      machineId: args.machineId,
     }
   },
 };

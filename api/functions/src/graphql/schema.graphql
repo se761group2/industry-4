@@ -20,6 +20,7 @@ type Machine {
 
 type Sensor {
   id: ID!
+  machineId: ID!
   name: String!
   healthStatus: Status
   signals: [Signal!]!

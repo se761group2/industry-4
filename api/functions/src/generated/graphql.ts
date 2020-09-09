@@ -72,6 +72,7 @@ export type SampleChunk = {
 export type Sensor = {
   __typename?: 'Sensor';
   id: Scalars['ID'];
+  machineId: Scalars['ID'];
   name: Scalars['String'];
   healthStatus?: Maybe<Status>;
   signals: Array<Signal>;
@@ -265,6 +266,7 @@ export type SampleChunkResolvers<ContextType = GraphQLContext, ParentType extend
 
 export type SensorResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Sensor'] = ResolversParentTypes['Sensor']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  machineId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   healthStatus?: Resolver<Maybe<ResolversTypes['Status']>, ParentType, ContextType>;
   signals?: Resolver<Array<ResolversTypes['Signal']>, ParentType, ContextType>;

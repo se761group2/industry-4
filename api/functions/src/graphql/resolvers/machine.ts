@@ -8,7 +8,13 @@ export const machineResolvers: MachineResolvers = {
     sensors: async (parent, args) => {
         const sensorDocs =  (
             await firestore.collection(`machines/${parent.id}/sensors`).get())
-            .docs.map(addIdToDoc);
+            .docs.map((sensor) => {
+                return {
+                    ...addIdToDoc(sensor),
+                    machineId: parent.id
+                }; 
+
+            });
             
           return sensorDocs;
     },
