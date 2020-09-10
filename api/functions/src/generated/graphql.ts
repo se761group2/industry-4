@@ -22,14 +22,48 @@ export type Machine = {
   sensors: Array<Sensor>;
 };
 
+export type MachineUpdateInput = {
+  name: Scalars['String'];
+  healthStatus?: Maybe<Status>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   updateUser?: Maybe<MutationResponse>;
+  updateMachine?: Maybe<MutationResponse>;
+  updateSensor?: Maybe<MutationResponse>;
+  createMachine?: Maybe<MutationResponse>;
+  createSensor?: Maybe<MutationResponse>;
 };
 
 
 export type MutationUpdateUserArgs = {
   id: Scalars['ID'];
+};
+
+
+export type MutationUpdateMachineArgs = {
+  id: Scalars['ID'];
+  input?: Maybe<MachineUpdateInput>;
+};
+
+
+export type MutationUpdateSensorArgs = {
+  id: Scalars['ID'];
+  machineID: Scalars['ID'];
+  input?: Maybe<SensorUpdateInput>;
+};
+
+
+export type MutationCreateMachineArgs = {
+  id: Scalars['ID'];
+  name: Scalars['String'];
+};
+
+
+export type MutationCreateSensorArgs = {
+  id: Scalars['ID'];
+  input?: Maybe<SensorInput>;
 };
 
 export type MutationResponse = {
@@ -78,11 +112,24 @@ export type Sensor = {
   signals: Array<Signal>;
 };
 
+export type SensorInput = {
+  machineID: Scalars['ID'];
+  name: Scalars['String'];
+  signals: Array<Signal>;
+};
+
+export type SensorUpdateInput = {
+  name: Scalars['String'];
+  healthStatus?: Maybe<Status>;
+};
+
 export type Signal = {
   __typename?: 'Signal';
   id: Scalars['ID'];
   unit: Unit;
   threshold?: Maybe<Scalars['Float']>;
+  machineId: Scalars['ID'];
+  sensorId: Scalars['ID'];
   values?: Maybe<Array<Maybe<SampleChunk>>>;
 };
 
@@ -206,6 +253,9 @@ export type ResolversTypes = ResolversObject<{
   Mutation: ResolverTypeWrapper<{}>;
   MutationResponse: ResolversTypes['UserUpdatedResponse'];
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  MachineUpdateInput: MachineUpdateInput;
+  SensorUpdateInput: SensorUpdateInput;
+  SensorInput: SensorInput;
   UserUpdatedResponse: ResolverTypeWrapper<UserUpdatedResponse>;
 }>;
 
@@ -224,6 +274,9 @@ export type ResolversParentTypes = ResolversObject<{
   Mutation: {};
   MutationResponse: ResolversParentTypes['UserUpdatedResponse'];
   Boolean: Scalars['Boolean'];
+  MachineUpdateInput: MachineUpdateInput;
+  SensorUpdateInput: SensorUpdateInput;
+  SensorInput: SensorInput;
   UserUpdatedResponse: UserUpdatedResponse;
 }>;
 
@@ -241,6 +294,10 @@ export type MachineResolvers<ContextType = GraphQLContext, ParentType extends Re
 
 export type MutationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   updateUser?: Resolver<Maybe<ResolversTypes['MutationResponse']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'id'>>;
+  updateMachine?: Resolver<Maybe<ResolversTypes['MutationResponse']>, ParentType, ContextType, RequireFields<MutationUpdateMachineArgs, 'id'>>;
+  updateSensor?: Resolver<Maybe<ResolversTypes['MutationResponse']>, ParentType, ContextType, RequireFields<MutationUpdateSensorArgs, 'id' | 'machineID'>>;
+  createMachine?: Resolver<Maybe<ResolversTypes['MutationResponse']>, ParentType, ContextType, RequireFields<MutationCreateMachineArgs, 'id' | 'name'>>;
+  createSensor?: Resolver<Maybe<ResolversTypes['MutationResponse']>, ParentType, ContextType, RequireFields<MutationCreateSensorArgs, 'id'>>;
 }>;
 
 export type MutationResponseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{
@@ -277,6 +334,8 @@ export type SignalResolvers<ContextType = GraphQLContext, ParentType extends Res
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   unit?: Resolver<ResolversTypes['Unit'], ParentType, ContextType>;
   threshold?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  machineId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  sensorId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   values?: Resolver<Maybe<Array<Maybe<ResolversTypes['SampleChunk']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;

@@ -30,6 +30,8 @@ type Signal {
   id: ID!
   unit: Unit!
   threshold: Float,
+  machineId: ID!,
+  sensorId: ID!,
   values: [SampleChunk]
 }
 
@@ -65,6 +67,26 @@ type UserUpdatedResponse implements MutationResponse {
   message: String!
 }
 
+input SensorInput {
+ machineID: ID! 
+ name: String!
+ signals: [Signal!]!
+}
+
+input MachineUpdateInput {
+  name: String!
+  healthStatus: Status
+}
+
+input SensorUpdateInput {
+  name: String!
+  healthStatus: Status
+}
+
 type Mutation {
   updateUser(id: ID!): MutationResponse
+  updateMachine(id: ID! input: MachineUpdateInput): MutationResponse
+  updateSensor(id: ID! machineID: ID! input: SensorUpdateInput): MutationResponse
+  createMachine(id: ID! name: String!): MutationResponse
+  createSensor(id: ID! input: SensorInput): MutationResponse
 }
