@@ -8,8 +8,27 @@ import { raw } from 'express';
 csvParser();
 // csvParser(['sensor value']); // this data label doesn't work for some reason
 
-processInputDataFile('2004.02.12.10.32.39');
-processInputDataFile('2004.02.16.09.02.39');
+let currentDir = __dirname;
+let fileNames: string[] = [];
+findDataFileNamesInDir(currentDir + '\\..\\inputData\\', fileNames);
+
+console.log('length of fileNames: ' + fileNames.length);
+for (let i = 0; i < fileNames.length; i++) {
+  if (i < 10) { // TODO remove this limitation
+    processInputDataFile(fileNames[i]);
+  } else {
+    break;
+  }
+}
+
+function findDataFileNamesInDir(absoluteDir, fileNamesArray) {
+  let i = 0;
+  fs.readdirSync(absoluteDir).forEach((file) => {
+    i += 1;
+    fileNamesArray.push(absoluteDir + file);
+  });
+  console.log(i + ' files found');
+}
 
 function processInputDataFile(fileName) {
   const results: any[] = [];
@@ -20,20 +39,22 @@ function processInputDataFile(fileName) {
     .on('data', (row) => results.push(row))
     .on('end', () => {
       for (let i = 0; i < results.length; i++) {
-        // if (i < 1000) {
-          // first 1000 values used to speed things up
+        if (i < 1000) {
+          // first 1000 values used to speed things up  TODO remove this limitation
           let singleValueFirstColumn = <string>results[i]['0'];
           // let firstRowItem = singleRow.split('\t')[0];
           let firstRowItemAsNum: number = +singleValueFirstColumn;
           rawDataFirstColumn.push(firstRowItemAsNum);
-        // }
+        } else {
+          break;
+        }
       }
 
-      console.log('first column:');
-      console.log(rawDataFirstColumn);
+      // console.log('first column:');
+      // console.log(rawDataFirstColumn);
 
       let rmsValueFromFile = calculateRMS(rawDataFirstColumn);
-      console.log(rmsValueFromFile);
+      console.log('RMS value for this file: ' + rmsValueFromFile);
       thresholdDetection(rmsValueFromFile);
     });
 }
@@ -67,7 +88,7 @@ function thresholdDetection(rmsValue) {
   }
 }
 
-function sendNotification(){
+function sendNotification() {
   // do stuff, possibly provide data on the sensor & machine
 }
 
