@@ -5,39 +5,38 @@ import csvParser from 'csv-parser';
 import fs from 'fs';
 import { raw } from 'express';
 
-const results: any[] = [];
-const rawDataFirstColumn: number[] = [];
+csvParser();
+// csvParser(['sensor value']); // this data label doesn't work for some reason
 
-csvParser({ separator: '\t', headers: false });
-// csvParser(['sensor value']);
-fs.createReadStream('2004.02.12.10.32.39')
-  .pipe(csvParser())
-  .on('data', (row) => results.push(row))
-  .on('end', () => {
-    // [
-    //   '-0.049\t-0.071\t-0.132\t-0.010': '-0.042\t-0.073\t-0.007\t-0.105'
-    //   '-0.049\t-0.071\t-0.132\t-0.010': '0.015\t0.000\t0.007\t0.000'
-    //    First column is just the first entry. Is currently getting ignored.
-    // ]
+processInputDataFile('2004.02.12.10.32.39');
+processInputDataFile('2004.02.16.09.02.39');
 
-    let singleRow = '';
-    for (let i = 0; i < results.length; i++) {
-      if (i < 1000) {
-        singleRow = <string>results[i]['-0.049\t-0.071\t-0.132\t-0.010'];
-        let firstRowItem = singleRow.split('\t')[0];
-        let firstRowItemAsNum: number = +firstRowItem;
-        rawDataFirstColumn.push(firstRowItemAsNum);
+function processInputDataFile(fileName) {
+  const results: any[] = [];
+  const rawDataFirstColumn: number[] = [];
+
+  fs.createReadStream(fileName)
+    .pipe(csvParser({ separator: '\t', headers: false }))
+    .on('data', (row) => results.push(row))
+    .on('end', () => {
+      for (let i = 0; i < results.length; i++) {
+        // if (i < 1000) {
+          // first 1000 values used to speed things up
+          let singleValueFirstColumn = <string>results[i]['0'];
+          // let firstRowItem = singleRow.split('\t')[0];
+          let firstRowItemAsNum: number = +singleValueFirstColumn;
+          rawDataFirstColumn.push(firstRowItemAsNum);
+        // }
       }
-    }
 
-    console.log('first column:');
-    console.log(rawDataFirstColumn);
+      console.log('first column:');
+      console.log(rawDataFirstColumn);
 
-    let rmsValueFromFile = calculateRMS(rawDataFirstColumn);
-    console.log(rmsValueFromFile);
-    thresholdDetection(rmsValueFromFile);
-  });
-
+      let rmsValueFromFile = calculateRMS(rawDataFirstColumn);
+      console.log(rmsValueFromFile);
+      thresholdDetection(rmsValueFromFile);
+    });
+}
 /* calculate rms value. see 4.1.2 of the full research doc (pg 9) for info on how this is calculated*/
 function calculateRMS(values) {
   let currentTotal = 0;
@@ -56,10 +55,10 @@ function calculateRMS(values) {
   return currentTotal;
 }
 
-/*  threshold value for this data set is 542, will be updated with formula later
+/*  threshold value for this data set is approx 0.8, will be updated with formula later
     Check if rms value is above or below threshold */
 function thresholdDetection(rmsValue) {
-  let thresholdValue = 542; //hardcoded rn
+  let thresholdValue = 0.08; //hardcoded rn
   if (rmsValue >= thresholdValue){
     console.log('Threshold met, notification being sent.');
     sendNotification();
