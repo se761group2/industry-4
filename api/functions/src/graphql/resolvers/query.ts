@@ -39,7 +39,7 @@ export const queryResolvers: QueryResolvers = {
   },
 
   sensor: async (parent, args) => {
-    const sensorData = MachineStore.getSensor(args.machineId, args.id);
+    const sensorData = await MachineStore.getSensor(args.machineId, args.id);
 
     if (!sensorData) {
       return undefined;

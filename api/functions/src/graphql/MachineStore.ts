@@ -7,7 +7,7 @@ const firestore = firebaseApp.firestore();
 const getMachine = async (id): Promise<any> => {
   const machine = await firestore.doc(`machines/${id}`).get();
 
-    const machineData = addIdToDoc(machine);
+  const machineData = addIdToDoc(machine);
 
   return machineData;
 };
