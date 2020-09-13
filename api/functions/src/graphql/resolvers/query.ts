@@ -1,7 +1,7 @@
 import { firebaseApp } from '../../firebase';
 import { QueryResolvers } from '../../generated/graphql';
 import { addIdToDoc } from './utils';
-import { MachineStore } from '../MachineStore'
+import { MachineStore } from '../MachineStore';
 
 const firestore = firebaseApp.firestore();
 
@@ -23,31 +23,31 @@ export const queryResolvers: QueryResolvers = {
   machine: async (parent, args) => {
     const machineData = MachineStore.getMachine(args.id);
 
-    if(!machineData) {
+    if (!machineData) {
       return undefined;
     }
-    
+
     return {
       ...machineData,
-    }
+    };
   },
 
   machines: async (parent, args) => {
     const machineDocs = MachineStore.getMachines();
-      
+
     return machineDocs;
   },
 
   sensor: async (parent, args) => {
-    const sensorData = MachineStore.getSensor(args.machineId, args.id); 
+    const sensorData = MachineStore.getSensor(args.machineId, args.id);
 
-    if(!sensorData) {
+    if (!sensorData) {
       return undefined;
     }
 
     return {
       ...sensorData,
       machineId: args.machineId,
-    }
+    };
   },
 };

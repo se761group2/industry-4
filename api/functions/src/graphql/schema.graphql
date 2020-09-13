@@ -73,10 +73,17 @@ type MachineUpdatedResponse implements MutationResponse {
   message: String!
 }
 
+type SensorCreationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  sensor: Sensor
+}
+
 input SensorInput {
- machineID: ID! 
- name: String!
- signals: [Signal!]!
+  machineID: ID! 
+  name: String!
+  signals: [Signal!]!
 }
 
 input MachineUpdateInput {
@@ -95,5 +102,5 @@ type Mutation {
   updateMachine(id: ID! input: MachineUpdateInput): MutationResponse
   updateSensor(id: ID! machineID: ID! input: SensorUpdateInput): MutationResponse
   createMachine(id: ID! name: String!): MutationResponse
-  createSensor(id: ID! input: SensorInput): MutationResponse
+  createSensor(id: ID! input: SensorInput): SensorCreationResponse
 }

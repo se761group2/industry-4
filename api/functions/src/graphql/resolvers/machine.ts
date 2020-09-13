@@ -5,9 +5,9 @@ import { MachineStore } from '../MachineStore';
 const firestore = firebaseApp.firestore();
 
 export const machineResolvers: MachineResolvers = {
-    sensors: async (parent, args) => {
-        const sensorDocs = MachineStore.getSensors(parent.id);
-            
-        return sensorDocs;
-    },
+  sensors: async (parent, args) => {
+    const sensorDocs = MachineStore.getSensors(parent.id);
+
+    return sensorDocs;
+  },
 };
