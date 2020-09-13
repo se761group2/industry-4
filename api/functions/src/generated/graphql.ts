@@ -10,7 +10,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  Sample: any;
   Date: any;
 };
 
@@ -105,11 +104,16 @@ export type QuerySensorArgs = {
   id: Scalars['ID'];
 };
 
+export type Sample = {
+  __typename?: 'Sample';
+  timestamp: Scalars['Date'];
+  value: Scalars['Float'];
+};
 
 export type SampleChunk = {
   __typename?: 'SampleChunk';
   id: Scalars['ID'];
-  samples: Array<Maybe<Scalars['Sample']>>;
+  samples: Array<Sample>;
 };
 
 export type Sensor = {
@@ -252,7 +256,9 @@ export type ResolversTypes = ResolversObject<{
   Status: Status;
   Sensor: ResolverTypeWrapper<Sensor>;
   SampleChunk: ResolverTypeWrapper<SampleChunk>;
-  Sample: ResolverTypeWrapper<Scalars['Sample']>;
+  Sample: ResolverTypeWrapper<Sample>;
+  Date: ResolverTypeWrapper<Scalars['Date']>;
+  Float: ResolverTypeWrapper<Scalars['Float']>;
   Mutation: ResolverTypeWrapper<{}>;
   MutationResponse: ResolversTypes['SensorCreationResponse'] | ResolversTypes['UserUpdatedResponse'] | ResolversTypes['MachineUpdatedResponse'];
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
@@ -261,7 +267,6 @@ export type ResolversTypes = ResolversObject<{
   SensorInput: SensorInput;
   SensorCreationResponse: ResolverTypeWrapper<SensorCreationResponse>;
   Unit: Unit;
-  Date: ResolverTypeWrapper<Scalars['Date']>;
   UserUpdatedResponse: ResolverTypeWrapper<UserUpdatedResponse>;
   MachineUpdatedResponse: ResolverTypeWrapper<MachineUpdatedResponse>;
 }>;
@@ -275,7 +280,9 @@ export type ResolversParentTypes = ResolversObject<{
   Machine: Machine;
   Sensor: Sensor;
   SampleChunk: SampleChunk;
-  Sample: Scalars['Sample'];
+  Sample: Sample;
+  Date: Scalars['Date'];
+  Float: Scalars['Float'];
   Mutation: {};
   MutationResponse: ResolversParentTypes['SensorCreationResponse'] | ResolversParentTypes['UserUpdatedResponse'] | ResolversParentTypes['MachineUpdatedResponse'];
   Boolean: Scalars['Boolean'];
@@ -283,7 +290,6 @@ export type ResolversParentTypes = ResolversObject<{
   SensorUpdateInput: SensorUpdateInput;
   SensorInput: SensorInput;
   SensorCreationResponse: SensorCreationResponse;
-  Date: Scalars['Date'];
   UserUpdatedResponse: UserUpdatedResponse;
   MachineUpdatedResponse: MachineUpdatedResponse;
 }>;
@@ -329,13 +335,15 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
   sensor?: Resolver<Maybe<ResolversTypes['Sensor']>, ParentType, ContextType, RequireFields<QuerySensorArgs, 'machineId' | 'id'>>;
 }>;
 
-export interface SampleScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Sample'], any> {
-  name: 'Sample';
-}
+export type SampleResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Sample'] = ResolversParentTypes['Sample']> = ResolversObject<{
+  timestamp?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  value?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+}>;
 
 export type SampleChunkResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['SampleChunk'] = ResolversParentTypes['SampleChunk']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  samples?: Resolver<Array<Maybe<ResolversTypes['Sample']>>, ParentType, ContextType>;
+  samples?: Resolver<Array<ResolversTypes['Sample']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
 
@@ -378,7 +386,7 @@ export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
   Mutation?: MutationResolvers<ContextType>;
   MutationResponse?: MutationResponseResolvers;
   Query?: QueryResolvers<ContextType>;
-  Sample?: GraphQLScalarType;
+  Sample?: SampleResolvers<ContextType>;
   SampleChunk?: SampleChunkResolvers<ContextType>;
   Sensor?: SensorResolvers<ContextType>;
   SensorCreationResponse?: SensorCreationResponseResolvers<ContextType>;

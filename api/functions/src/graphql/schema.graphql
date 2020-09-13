@@ -11,8 +11,6 @@ enum Status {
 
 scalar Date
 
-scalar Sample
-
 type Machine {
   id: ID!
   name: String!
@@ -30,7 +28,12 @@ type Sensor {
 
 type SampleChunk {
   id: ID!
-  samples: [Sample]!
+  samples: [Sample!]!
+}
+
+type Sample {
+  timestamp: Date!
+  value: Float!
 }
 
 type User {
