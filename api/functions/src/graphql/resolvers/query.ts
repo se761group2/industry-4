@@ -21,9 +21,7 @@ export const queryResolvers: QueryResolvers = {
   },
 
   machine: async (parent, args) => {
-    const machine = await firestore.doc(`machines/${args.id}`).get();
-
-    const machineData = addIdToDoc(machine);
+    const machineData = await MachineStore.getMachine(args.id);
 
     if (!machineData) {
       return undefined;
@@ -35,7 +33,7 @@ export const queryResolvers: QueryResolvers = {
   },
 
   machines: async (parent, args) => {
-    const machineDocs = MachineStore.getMachines();
+    const machineDocs = await MachineStore.getMachines();
 
     return machineDocs;
   },
