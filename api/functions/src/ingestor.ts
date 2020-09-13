@@ -8,17 +8,32 @@ import { raw } from 'express';
 csvParser();
 // csvParser(['sensor value']); // this data label doesn't work for some reason
 
-let currentDir = __dirname;
-let fileNames: string[] = [];
-findDataFileNamesInDir(currentDir + '\\..\\inputData\\', fileNames);
+const currentDir = __dirname;
+const fileNames: string[] = [];
+let thresholdValue; //hardcoded rn
+const rmsValues: number[] = [];
 
-console.log('length of fileNames: ' + fileNames.length);
-for (let i = 0; i < fileNames.length; i++) {
-  if (i < 10) { // TODO remove this limitation
-    processInputDataFile(fileNames[i]);
-  } else {
-    break;
+const maxLinesToProcessPerFile = 20000;
+// TODO remove this limitation (up to X files are processsed)
+const maxFiles = 10;
+
+findDataFileNamesInDir(currentDir + '\\..\\inputData\\', fileNames);
+processAllFiles();
+
+async function processAllFiles() {
+  for (let i = 0; i < fileNames.length; i++) {
+    if (i < maxFiles) {
+      await processInputDataFile(fileNames[i], i); // THIS SHOULD BE ASYNC
+    } else {
+      console.log(
+        'The maximum number of ' +
+          maxFiles +
+          ' files have been read. All async RMS calcs started...'
+      );
+      break;
+    }
   }
+  console.log('All files read. RMS calculations started...');
 }
 
 function findDataFileNamesInDir(absoluteDir, fileNamesArray) {
@@ -30,20 +45,23 @@ function findDataFileNamesInDir(absoluteDir, fileNamesArray) {
   console.log(i + ' files found');
 }
 
-function processInputDataFile(fileName) {
+function processInputDataFile(fileName, processedFileCount) {
   const results: any[] = [];
   const rawDataFirstColumn: number[] = [];
+  let singleValueFirstColumn = '';
+  let firstRowItemAsNum = 0;
+  let rmsValueFromFile = 0;
 
   fs.createReadStream(fileName)
     .pipe(csvParser({ separator: '\t', headers: false }))
     .on('data', (row) => results.push(row))
     .on('end', () => {
       for (let i = 0; i < results.length; i++) {
-        if (i < 1000) {
+        if (i < maxLinesToProcessPerFile) {
           // first 1000 values used to speed things up  TODO remove this limitation
-          let singleValueFirstColumn = <string>results[i]['0'];
+          singleValueFirstColumn = <string>results[i]['0'];
           // let firstRowItem = singleRow.split('\t')[0];
-          let firstRowItemAsNum: number = +singleValueFirstColumn;
+          firstRowItemAsNum = +singleValueFirstColumn;
           rawDataFirstColumn.push(firstRowItemAsNum);
         } else {
           break;
@@ -53,9 +71,10 @@ function processInputDataFile(fileName) {
       // console.log('first column:');
       // console.log(rawDataFirstColumn);
 
-      let rmsValueFromFile = calculateRMS(rawDataFirstColumn);
+      rmsValueFromFile = calculateRMS(rawDataFirstColumn);
+      rmsValues.push(rmsValueFromFile);
       console.log('RMS value for this file: ' + rmsValueFromFile);
-      thresholdDetection(rmsValueFromFile);
+      thresholdDetection(rmsValueFromFile, processedFileCount);
     });
 }
 /* calculate rms value. see 4.1.2 of the full research doc (pg 9) for info on how this is calculated*/
@@ -78,14 +97,56 @@ function calculateRMS(values) {
 
 /*  threshold value for this data set is approx 0.8, will be updated with formula later
     Check if rms value is above or below threshold */
-function thresholdDetection(rmsValue) {
-  let thresholdValue = 0.08; //hardcoded rn
-  if (rmsValue >= thresholdValue){
-    console.log('Threshold met, notification being sent.');
-    sendNotification();
+function thresholdDetection(rmsValue, processedFileCount) {
+  // first 200 values do not count
+  if (processedFileCount == 199) {
+    thresholdValue = calculateThreshold();
+  } else if (processedFileCount > 199) {
+    if (rmsValue >= thresholdValue) {
+      console.log(
+        'Record number ' +
+          processedFileCount +
+          ': Threshold of ' +
+          thresholdValue +
+          ' met, notification being sent.'
+      );
+      sendNotification();
+    } else {
+      console.log(
+        'Record number ' +
+          processedFileCount +
+          ': Threshold of ' +
+          thresholdValue +
+          ' NOT met.'
+      );
+    }
   } else {
-    console.log('Threshold not met');
+    console.log(
+      'Record number ' +
+        processedFileCount +
+        'is being used to determine the threshold (first 200 records).'
+    );
   }
+}
+
+function calculateThreshold() {
+  // Expects 200 rms values
+  // is the mean plus 6 times standard deviation
+  let total = 0;
+  for (let i = 0; i < rmsValues.length; i++) {
+    total += rmsValues[i];
+  }
+  const rmsMean = total / rmsValues.length;
+
+  total = 0;
+  for (let i = 0; i < rmsValues.length; i++) {
+    total += Math.pow(rmsValues[i] - rmsMean, 2);
+  }
+  const squaredDifferencesMean = total / rmsValues.length;
+
+  const standardDeviation = Math.sqrt(squaredDifferencesMean);
+
+  return rmsMean + 6 * standardDeviation;
 }
 
 function sendNotification() {
