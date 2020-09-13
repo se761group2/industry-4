@@ -35,25 +35,11 @@ const getSensors = async (machineId): Promise<any> => {
   });
 };
 
-const getSignals = async (machineId, sensorId): Promise<any> => {
-  return (
-    await firestore
-      .collection(`machines/${machineId}/sensors/${sensorId}/signals`)
-      .get()
-  ).docs.map((sensor) => {
-    return {
-      ...addIdToDoc(sensor),
-      machineId: machineId,
-      sensorId: sensorId,
-    };
-  });
-};
-
-const getSampleChunks = async (machineId, sensorId, signalId): Promise<any> => {
+const getSampleChunks = async (machineId, sensorId): Promise<any> => {
   return (
     await firestore
       .collection(
-        `machines/${machineId}/sensors/${sensorId}/signals/${signalId}/sampleChunks`
+        `machines/${machineId}/sensors/${sensorId}/sampleChunks`
       )
       .get()
   ).docs.map(addIdToDoc);
@@ -104,7 +90,6 @@ export const MachineStore = {
   getMachines,
   getSensor,
   getSensors,
-  getSignals,
   getSampleChunks,
   createMachine,
   updateMachine,

@@ -11,6 +11,8 @@ enum Status {
 
 scalar Date
 
+scalar Sample
+
 type Machine {
   id: ID!
   name: String!
@@ -23,22 +25,12 @@ type Sensor {
   machineId: ID!
   name: String!
   healthStatus: Status
-  signals: [Signal!]!
-}
-
-type Signal {
-  id: ID!
-  unit: Unit!
-  threshold: Float,
-  machineId: ID!,
-  sensorId: ID!,
-  values: [SampleChunk]
+  sampleChunks: [SampleChunk!]!
 }
 
 type SampleChunk {
-  timestamp: Date!,
-  timeStepSecs: Float!,
-  samples: [Float]!
+  id: ID!
+  samples: [Sample]!
 }
 
 type User {
@@ -83,7 +75,6 @@ type SensorCreationResponse implements MutationResponse {
 input SensorInput {
   machineID: ID! 
   name: String!
-  signals: [Signal!]!
 }
 
 input MachineUpdateInput {

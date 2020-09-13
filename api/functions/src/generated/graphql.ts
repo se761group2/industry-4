@@ -10,6 +10,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Sample: any;
   Date: any;
 };
 
@@ -104,11 +105,11 @@ export type QuerySensorArgs = {
   id: Scalars['ID'];
 };
 
+
 export type SampleChunk = {
   __typename?: 'SampleChunk';
-  timestamp: Scalars['Date'];
-  timeStepSecs: Scalars['Float'];
-  samples: Array<Maybe<Scalars['Float']>>;
+  id: Scalars['ID'];
+  samples: Array<Maybe<Scalars['Sample']>>;
 };
 
 export type Sensor = {
@@ -117,7 +118,7 @@ export type Sensor = {
   machineId: Scalars['ID'];
   name: Scalars['String'];
   healthStatus?: Maybe<Status>;
-  signals: Array<Signal>;
+  sampleChunks: Array<SampleChunk>;
 };
 
 export type SensorCreationResponse = MutationResponse & {
@@ -131,22 +132,11 @@ export type SensorCreationResponse = MutationResponse & {
 export type SensorInput = {
   machineID: Scalars['ID'];
   name: Scalars['String'];
-  signals: Array<Signal>;
 };
 
 export type SensorUpdateInput = {
   name: Scalars['String'];
   healthStatus?: Maybe<Status>;
-};
-
-export type Signal = {
-  __typename?: 'Signal';
-  id: Scalars['ID'];
-  unit: Unit;
-  threshold?: Maybe<Scalars['Float']>;
-  machineId: Scalars['ID'];
-  sensorId: Scalars['ID'];
-  values?: Maybe<Array<Maybe<SampleChunk>>>;
 };
 
 export enum Status {
@@ -261,11 +251,8 @@ export type ResolversTypes = ResolversObject<{
   Machine: ResolverTypeWrapper<Machine>;
   Status: Status;
   Sensor: ResolverTypeWrapper<Sensor>;
-  Signal: ResolverTypeWrapper<Signal>;
-  Unit: Unit;
-  Float: ResolverTypeWrapper<Scalars['Float']>;
   SampleChunk: ResolverTypeWrapper<SampleChunk>;
-  Date: ResolverTypeWrapper<Scalars['Date']>;
+  Sample: ResolverTypeWrapper<Scalars['Sample']>;
   Mutation: ResolverTypeWrapper<{}>;
   MutationResponse: ResolversTypes['SensorCreationResponse'] | ResolversTypes['UserUpdatedResponse'] | ResolversTypes['MachineUpdatedResponse'];
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
@@ -273,6 +260,8 @@ export type ResolversTypes = ResolversObject<{
   SensorUpdateInput: SensorUpdateInput;
   SensorInput: SensorInput;
   SensorCreationResponse: ResolverTypeWrapper<SensorCreationResponse>;
+  Unit: Unit;
+  Date: ResolverTypeWrapper<Scalars['Date']>;
   UserUpdatedResponse: ResolverTypeWrapper<UserUpdatedResponse>;
   MachineUpdatedResponse: ResolverTypeWrapper<MachineUpdatedResponse>;
 }>;
@@ -285,10 +274,8 @@ export type ResolversParentTypes = ResolversObject<{
   String: Scalars['String'];
   Machine: Machine;
   Sensor: Sensor;
-  Signal: Signal;
-  Float: Scalars['Float'];
   SampleChunk: SampleChunk;
-  Date: Scalars['Date'];
+  Sample: Scalars['Sample'];
   Mutation: {};
   MutationResponse: ResolversParentTypes['SensorCreationResponse'] | ResolversParentTypes['UserUpdatedResponse'] | ResolversParentTypes['MachineUpdatedResponse'];
   Boolean: Scalars['Boolean'];
@@ -296,6 +283,7 @@ export type ResolversParentTypes = ResolversObject<{
   SensorUpdateInput: SensorUpdateInput;
   SensorInput: SensorInput;
   SensorCreationResponse: SensorCreationResponse;
+  Date: Scalars['Date'];
   UserUpdatedResponse: UserUpdatedResponse;
   MachineUpdatedResponse: MachineUpdatedResponse;
 }>;
@@ -341,10 +329,13 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
   sensor?: Resolver<Maybe<ResolversTypes['Sensor']>, ParentType, ContextType, RequireFields<QuerySensorArgs, 'machineId' | 'id'>>;
 }>;
 
+export interface SampleScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Sample'], any> {
+  name: 'Sample';
+}
+
 export type SampleChunkResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['SampleChunk'] = ResolversParentTypes['SampleChunk']> = ResolversObject<{
-  timestamp?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
-  timeStepSecs?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-  samples?: Resolver<Array<Maybe<ResolversTypes['Float']>>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  samples?: Resolver<Array<Maybe<ResolversTypes['Sample']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
 
@@ -353,7 +344,7 @@ export type SensorResolvers<ContextType = GraphQLContext, ParentType extends Res
   machineId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   healthStatus?: Resolver<Maybe<ResolversTypes['Status']>, ParentType, ContextType>;
-  signals?: Resolver<Array<ResolversTypes['Signal']>, ParentType, ContextType>;
+  sampleChunks?: Resolver<Array<ResolversTypes['SampleChunk']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
 
@@ -362,16 +353,6 @@ export type SensorCreationResponseResolvers<ContextType = GraphQLContext, Parent
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   sensor?: Resolver<Maybe<ResolversTypes['Sensor']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
-}>;
-
-export type SignalResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Signal'] = ResolversParentTypes['Signal']> = ResolversObject<{
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  unit?: Resolver<ResolversTypes['Unit'], ParentType, ContextType>;
-  threshold?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  machineId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  sensorId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  values?: Resolver<Maybe<Array<Maybe<ResolversTypes['SampleChunk']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
 
@@ -397,10 +378,10 @@ export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
   Mutation?: MutationResolvers<ContextType>;
   MutationResponse?: MutationResponseResolvers;
   Query?: QueryResolvers<ContextType>;
+  Sample?: GraphQLScalarType;
   SampleChunk?: SampleChunkResolvers<ContextType>;
   Sensor?: SensorResolvers<ContextType>;
   SensorCreationResponse?: SensorCreationResponseResolvers<ContextType>;
-  Signal?: SignalResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   UserUpdatedResponse?: UserUpdatedResponseResolvers<ContextType>;
 }>;
