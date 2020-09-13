@@ -1,21 +1,13 @@
 import { firebaseApp } from '../../firebase';
 import { MachineResolvers } from '../../generated/graphql';
-import { addIdToDoc } from './utils';
+import { MachineStore } from '../MachineStore';
 
 const firestore = firebaseApp.firestore();
 
 export const machineResolvers: MachineResolvers = {
     sensors: async (parent, args) => {
-        const sensorDocs =  (
-            await firestore.collection(`machines/${parent.id}/sensors`).get())
-            .docs.map((sensor) => {
-                return {
-                    ...addIdToDoc(sensor),
-                    machineId: parent.id
-                }; 
-
-            });
+        const sensorDocs = MachineStore.getSensors(parent.id);
             
-          return sensorDocs;
+        return sensorDocs;
     },
 };

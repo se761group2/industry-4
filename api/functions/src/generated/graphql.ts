@@ -22,9 +22,17 @@ export type Machine = {
   sensors: Array<Sensor>;
 };
 
+export type MachineUpdatedResponse = MutationResponse & {
+  __typename?: 'MachineUpdatedResponse';
+  code: Scalars['String'];
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+};
+
 export type MachineUpdateInput = {
   name: Scalars['String'];
   healthStatus?: Maybe<Status>;
+  sensors: Array<Sensor>;
 };
 
 export type Mutation = {
@@ -251,12 +259,13 @@ export type ResolversTypes = ResolversObject<{
   SampleChunk: ResolverTypeWrapper<SampleChunk>;
   Date: ResolverTypeWrapper<Scalars['Date']>;
   Mutation: ResolverTypeWrapper<{}>;
-  MutationResponse: ResolversTypes['UserUpdatedResponse'];
+  MutationResponse: ResolversTypes['UserUpdatedResponse'] | ResolversTypes['MachineUpdatedResponse'];
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   MachineUpdateInput: MachineUpdateInput;
   SensorUpdateInput: SensorUpdateInput;
   SensorInput: SensorInput;
   UserUpdatedResponse: ResolverTypeWrapper<UserUpdatedResponse>;
+  MachineUpdatedResponse: ResolverTypeWrapper<MachineUpdatedResponse>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -272,12 +281,13 @@ export type ResolversParentTypes = ResolversObject<{
   SampleChunk: SampleChunk;
   Date: Scalars['Date'];
   Mutation: {};
-  MutationResponse: ResolversParentTypes['UserUpdatedResponse'];
+  MutationResponse: ResolversParentTypes['UserUpdatedResponse'] | ResolversParentTypes['MachineUpdatedResponse'];
   Boolean: Scalars['Boolean'];
   MachineUpdateInput: MachineUpdateInput;
   SensorUpdateInput: SensorUpdateInput;
   SensorInput: SensorInput;
   UserUpdatedResponse: UserUpdatedResponse;
+  MachineUpdatedResponse: MachineUpdatedResponse;
 }>;
 
 export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
@@ -292,6 +302,13 @@ export type MachineResolvers<ContextType = GraphQLContext, ParentType extends Re
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
 
+export type MachineUpdatedResponseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['MachineUpdatedResponse'] = ResolversParentTypes['MachineUpdatedResponse']> = ResolversObject<{
+  code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+}>;
+
 export type MutationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   updateUser?: Resolver<Maybe<ResolversTypes['MutationResponse']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'id'>>;
   updateMachine?: Resolver<Maybe<ResolversTypes['MutationResponse']>, ParentType, ContextType, RequireFields<MutationUpdateMachineArgs, 'id'>>;
@@ -301,7 +318,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
 }>;
 
 export type MutationResponseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{
-  __resolveType: TypeResolveFn<'UserUpdatedResponse', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'UserUpdatedResponse' | 'MachineUpdatedResponse', ParentType, ContextType>;
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -358,6 +375,7 @@ export type UserUpdatedResponseResolvers<ContextType = GraphQLContext, ParentTyp
 export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
   Date?: GraphQLScalarType;
   Machine?: MachineResolvers<ContextType>;
+  MachineUpdatedResponse?: MachineUpdatedResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   MutationResponse?: MutationResponseResolvers;
   Query?: QueryResolvers<ContextType>;

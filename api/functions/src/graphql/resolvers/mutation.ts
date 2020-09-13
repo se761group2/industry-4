@@ -1,23 +1,48 @@
 import { firebaseApp } from '../../firebase';
 import { MutationResolvers } from '../../generated/graphql';
-import { addIdToDoc } from './utils';
+import { MachineStore } from '../MachineStore';
 
 const firestore = firebaseApp.firestore();
 
 export const mutationResolvers: MutationResolvers = {
-    updateMachine: async (args) => {
+    updateUser: async (parent, args) => {
         return null;
     },
 
-    updateSensor: async (args) => {
+    updateMachine: async (parent, args) => {
+        
+        const machine = MachineStore.updateMachine(args.id, args.input?.name, args.input?.healthStatus, args.input?.sensors);
+
         return null;
     },
 
-    createMachine: async (args) => {
+    updateSensor: async (parent, args) => {
         return null;
     },
 
-    createSensor: async (args) => {
+    createMachine: async (parent, args) => {
+        const newMachine = MachineStore.createMachine(args.id, args.name);
+
+        const resp: any = {
+            code: 'machine_create/success',
+            success: true,
+            message: 'Machine Created Successfully.',
+            deck: MachineStore.getMachine(args.id)
+        }
+
+        return resp;
+    },
+
+    createSensor: async (parent, args) => {
+
+        const newSensor = MachineStore.createSensor();
+
+        const resp: any = {
+            code: 'machine_create/success',
+            success: true,
+            message: 'Machine Created Successfully.',
+            deck: MachineStore.getSensor(args.input?.machineID, args.id)
+        }
         return null;
     },
 };

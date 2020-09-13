@@ -67,6 +67,12 @@ type UserUpdatedResponse implements MutationResponse {
   message: String!
 }
 
+type MachineUpdatedResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+}
+
 input SensorInput {
  machineID: ID! 
  name: String!
@@ -76,6 +82,7 @@ input SensorInput {
 input MachineUpdateInput {
   name: String!
   healthStatus: Status
+  sensors: [Sensor!]!
 }
 
 input SensorUpdateInput {
