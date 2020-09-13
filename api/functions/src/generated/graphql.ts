@@ -32,7 +32,6 @@ export type MachineUpdatedResponse = MutationResponse & {
 export type MachineUpdateInput = {
   name: Scalars['String'];
   healthStatus?: Maybe<Status>;
-  sensors: Array<Sensor>;
 };
 
 export type Mutation = {
@@ -122,6 +121,8 @@ export type Sensor = {
   machineId: Scalars['ID'];
   name: Scalars['String'];
   healthStatus?: Maybe<Status>;
+  threshold: Scalars['Float'];
+  unit: Scalars['String'];
   sampleChunks: Array<SampleChunk>;
 };
 
@@ -255,10 +256,10 @@ export type ResolversTypes = ResolversObject<{
   Machine: ResolverTypeWrapper<Machine>;
   Status: Status;
   Sensor: ResolverTypeWrapper<Sensor>;
+  Float: ResolverTypeWrapper<Scalars['Float']>;
   SampleChunk: ResolverTypeWrapper<SampleChunk>;
   Sample: ResolverTypeWrapper<Sample>;
   Date: ResolverTypeWrapper<Scalars['Date']>;
-  Float: ResolverTypeWrapper<Scalars['Float']>;
   Mutation: ResolverTypeWrapper<{}>;
   MutationResponse: ResolversTypes['SensorCreationResponse'] | ResolversTypes['UserUpdatedResponse'] | ResolversTypes['MachineUpdatedResponse'];
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
@@ -279,10 +280,10 @@ export type ResolversParentTypes = ResolversObject<{
   String: Scalars['String'];
   Machine: Machine;
   Sensor: Sensor;
+  Float: Scalars['Float'];
   SampleChunk: SampleChunk;
   Sample: Sample;
   Date: Scalars['Date'];
-  Float: Scalars['Float'];
   Mutation: {};
   MutationResponse: ResolversParentTypes['SensorCreationResponse'] | ResolversParentTypes['UserUpdatedResponse'] | ResolversParentTypes['MachineUpdatedResponse'];
   Boolean: Scalars['Boolean'];
@@ -352,6 +353,8 @@ export type SensorResolvers<ContextType = GraphQLContext, ParentType extends Res
   machineId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   healthStatus?: Resolver<Maybe<ResolversTypes['Status']>, ParentType, ContextType>;
+  threshold?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  unit?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   sampleChunks?: Resolver<Array<ResolversTypes['SampleChunk']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;

@@ -1,13 +1,13 @@
 import { firebaseApp } from '../firebase';
 import { Sensor, Unit } from '../generated/graphql';
-import { FirebaseDocumentSnapshot, addIdToDoc } from './resolvers/utils';
+import { addIdToDoc } from './resolvers/utils';
 
 const firestore = firebaseApp.firestore();
 
 const getMachine = async (id): Promise<any> => {
   const machine = await firestore.doc(`machines/${id}`).get();
 
-  const machineData = addIdToDoc(machine);
+    const machineData = addIdToDoc(machine);
 
   return machineData;
 };
@@ -60,8 +60,7 @@ const createMachine = async (
 const updateMachine = async (
   machineId,
   name,
-  healthStatus,
-  sensors
+  healthStatus
 ): Promise<any> => {
   const machine = getMachine(machineId);
 };

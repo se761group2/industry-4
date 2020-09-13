@@ -13,8 +13,7 @@ export const mutationResolvers: MutationResolvers = {
     const machine = MachineStore.updateMachine(
       args.id,
       args.input?.name,
-      args.input?.healthStatus,
-      args.input?.sensors
+      args.input?.healthStatus
     );
 
     return null;
@@ -47,7 +46,7 @@ export const mutationResolvers: MutationResolvers = {
       code: 'sensor_create/success',
       success: true,
       message: 'Sensor Created Successfully.',
-      sensor: newSensor),
+      sensor: newSensor
     };
 
     return resp;

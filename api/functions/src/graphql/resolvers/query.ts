@@ -21,7 +21,9 @@ export const queryResolvers: QueryResolvers = {
   },
 
   machine: async (parent, args) => {
-    const machineData = MachineStore.getMachine(args.id);
+    const machine = await firestore.doc(`machines/${args.id}`).get();
+
+    const machineData = addIdToDoc(machine);
 
     if (!machineData) {
       return undefined;
