@@ -45,10 +45,9 @@ interface LineGraphProps {
 
 const LineGraph: React.FC<LineGraphProps> = ({ title, data, redThreshold, yellowThreshold }) => {
     return (
-        <div className="container flex items-center justify-center">
-            <div className="bg-white pt-4 pb-4">
-                <h1 className="text-xl leading-normal">{title}</h1>
-                {/* <br></br> */}
+        <div className="flex justify-center text-black">
+            <div className="bg-white items-center pt-4 pb-4">
+                <h1 className="text-xl text-center leading-normal">{title}</h1>
                 <LineChart width={600} height={300} data={data} margin={{ top: 20, right: 30, bottom: 5, left: 0 }}>
                     <Line
                         type="monotone"
