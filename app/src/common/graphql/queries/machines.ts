@@ -13,21 +13,17 @@ export const GET_MACHINES = gql`
 export const GET_MACHINE_BY_ID = gql`
     query getMachineById($id: ID!) {
         machine(id: $id) {
-            id
             name
             healthStatus
             sensors {
-                id
                 name
                 healthStatus
-                signals {
-                    id
-                    unit
-                    threshold
-                    values {
+                unit
+                threshold
+                sampleChunks {
+                    samples {
+                        value
                         timestamp
-                        timeStepSecs
-                        samples
                     }
                 }
             }
