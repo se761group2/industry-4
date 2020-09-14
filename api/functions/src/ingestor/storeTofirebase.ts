@@ -1,7 +1,7 @@
 import { firestore } from 'firebase-functions';
 import { firebaseApp, Timestamp } from './../firebase';
 
-const firestore = firebaseApp.firestore();
+const fireStoreInstantiation = firebaseApp.firestore();
 interface sampleChunk {
   samples: { timestamp: FirebaseFirestore.Timestamp; value: number }[];
 }
@@ -12,7 +12,7 @@ export async function storeSingleRMSValue(
   machineId: string,
   sensorId: string
 ) {
-  const chunks = await firestore
+  const chunks = await fireStoreInstantiation
     .collection(`machines/${machineId}/sensors/${sensorId}/sampleChunks`)
     .listDocuments();
   const lastChunk = chunks[chunks.length - 1];
@@ -30,9 +30,9 @@ export async function storeSingleRMSValue(
 
   const timestamp = Timestamp.fromDate(date);
 
-  firestore
+  fireStoreInstantiation
     .collection(`machines/${machineId}/sensors/${sensorId}/sampleChunks`)
-    .doc((Number(lastChunkId) + 1).toString())
+    .doc(timestampStr)
     .set({
       samples: [{ timestamp: timestamp, value: rmsValue }],
       machineId: machineId,

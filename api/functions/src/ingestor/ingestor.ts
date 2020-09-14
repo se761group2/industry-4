@@ -6,6 +6,7 @@
 import csvParser from 'csv-parser';
 import fs from 'fs';
 import { notifyUsers } from '../sendgrid/sendgrid';
+import { storeSingleRMSValue } from './storeTofirebase';
 
 csvParser();
 // csvParser(['sensor value']); // this data label doesn't work for some reason
@@ -21,6 +22,9 @@ const maxLinesToProcessPerFile = 30000;
 const maxFiles = 1000;
 
 let notified = false;
+// TODO remove hardcode machineId and sensorId
+const machineId = 'AD1AECvCTuMi29JF0WTC';
+const sensorId = 'HGtyAU9JL0X9SNchBvgA';
 
 findDataFileNamesInDir(currentDir + '\\..\\..\\inputData\\', fileNames);
 processAllFiles();
@@ -80,6 +84,8 @@ async function processInputDataFile(fileName, processedFileCount) {
         rmsValues.push(rmsValueFromFile);
         console.log('RMS value for this file: ' + rmsValueFromFile);
         thresholdDetection(rmsValueFromFile, processedFileCount);
+        storeSingleRMSValue(rmsValueFromFile, fileName, machineId, sensorId);
+
         resolve();
       });
   });
