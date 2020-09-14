@@ -20,36 +20,31 @@ export async function storeSingleRMSValue(
     .listDocuments();
   const lastChunk = chunks[chunks.length - 1];
   const retrievedChunk = await lastChunk.get();
-  const chunkData = retrievedChunk.data() as sampleChunk;
   const lastChunkId = retrievedChunk.id;
 
-  const samplesArrayLength = chunkData.samples.length;
+  // Add data to a new chunk (page)
+  const splitDateString: string[] = timestampStr.split('.');
+  const date: Date = new Date();
+  date.setFullYear(Number(splitDateString[0]));
+  date.setMonth(Number(splitDateString[1]));
+  date.setDate(Number(splitDateString[2]));
+  date.setHours(Number(splitDateString[3]));
+  date.setMinutes(Number(splitDateString[4]));
 
-  if (samplesArrayLength >= maxChunkSize) {
-    const splitDateString: string[] = timestampStr.split('.');
-    const date: Date = new Date();
-    date.setFullYear(Number(splitDateString[0]));
-    date.setMonth(Number(splitDateString[1]));
-    date.setDate(Number(splitDateString[2]));
-    date.setHours(Number(splitDateString[3]));
-    date.setMinutes(Number(splitDateString[4]));
+  const timestamp = Timestamp.fromDate(date);
 
-    const timestamp = Timestamp.fromDate(date);
-
-
-    firestore
-      .collection(`machines/${machineId}/sensors/${sensorId}/sampleChunks`)
-      .doc((Number(lastChunkId) + 1).toString())
-      .set({
-        samples: [{ timestamp: timestamp, value: rmsValue }],
-        machineId: string,
-        sensorId: string,
-      })
-      .then(function () {
-        console.log('Document successfully written!');
-      })
-      .catch(function (error) {
-        console.error('Error writing document: ', error);
-      });
-  }
+  firestore
+    .collection(`machines/${machineId}/sensors/${sensorId}/sampleChunks`)
+    .doc((Number(lastChunkId) + 1).toString())
+    .set({
+      samples: [{ timestamp: timestamp, value: rmsValue }],
+      machineId: machineId,
+      sensorId: sensorId,
+    })
+    .then(function () {
+      console.log('Document successfully written!');
+    })
+    .catch(function (error) {
+      console.error('Error writing document: ', error);
+    });
 }
