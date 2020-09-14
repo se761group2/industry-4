@@ -16,6 +16,8 @@ import "./Page.css";
 import { from, useQuery } from "@apollo/client";
 import { GetUserById } from "../types/GetUserById";
 import { GET_USER_BY_ID } from "../common/graphql/queries/users";
+// import LineGraph from "../components/LineGraph";
+
 import { ellipsisHorizontal, ellipsisVertical, personCircle, search } from "ionicons/icons";
 
 import { CartesianGrid, DotProps, Line, LineChart, Tooltip, XAxis, YAxis } from "recharts";
@@ -60,13 +62,13 @@ const Page: React.FC = () => {
         variables: { id: "dummy" },
     });
     const data = [
-        { name: "Page A", uv: 450 },
-        { name: "Page B", uv: 650 },
-        { name: "Page C", uv: 300 },
-        { name: "Page D", uv: 225 },
-        { name: "Page E", uv: 700 },
-        { name: "Page F", uv: 650 },
-        { name: "Page G", uv: 425 },
+        { name: "Page A", value: 450 },
+        { name: "Page B", value: 650 },
+        { name: "Page C", value: 300 },
+        { name: "Page D", value: 225 },
+        { name: "Page E", value: 700 },
+        { name: "Page F", value: 650 },
+        { name: "Page G", value: 425 },
     ];
 
     return (
@@ -107,7 +109,6 @@ const Page: React.FC = () => {
                             stroke="#8884df"
                             isAnimationActive={false} // allows hollow dots to appear for unkown reason
                             activeDot={{ r: 8 }}
-                            // dot={{ stroke: "red" }}
                             dot={<Dot />}
                         />
                         <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
@@ -115,13 +116,6 @@ const Page: React.FC = () => {
                         <YAxis />
                         <Tooltip />
                     </LineChart>
-                    {/* <LineChart width={400} height={400} data={data} margin={{ top: 20, right: 20, left: 10, bottom: 5 }}>
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <CartesianGrid stroke="#f5f5f5" />
-                    <Line type="monotone" dataKey="value" stroke="#2273ff" yAxisId={0} activeDot={{ r: 8 }} />
-                </LineChart> */}
                 </div>
                 <div className="download" style={{ textAlign: "center", margin: "20%" }}>
                     <IonButton
