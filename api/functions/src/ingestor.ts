@@ -1,9 +1,10 @@
-/* read data from file, use fileReader */
-// import *as csv from 'csv-parser';
+// This is the ingestor for the project.
+// To run, navigate to the api\functions\src directory in console,
+// and enter 'ts-node ingestor.ts'.
+// Authors: Alex Monk
 
 import csvParser from 'csv-parser';
 import fs from 'fs';
-import { raw } from 'express';
 
 csvParser();
 // csvParser(['sensor value']); // this data label doesn't work for some reason
@@ -13,9 +14,10 @@ const fileNames: string[] = [];
 let thresholdValue; //hardcoded rn
 const rmsValues: number[] = [];
 
-const maxLinesToProcessPerFile = 20000;
-// TODO remove this limitation (up to X files are processsed)
-const maxFiles = 10;
+// TODO remove this limitation gracefully
+const maxLinesToProcessPerFile = 30000;
+// TODO remove this limitation gracefully (up to X files are processsed)
+const maxFiles = 210;
 
 findDataFileNamesInDir(currentDir + '\\..\\inputData\\', fileNames);
 processAllFiles();
@@ -33,6 +35,9 @@ async function processAllFiles() {
       break;
     }
   }
+  // TODO remove this hardcoded check once heap overflow is fixed
+  processInputDataFile(fileNames[650], 650);
+
   console.log('All files read. RMS calculations started...');
 }
 
@@ -45,7 +50,7 @@ function findDataFileNamesInDir(absoluteDir, fileNamesArray) {
   console.log(i + ' files found');
 }
 
-function processInputDataFile(fileName, processedFileCount) {
+async function processInputDataFile(fileName, processedFileCount) {
   const results: any[] = [];
   const rawDataFirstColumn: number[] = [];
   let singleValueFirstColumn = '';
@@ -67,10 +72,6 @@ function processInputDataFile(fileName, processedFileCount) {
           break;
         }
       }
-
-      // console.log('first column:');
-      // console.log(rawDataFirstColumn);
-
       rmsValueFromFile = calculateRMS(rawDataFirstColumn);
       rmsValues.push(rmsValueFromFile);
       console.log('RMS value for this file: ' + rmsValueFromFile);
@@ -95,10 +96,9 @@ function calculateRMS(values) {
   return currentTotal;
 }
 
-/*  threshold value for this data set is approx 0.8, will be updated with formula later
-    Check if rms value is above or below threshold */
 function thresholdDetection(rmsValue, processedFileCount) {
-  // first 200 values do not count
+  // first 200 values are used to determine the threshold, and as such
+  // are not checked against a threshold
   if (processedFileCount == 199) {
     thresholdValue = calculateThreshold();
   } else if (processedFileCount > 199) {
@@ -124,14 +124,14 @@ function thresholdDetection(rmsValue, processedFileCount) {
     console.log(
       'Record number ' +
         processedFileCount +
-        'is being used to determine the threshold (first 200 records).'
+        ' is being used to determine the threshold (first 200 records).'
     );
   }
 }
 
 function calculateThreshold() {
   // Expects 200 rms values
-  // is the mean plus 6 times standard deviation
+  // Threshold is the mean plus 6 times standard deviation
   let total = 0;
   for (let i = 0; i < rmsValues.length; i++) {
     total += rmsValues[i];
@@ -150,8 +150,6 @@ function calculateThreshold() {
 }
 
 function sendNotification() {
-  // do stuff, possibly provide data on the sensor & machine
+  // call the api to send a email notification, possibly provide data on the sensor & machine
+  /* TODO add checker for notification frequency (or do it somewhere else) */
 }
-
-/* if over threshold, run notification() function */
-/* TODO add checker for notification frequency */
