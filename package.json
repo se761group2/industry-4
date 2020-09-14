@@ -14,5 +14,7 @@
     "husky": "^4.2.3",
     "lerna": "^3.20.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "recharts": "^1.8.5"
+  }
 }

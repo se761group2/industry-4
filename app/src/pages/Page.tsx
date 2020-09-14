@@ -14,16 +14,33 @@ import { useParams } from "react-router";
 import ExploreContainer from "../components/ExploreContainer";
 import HealthContainer from "../components/HealthContainer";
 import "./Page.css";
-import { useQuery } from "@apollo/client";
+import { from, useQuery } from "@apollo/client";
 import { GetUserById } from "../types/GetUserById";
 import { GET_USER_BY_ID } from "../common/graphql/queries/users";
 import { ellipsisHorizontal, ellipsisVertical, personCircle, search } from "ionicons/icons";
+import LineGraph from "../components/LineGraph";
 
 const Page: React.FC = () => {
     const { name } = useParams<{ name: string }>();
     const dummyUserQuery = useQuery<GetUserById>(GET_USER_BY_ID, {
         variables: { id: "dummy" },
     });
+    const data = [
+        { name: "1", value: 350 },
+        { name: "2", value: 250 },
+        { name: "3", value: 300 },
+        { name: "4", value: 325 },
+        { name: "5", value: 400 },
+        { name: "6", value: 450 },
+        { name: "7", value: 425 },
+        { name: "8", value: 450 },
+        { name: "9", value: 650 },
+        { name: "10", value: 300 },
+        { name: "11", value: 425 },
+        { name: "12", value: 700 },
+        { name: "13", value: 650 },
+        { name: "14", value: 425 },
+    ];
 
     return (
         <IonPage>
@@ -51,7 +68,9 @@ const Page: React.FC = () => {
                 <div className="statusBar">
                     <HealthContainer name={"Sensor name"} value={15} threshold={20} />
                 </div>
-                <div className="graph"></div>
+                <div className="graph">
+                    <LineGraph title="Sensor Values" redThreshold={600} yellowThreshold={400} data={data} />
+                </div>
                 <div className="download" style={{ textAlign: "center", margin: "20%" }}>
                     <IonButton
                         shape="round"
