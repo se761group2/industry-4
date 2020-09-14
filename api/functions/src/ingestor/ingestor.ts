@@ -1,5 +1,5 @@
 // This is the ingestor for the project.
-// To run, navigate to the api\functions\src directory in console,
+// To run, navigate to the api\functions\src\ingestor directory in console,
 // and enter 'ts-node ingestor.ts'.
 // Authors: Alex Monk
 
@@ -19,7 +19,7 @@ const maxLinesToProcessPerFile = 30000;
 // TODO remove this limitation gracefully (up to X files are processsed)
 const maxFiles = 210;
 
-findDataFileNamesInDir(currentDir + '\\..\\inputData\\', fileNames);
+findDataFileNamesInDir(currentDir + '\\..\\..\\inputData\\', fileNames);
 processAllFiles();
 
 async function processAllFiles() {
