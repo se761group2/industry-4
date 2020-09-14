@@ -1,5 +1,5 @@
 import { firestore } from 'firebase-functions';
-import { firebaseApp } from './../firebase';
+import { firebaseApp, Timestamp } from './../firebase';
 
 // the number of samples per chunk (1 sample = 1 RMS value representing a input data file)
 const maxChunkSize = 144;
@@ -9,10 +9,9 @@ interface sampleChunk {
   samples: { timestamp: FirebaseFirestore.Timestamp; value: number }[];
 }
 
-
 export async function storeSingleRMSValue(
   rmsValue: number,
-  timestamp: string,
+  timestampStr: string,
   machineId: string,
   sensorId: string
 ) {
@@ -27,15 +26,24 @@ export async function storeSingleRMSValue(
   const samplesArrayLength = chunkData.samples.length;
 
   if (samplesArrayLength >= maxChunkSize) {
-    FromDateTime(DateTime dateTime)
+    const splitDateString: string[] = timestampStr.split('.');
+    const date: Date = new Date();
+    date.setFullYear(Number(splitDateString[0]));
+    date.setMonth(Number(splitDateString[1]));
+    date.setDate(Number(splitDateString[2]));
+    date.setHours(Number(splitDateString[3]));
+    date.setMinutes(Number(splitDateString[4]));
+
+    const timestamp = Timestamp.fromDate(date);
+
 
     firestore
       .collection(`machines/${machineId}/sensors/${sensorId}/sampleChunks`)
       .doc((Number(lastChunkId) + 1).toString())
       .set({
-      samples:  [{timestamp: FromDateTime(DateTime dateTime), value: rmsValue}],
-  machineId: string,
-  sensorId: string
+        samples: [{ timestamp: timestamp, value: rmsValue }],
+        machineId: string,
+        sensorId: string,
       })
       .then(function () {
         console.log('Document successfully written!');
