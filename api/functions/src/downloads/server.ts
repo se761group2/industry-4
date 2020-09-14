@@ -7,13 +7,16 @@ export function ConstructFileDownloadServer() {
   app.use(cors());
   app.options('*');
 
-  app.get('/sensor/:sensorId', (req, res) => {
-    if (!req.params.sensorId) {
+  app.get('machine/:machineId/sensor/:sensorId', (req, res) => {
+    if (!req.params.sensorId || !req.params.machineId) {
       res.status(400).send('Bad Request');
       return;
     }
 
-    const data = generateSensorDataCSV(req.params.sensorId);
+    const data = generateSensorDataCSV(
+      req.params.machineId,
+      req.params.sensorId
+    );
 
     res.set('Content-Type', 'text/csv').send(data);
   });
