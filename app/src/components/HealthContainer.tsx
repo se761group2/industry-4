@@ -21,7 +21,7 @@ const HealthContainer: React.FC<ContainerProps> = ({ name, value, threshold }) =
     }
     return (
         <div className="container mx-auto flex items-center justify-center">
-            <div className="w-4/5 max-w-md px-5 py-4 rounded-lg shadow-xl font-bold" style={{ background: bg }}>
+            <div className="w-4/5 max-w-md px-5 py-4 rounded-lg shadow-xl font-bold text-lg" style={{ background: bg }}>
                 <div className="w-3/4 truncate text-left text-black float-left">{name}</div>
                 <div className="text-right text-black float-right">{value}</div>
             </div>
