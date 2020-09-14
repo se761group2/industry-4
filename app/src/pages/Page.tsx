@@ -12,12 +12,12 @@ import {
 import React from "react";
 import { useParams } from "react-router";
 import ExploreContainer from "../components/ExploreContainer";
+import HealthContainer from "../components/HealthContainer";
 import "./Page.css";
 import { from, useQuery } from "@apollo/client";
 import { GetUserById } from "../types/GetUserById";
 import { GET_USER_BY_ID } from "../common/graphql/queries/users";
 import { ellipsisHorizontal, ellipsisVertical, personCircle, search } from "ionicons/icons";
-
 import LineGraph from "../components/LineGraph";
 
 const Page: React.FC = () => {
@@ -65,7 +65,9 @@ const Page: React.FC = () => {
             </IonHeader>
 
             <IonContent color="new">
-                <div className="statusBar"></div>
+                <div className="statusBar">
+                    <HealthContainer name={"Sensor name"} value={15} threshold={20} />
+                </div>
                 <div className="graph">
                     <LineGraph title="Sensor Values" redThreshold={600} yellowThreshold={400} data={data} />
                 </div>

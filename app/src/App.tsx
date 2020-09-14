@@ -28,20 +28,20 @@ import { ApolloProvider } from "@apollo/client";
 import { apolloClient } from "./services/api/apolloClient";
 
 const App: React.FC = () => {
-  return (
-    <IonApp>
-      <IonReactRouter>
-        <ApolloProvider client={apolloClient}>
-          <IonSplitPane contentId="main">
-            <IonRouterOutlet id="main">
-              <Route path="/page/:name" component={Page} exact />
-              <Redirect from="/" to="/page/SensorData" exact />
-            </IonRouterOutlet>
-          </IonSplitPane>
-        </ApolloProvider>
-      </IonReactRouter>
-    </IonApp>
-  );
+    return (
+        <IonApp>
+            <IonReactRouter>
+                <ApolloProvider client={apolloClient}>
+                    <IonSplitPane contentId="main">
+                        <IonRouterOutlet id="main">
+                            <Route path="/page/:name" component={Page} exact />
+                            <Redirect from="/" to="/page/SensorData" exact />
+                        </IonRouterOutlet>
+                    </IonSplitPane>
+                </ApolloProvider>
+            </IonReactRouter>
+        </IonApp>
+    );
 };
 
 export default App;
