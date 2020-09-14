@@ -1,9 +1,6 @@
 .container {
     text-align: center;
     position: relative;
-    margin: 0%;
-    left: 0;
-    right: 0;
     top: 60px;
     transform: translateY(-50%);
 }
