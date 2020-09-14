@@ -44,11 +44,36 @@ interface LineGraphProps {
 }
 
 const LineGraph: React.FC<LineGraphProps> = ({ title, data, redThreshold, yellowThreshold }) => {
+    /* Keeps track of the window dimensions.  Updates when window resizes */
+    const [dimensions, setDimensions] = React.useState({
+        height: window.innerHeight,
+        width: window.innerWidth,
+    });
+    React.useEffect(() => {
+        const handleResize = () => {
+            setDimensions({
+                height: window.innerHeight,
+                width: window.innerWidth,
+            });
+        };
+
+        window.addEventListener("resize", handleResize);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    });
+
     return (
         <div className="flex justify-center text-black">
-            <div className="bg-white items-center pt-4 pb-4">
+            <div className="bg-white rounded-lg items-center pt-4 pb-4" style={{ width: "90%", maxWidth: "600px" }}>
                 <h1 className="text-xl text-center leading-normal">{title}</h1>
-                <LineChart width={600} height={300} data={data} margin={{ top: 20, right: 30, bottom: 5, left: 0 }}>
+                <LineChart
+                    width={dimensions.width > 660 ? 600 : dimensions.width - 58}
+                    height={300}
+                    data={data}
+                    margin={{ top: 20, right: 30, bottom: 5, left: 0 }}
+                    style={{ maxWidth: "90%" }}
+                >
                     <Line
                         type="monotone"
                         dataKey="value"
