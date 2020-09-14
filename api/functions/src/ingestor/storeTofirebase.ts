@@ -1,7 +1,16 @@
 import { firestore } from 'firebase-functions';
 import { firebaseApp, Timestamp } from './../firebase';
 
+// var config = {
+//   authDomain: "",
+//   databaseURL: "",
+//   projectId: "",
+//   storageBucket: "firestore-demos.appspot.com"
+// }
+
 const fireStoreInstantiation = firebaseApp.firestore();
+// const fireStoreInstantiation = firebase;
+
 interface sampleChunk {
   samples: { timestamp: FirebaseFirestore.Timestamp; value: number }[];
 }
@@ -29,6 +38,7 @@ export async function storeSingleRMSValue(
   date.setMinutes(Number(splitDateString[4]));
 
   const timestamp = Timestamp.fromDate(date);
+  console.log('firebase timestamp successfully created');
 
   fireStoreInstantiation
     .collection(`machines/${machineId}/sensors/${sensorId}/sampleChunks`)

@@ -84,10 +84,11 @@ async function processInputDataFile(fileName, processedFileCount) {
         rmsValues.push(rmsValueFromFile);
         console.log('RMS value for this file: ' + rmsValueFromFile);
         thresholdDetection(rmsValueFromFile, processedFileCount);
-        storeSingleRMSValue(rmsValueFromFile, fileName, machineId, sensorId);
 
         resolve();
       });
+
+    storeSingleRMSValue(rmsValueFromFile, fileName, machineId, sensorId);
   });
 
   return resultPromise;
