@@ -17,7 +17,7 @@ const rmsValues: number[] = [];
 // TODO remove this limitation gracefully
 const maxLinesToProcessPerFile = 30000;
 // TODO remove this limitation gracefully (up to X files are processsed)
-const maxFiles = 210;
+const maxFiles = 1000;
 
 findDataFileNamesInDir(currentDir + '\\..\\..\\inputData\\', fileNames);
 processAllFiles();
@@ -36,7 +36,7 @@ async function processAllFiles() {
     }
   }
   // TODO remove this hardcoded check once heap overflow is fixed
-  processInputDataFile(fileNames[650], 650);
+  // processInputDataFile(fileNames[650], 650);
 
   console.log('All files read. RMS calculations started...');
 }
@@ -57,26 +57,31 @@ async function processInputDataFile(fileName, processedFileCount) {
   let firstRowItemAsNum = 0;
   let rmsValueFromFile = 0;
 
-  fs.createReadStream(fileName)
-    .pipe(csvParser({ separator: '\t', headers: false }))
-    .on('data', (row) => results.push(row))
-    .on('end', () => {
-      for (let i = 0; i < results.length; i++) {
-        if (i < maxLinesToProcessPerFile) {
-          // first 1000 values used to speed things up  TODO remove this limitation
-          singleValueFirstColumn = <string>results[i]['0'];
-          // let firstRowItem = singleRow.split('\t')[0];
-          firstRowItemAsNum = +singleValueFirstColumn;
-          rawDataFirstColumn.push(firstRowItemAsNum);
-        } else {
-          break;
+  const resultPromise = new Promise<void>((resolve, reject) => {
+    fs.createReadStream(fileName)
+      .pipe(csvParser({ separator: '\t', headers: false }))
+      .on('data', (row) => results.push(row))
+      .on('end', () => {
+        for (let i = 0; i < results.length; i++) {
+          if (i < maxLinesToProcessPerFile) {
+            // first 1000 values used to speed things up  TODO remove this limitation
+            singleValueFirstColumn = <string>results[i]['0'];
+            // let firstRowItem = singleRow.split('\t')[0];
+            firstRowItemAsNum = +singleValueFirstColumn;
+            rawDataFirstColumn.push(firstRowItemAsNum);
+          } else {
+            break;
+          }
         }
-      }
-      rmsValueFromFile = calculateRMS(rawDataFirstColumn);
-      rmsValues.push(rmsValueFromFile);
-      console.log('RMS value for this file: ' + rmsValueFromFile);
-      thresholdDetection(rmsValueFromFile, processedFileCount);
-    });
+        rmsValueFromFile = calculateRMS(rawDataFirstColumn);
+        rmsValues.push(rmsValueFromFile);
+        console.log('RMS value for this file: ' + rmsValueFromFile);
+        thresholdDetection(rmsValueFromFile, processedFileCount);
+        resolve();
+      });
+  });
+
+  return resultPromise;
 }
 /* calculate rms value. see 4.1.2 of the full research doc (pg 9) for info on how this is calculated*/
 function calculateRMS(values) {
