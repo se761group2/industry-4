@@ -5,6 +5,8 @@ import { addIdToDoc } from './resolvers/utils';
 
 const firestore = firebaseApp.firestore();
 
+// This is a helper class, which helps us call different database functions for both querying and mutating
+
 const getMachine = async (id): Promise<any> => {
   const machine = await firestore.doc(`machines/${id}`).get();
 
@@ -58,7 +60,10 @@ const updateMachine = async (
   name: string | null | undefined,
   healthStatus: string | null | undefined
 ): Promise<Machine> => {
+
   const machineDoc = await firestore.doc(`machines/${machineId}`);
+
+  // Filter out any null or undefined parameters, so that they are not persisted
   const toUpdate = Object.entries({ name, healthStatus }).filter(
     ([_, v]) => v !== null && v !== undefined
   );
@@ -69,6 +74,7 @@ const updateMachine = async (
 };
 
 const createSensor = async (machineId, sensorName): Promise<Sensor> => {
+
   const sensorDoc = await firestore
     .collection('machines')
     .doc(machineId)
@@ -99,6 +105,7 @@ const updateSensor = async (
     `machines/${machineId}/sensors/${sensorId}`
   );
 
+  // Filter out any null or undefined parameters, so that they are not persisted
   const toUpdate = Object.entries({
     name,
     healthStatus,

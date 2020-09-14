@@ -5,6 +5,7 @@ import { MachineStore } from '../MachineStore';
 
 const firestore = firebaseApp.firestore();
 
+// Resolvers to handle the queries when a user attempts to retrieve something from the database
 export const queryResolvers: QueryResolvers = {
   user: async (parent, args) => {
     const user = await firestore.doc(`users/${args.id}`).get();
@@ -20,7 +21,7 @@ export const queryResolvers: QueryResolvers = {
     };
   },
 
-  machine: async (parent, args) => {
+  machine: async (parent, args) => { // handles query to retrieve one machine, given an ID
     const machineData = await MachineStore.getMachine(args.id);
 
     if (!machineData) {
@@ -32,13 +33,13 @@ export const queryResolvers: QueryResolvers = {
     };
   },
 
-  machines: async (parent, args) => {
+  machines: async (parent, args) => { // handles query to retrieve all machines in the database
     const machineDocs = await MachineStore.getMachines();
 
     return machineDocs;
   },
 
-  sensor: async (parent, args) => {
+  sensor: async (parent, args) => { // Handles query to retrieve a sensor in the database
     const sensorData = await MachineStore.getSensor(args.machineId, args.id);
 
     if (!sensorData) {
