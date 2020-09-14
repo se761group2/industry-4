@@ -20,10 +20,21 @@ const HealthContainer: React.FC<ContainerProps> = ({ name, value, threshold }) =
         bg = "#d32626";
     }
     return (
-        <div className="container mx-auto flex items-center justify-center">
-            <div className="w-4/5 max-w-md px-5 py-4 rounded-lg shadow-xl font-bold text-lg" style={{ background: bg }}>
-                <div className="w-3/4 truncate text-left text-black float-left">{name}</div>
-                <div className="text-right text-black float-right">{value}</div>
+        <div
+            className="rounded-lg shadow-xl font-bold text-lg"
+            style={{ background: bg, maxWidth: "600px", width: "44%", height: "40px", margin: "25px auto" }}
+        >
+            <div
+                className="truncate text-left text-black float-left"
+                style={{ marginLeft: "15px", marginTop: "5px", marginBottom: "5px" }}
+            >
+                {name}
+            </div>
+            <div
+                className="text-right text-black float-right"
+                style={{ marginRight: "15px", marginTop: "5px", marginBottom: "5px" }}
+            >
+                {value}
             </div>
         </div>
     );

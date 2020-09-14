@@ -65,13 +65,13 @@ const Page: React.FC = () => {
             </IonHeader>
 
             <IonContent color="new">
-                <div className="statusBar">
+                <div className="statusBar" style={{ height: "65px" }}>
                     <HealthContainer name={"Sensor name"} value={15} threshold={20} />
                 </div>
                 <div className="graph">
                     <LineGraph title="Sensor Values" redThreshold={600} yellowThreshold={400} data={data} />
                 </div>
-                <div className="download" style={{ textAlign: "center", margin: "20%" }}>
+                <div className="download" style={{ height: "65px" }}>
                     <IonButton
                         shape="round"
                         color="light"
@@ -79,6 +79,8 @@ const Page: React.FC = () => {
                             textAlign: "center",
                             textTransform: "none",
                             fontSize: "18px",
+                            margin: "25px 55.5%",
+                            width: "200px",
                         }}
                     >
                         Download
