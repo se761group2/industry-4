@@ -52,7 +52,6 @@ const createMachine = async (machineName): Promise<Machine> => {
   .add({
     name: machineName,
     healthStatus: 'Nominal',
-    sensors: []
   })
 
   return addIdToDoc(await machineDoc.get()) as Machine
@@ -63,7 +62,7 @@ const updateMachine = async (
   name: string | null | undefined,
   healthStatus: string | null | undefined
 ): Promise<Machine> => {
-  const machineDoc = await getMachine(machineId);
+  const machineDoc = await firestore.doc(`machines/${machineId}`);
   const toUpdate = Object.entries({ name, healthStatus }).filter(
     ([_, v]) => v !== null && v !== undefined
   );
@@ -95,12 +94,16 @@ const createSensor = async (machineId, sensorName): Promise<Sensor> => {
 const updateSensor = async (
   machineId, 
   sensorId, 
-  sensorName: string | null | undefined, 
-  healthStatus: string | null | undefined
+  name: string | null | undefined, 
+  healthStatus: string | null | undefined,
+  threshold: number | null | undefined,
+  unit: string | null | undefined
   ): Promise<Sensor> => {
   
-    const sensorDoc = await getSensor(machineId, sensorId);
-    const toUpdate = Object.entries({ sensorName, healthStatus }).filter(
+    const sensorDoc = await firestore
+    .doc(`machines/${machineId}/sensors/${sensorId}`);
+
+    const toUpdate = Object.entries({ name, healthStatus, threshold, unit }).filter(
       ([_, v]) => v !== null && v !== undefined
     );
 

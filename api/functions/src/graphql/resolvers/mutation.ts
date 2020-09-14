@@ -31,7 +31,9 @@ export const mutationResolvers: MutationResolvers = {
       args.machineID,
       args.id,
       args.input?.name,
-      args.input?.healthStatus
+      args.input?.healthStatus,
+      args.input?.threshold,
+      args.input?.unit
     )
 
     const resp: any = {
@@ -40,7 +42,7 @@ export const mutationResolvers: MutationResolvers = {
       message: 'Sensor Updated Successfully.',
       sensor: sensor,
     };
-    
+
     return resp;
   },
 
