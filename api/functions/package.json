@@ -16,10 +16,12 @@
   },
   "main": "lib/index.js",
   "dependencies": {
+    "@sendgrid/mail": "^7.2.5",
     "@types/moment": "^2.13.0",
     "apollo-server-express": "^2.15.0",
     "copyfiles": "^2.3.0",
     "cors": "^2.8.5",
+    "csv-parser": "^2.3.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "firebase-admin": "^8.10.0",

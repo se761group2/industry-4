@@ -10,6 +10,9 @@
     "plugin:prettier/recommended"
   ],
   "rules": {
+    "prettier/prettier": ["error", {
+      "endOfLine":"auto"
+    }],
     "@typescript-eslint/no-use-before-define": 0,
     "@typescript-eslint/camelcase": 0,
     "@typescript-eslint/explicit-function-return-type": 0,
