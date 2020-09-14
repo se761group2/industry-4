@@ -22,7 +22,7 @@ const HealthContainer: React.FC<ContainerProps> = ({ name, value, threshold }) =
     return (
         <div
             className="rounded-lg shadow-xl font-bold text-lg"
-            style={{ background: bg, maxWidth: "600px", width: "44%", height: "40px", margin: "25px auto" }}
+            style={{ background: bg, maxWidth: "600px", width: "90%", height: "40px", margin: "25px auto" }}
         >
             <div
                 className="truncate text-left text-black float-left"

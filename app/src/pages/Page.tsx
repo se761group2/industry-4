@@ -71,7 +71,7 @@ const Page: React.FC = () => {
                 <div className="graph">
                     <LineGraph title="Sensor Values" redThreshold={600} yellowThreshold={400} data={data} />
                 </div>
-                <div className="download" style={{ height: "65px" }}>
+                <div className="download text-center" style={{ height: "65px" }}>
                     <IonButton
                         shape="round"
                         color="light"
@@ -79,8 +79,9 @@ const Page: React.FC = () => {
                             textAlign: "center",
                             textTransform: "none",
                             fontSize: "18px",
-                            margin: "25px 55.5%",
-                            width: "200px",
+                            margin: "25px",
+                            width: "90%",
+                            maxWidth: "600px",
                         }}
                     >
                         Download
