@@ -6,7 +6,7 @@ sgMail.setApiKey(config.SENDGRID_API_KEY);
 export function notifyUsers(threshold, recordedValue, sensorId, machineId) {
   const senderEmail = 'industry4errornotification@gmail.com';
   // This will be updated to send to the group of people who are tracking this machine
-  const receiverEmail = 'gmce822@aucklanduni.ac.nz';
+  const receiverEmail = 'fake@email.com';
   const msg = {
     to: receiverEmail,
     from: senderEmail,
