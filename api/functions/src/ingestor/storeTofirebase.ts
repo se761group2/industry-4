@@ -1,9 +1,6 @@
 import { firestore } from 'firebase-functions';
 import { firebaseApp, Timestamp } from './../firebase';
 
-// the number of samples per chunk (1 sample = 1 RMS value representing a input data file)
-const maxChunkSize = 144;
-
 const firestore = firebaseApp.firestore();
 interface sampleChunk {
   samples: { timestamp: FirebaseFirestore.Timestamp; value: number }[];
