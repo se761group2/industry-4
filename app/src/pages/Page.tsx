@@ -73,7 +73,6 @@ const Page: React.FC = () => {
                 </div>
                 <div className="download text-center" style={{ height: "65px" }}>
                     <IonButton
-                        shape="round"
                         color="light"
                         style={{
                             textAlign: "center",
