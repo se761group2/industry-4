@@ -5,6 +5,7 @@
 
 import csvParser from 'csv-parser';
 import fs from 'fs';
+import { notifyUsers } from '../sendgrid/sendgrid';
 
 csvParser();
 // csvParser(['sensor value']); // this data label doesn't work for some reason
@@ -18,6 +19,8 @@ const rmsValues: number[] = [];
 const maxLinesToProcessPerFile = 30000;
 // TODO remove this limitation gracefully (up to X files are processsed)
 const maxFiles = 1000;
+
+let notified = false;
 
 findDataFileNamesInDir(currentDir + '\\..\\..\\inputData\\', fileNames);
 processAllFiles();
@@ -115,7 +118,7 @@ function thresholdDetection(rmsValue, processedFileCount) {
           thresholdValue +
           ' met, notification being sent.'
       );
-      sendNotification();
+      sendNotification(thresholdValue, rmsValue);
     } else {
       console.log(
         'Record number ' +
@@ -154,7 +157,15 @@ function calculateThreshold() {
   return rmsMean + 6 * standardDeviation;
 }
 
-function sendNotification() {
-  // call the api to send a email notification, possibly provide data on the sensor & machine
-  /* TODO add checker for notification frequency (or do it somewhere else) */
+function sendNotification(thresholdValue, rmsValue) {
+  /* TODO add checker for notification frequency (or do it somewhere else) 
+     Currently this is done using a notified flag which ensures the email is only sent once,
+     (for demo purposes)
+  */
+  if (!notified) {
+    // Hardcoded values for the sensor and machine ID were used, these will be changed
+    // The values used for the IDs are not reflective of realistic IDs within the system.
+    notifyUsers(thresholdValue, rmsValue, 'A1', 'B2');
+    notified = true;
+  }
 }
