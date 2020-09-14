@@ -1,5 +1,6 @@
+import { calendarFormat } from 'moment';
 import { firebaseApp } from '../firebase';
-import { Sensor, Unit } from '../generated/graphql';
+import { Machine, Sensor, Unit } from '../generated/graphql';
 import { addIdToDoc } from './resolvers/utils';
 
 const firestore = firebaseApp.firestore();
@@ -45,24 +46,31 @@ const getSampleChunks = async (machineId, sensorId): Promise<any> => {
   ).docs.map(addIdToDoc);
 };
 
-const createMachine = async (
-  machineId,
-  machineName
-): Promise<FirebaseFirestore.WriteResult> => {
-  return await firestore.doc(`machines/`).create({
-    id: machineId,
+const createMachine = async (machineName): Promise<Machine> => {
+  const machineDoc = await firestore
+  .collection('machines')
+  .add({
     name: machineName,
     healthStatus: 'Nominal',
-    sensors: [],
-  });
+    sensors: []
+  })
+
+  return addIdToDoc(await machineDoc.get()) as Machine
 };
 
 const updateMachine = async (
   machineId,
-  name,
-  healthStatus
-): Promise<any> => {
-  const machine = getMachine(machineId);
+  name: string | null | undefined,
+  healthStatus: string | null | undefined
+): Promise<Machine> => {
+  const machineDoc = await getMachine(machineId);
+  const toUpdate = Object.entries({ name, healthStatus }).filter(
+    ([_, v]) => v !== null && v !== undefined
+  );
+
+  await machineDoc.update(Object.fromEntries(toUpdate));
+
+  return addIdToDoc(await machineDoc.get()) as Machine;
 };
 
 const createSensor = async (machineId, sensorName): Promise<Sensor> => {
@@ -84,6 +92,23 @@ const createSensor = async (machineId, sensorName): Promise<Sensor> => {
   return addIdToDoc(await sensorDoc.get()) as Sensor;
 };
 
+const updateSensor = async (
+  machineId, 
+  sensorId, 
+  sensorName: string | null | undefined, 
+  healthStatus: string | null | undefined
+  ): Promise<Sensor> => {
+  
+    const sensorDoc = await getSensor(machineId, sensorId);
+    const toUpdate = Object.entries({ sensorName, healthStatus }).filter(
+      ([_, v]) => v !== null && v !== undefined
+    );
+
+    await sensorDoc.update(Object.fromEntries(toUpdate));
+
+    return addIdToDoc(await sensorDoc.get()) as Sensor;
+};
+
 export const MachineStore = {
   getMachine,
   getMachines,
@@ -93,4 +118,5 @@ export const MachineStore = {
   createMachine,
   updateMachine,
   createSensor,
+  updateSensor
 };

@@ -15,22 +15,43 @@ export const mutationResolvers: MutationResolvers = {
       args.input?.name,
       args.input?.healthStatus
     );
+    
+    const resp: any = {
+      code: 'machine_update/success',
+      success: true,
+      message: 'Machine Updated Successfully.',
+      machine: machine,
+    };
 
-    return null;
+    return resp;
   },
 
   updateSensor: async (parent, args) => {
-    return null;
+    const sensor = await MachineStore.updateSensor(
+      args.machineID,
+      args.id,
+      args.input?.name,
+      args.input?.healthStatus
+    )
+
+    const resp: any = {
+      code: 'sensor_update/success',
+      success: true,
+      message: 'Sensor Updated Successfully.',
+      sensor: sensor,
+    };
+    
+    return resp;
   },
 
   createMachine: async (parent, args) => {
-    await MachineStore.createMachine(args.id, args.name);
+    const newMachine = await MachineStore.createMachine(args.name);
 
     const resp: any = {
       code: 'machine_create/success',
       success: true,
       message: 'Machine Created Successfully.',
-      deck: await MachineStore.getMachine(args.id),
+      machine: newMachine,
     };
 
     return resp;

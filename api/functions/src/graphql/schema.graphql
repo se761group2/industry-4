@@ -83,12 +83,12 @@ input SensorInput {
 }
 
 input MachineUpdateInput {
-  name: String!
+  name: String
   healthStatus: Status
 }
 
 input SensorUpdateInput {
-  name: String!
+  name: String
   healthStatus: Status
 }
 
@@ -96,6 +96,6 @@ type Mutation {
   updateUser(id: ID!): MutationResponse
   updateMachine(id: ID! input: MachineUpdateInput): MutationResponse
   updateSensor(id: ID! machineID: ID! input: SensorUpdateInput): MutationResponse
-  createMachine(id: ID! name: String!): MutationResponse
+  createMachine(name: String!): MutationResponse
   createSensor(id: ID! input: SensorInput): SensorCreationResponse
 }

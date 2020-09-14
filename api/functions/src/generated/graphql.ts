@@ -30,7 +30,7 @@ export type MachineUpdatedResponse = MutationResponse & {
 };
 
 export type MachineUpdateInput = {
-  name: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
   healthStatus?: Maybe<Status>;
 };
 
@@ -63,7 +63,6 @@ export type MutationUpdateSensorArgs = {
 
 
 export type MutationCreateMachineArgs = {
-  id: Scalars['ID'];
   name: Scalars['String'];
 };
 
@@ -140,7 +139,7 @@ export type SensorInput = {
 };
 
 export type SensorUpdateInput = {
-  name: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
   healthStatus?: Maybe<Status>;
 };
 
@@ -318,7 +317,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   updateUser?: Resolver<Maybe<ResolversTypes['MutationResponse']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'id'>>;
   updateMachine?: Resolver<Maybe<ResolversTypes['MutationResponse']>, ParentType, ContextType, RequireFields<MutationUpdateMachineArgs, 'id'>>;
   updateSensor?: Resolver<Maybe<ResolversTypes['MutationResponse']>, ParentType, ContextType, RequireFields<MutationUpdateSensorArgs, 'id' | 'machineID'>>;
-  createMachine?: Resolver<Maybe<ResolversTypes['MutationResponse']>, ParentType, ContextType, RequireFields<MutationCreateMachineArgs, 'id' | 'name'>>;
+  createMachine?: Resolver<Maybe<ResolversTypes['MutationResponse']>, ParentType, ContextType, RequireFields<MutationCreateMachineArgs, 'name'>>;
   createSensor?: Resolver<Maybe<ResolversTypes['SensorCreationResponse']>, ParentType, ContextType, RequireFields<MutationCreateSensorArgs, 'id'>>;
 }>;
 
