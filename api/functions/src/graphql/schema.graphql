@@ -1,10 +1,55 @@
+enum Unit {
+  MPS2
+  MPS2_RMS
+}
+
+enum Status {
+  Nominal
+  Moderate
+  Critical
+}
+
+scalar Date
+
+type Machine {
+  id: ID!
+  name: String!
+  healthStatus: Status
+  sensors: [Sensor!]!
+}
+
+type Sensor {
+  id: ID!
+  machineId: ID!
+  name: String!
+  healthStatus: Status
+  threshold: Float!
+  unit: String!
+  sampleChunks: [SampleChunk!]!
+}
+
+type SampleChunk {
+  id: ID!
+  samples: [Sample!]!
+}
+
+type Sample {
+  timestamp: Date!
+  value: Float!
+}
+
 type User {
   id: ID!
+  username: String!
   email: String!
+  phoneNumber: String!
 }
 
 type Query {
   user(id: ID!): User
+  machines: [Machine!]!
+  machine(id: ID!): Machine
+  sensor(machineId: ID! id: ID!): Sensor
 }
 
 interface MutationResponse {
@@ -19,6 +64,55 @@ type UserUpdatedResponse implements MutationResponse {
   message: String!
 }
 
+type MachineUpdatedResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  machine: Machine
+}
+
+type SensorCreationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  sensor: Sensor
+}
+
+type MachineCreationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  machine: Machine
+}
+
+type SensorUpdatedResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  sensor: Sensor
+}
+
+input SensorInput {
+  machineID: ID! 
+  name: String!
+}
+
+input MachineUpdateInput {
+  name: String
+  healthStatus: Status
+}
+
+input SensorUpdateInput {
+  name: String
+  healthStatus: Status
+  threshold: Float
+  unit: String
+}
+
 type Mutation {
   updateUser(id: ID!): MutationResponse
+  updateMachine(id: ID! input: MachineUpdateInput): MachineUpdatedResponse
+  updateSensor(id: ID! machineID: ID! input: SensorUpdateInput): SensorUpdatedResponse
+  createMachine(name: String!): MachineCreationResponse
+  createSensor(input: SensorInput): SensorCreationResponse
 }
