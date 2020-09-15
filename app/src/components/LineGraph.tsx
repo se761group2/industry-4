@@ -1,5 +1,4 @@
 import React from "react";
-import "./ExploreContainer.css";
 import { CartesianGrid, DotProps, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from "recharts";
 
 type CustomDotProps = DotProps & { value?: number; redThreshold: number; yellowThreshold: number };
@@ -10,7 +9,7 @@ const DotType: React.FC<CustomDotProps> = (props: CustomDotProps) => {
     if (value && value > redThreshold) {
         return (
             <svg x={(cx || 0) - 10} y={(cy || 0) - 14} height="20" width="20">
-                <polygon points="10,0 20,20 0,20" style={{ fill: "red" }} />
+                <polygon points="10,0 20,20 0,20" fill="red" />
                 <text fill="#ffffff" fontSize="12" fontFamily="Verdana" x="8" y="17">
                     !
                 </text>
@@ -21,7 +20,7 @@ const DotType: React.FC<CustomDotProps> = (props: CustomDotProps) => {
     if (value && value > yellowThreshold) {
         return (
             <svg x={(cx || 0) - 10} y={(cy || 0) - 14} height="20" width="20">
-                <polygon points="10,0 20,20 0,20" style={{ fill: "orange" }} />
+                <polygon points="10,0 20,20 0,20" fill="orange" />
                 <text fill="#ffffff" fontSize="12" fontFamily="Verdana" x="8" y="17">
                     !
                 </text>
@@ -65,14 +64,13 @@ const LineGraph: React.FC<LineGraphProps> = ({ title, data, redThreshold, yellow
 
     return (
         <div className="flex justify-center text-black">
-            <div className="bg-white rounded-lg items-center pt-4 pb-4" style={{ width: "90%", maxWidth: "600px" }}>
+            <div className="bg-white rounded-lg items-center pt-4 pb-4 responsive-width m-6">
                 <h1 className="text-xl text-center leading-normal">{title}</h1>
                 <LineChart
                     width={dimensions.width > 660 ? 600 : dimensions.width - 58}
                     height={300}
                     data={data}
                     margin={{ top: 20, right: 30, bottom: 5, left: 0 }}
-                    style={{ maxWidth: "90%" }}
                 >
                     <Line
                         type="monotone"
