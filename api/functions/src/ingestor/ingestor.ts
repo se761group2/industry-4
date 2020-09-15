@@ -24,7 +24,7 @@ const maxFiles = 1000;
 let notified = false;
 // TODO remove hardcode machineId and sensorId
 const machineId = 'AD1AECvCTuMi29JF0WTC';
-const sensorId = 'HGtyAU9JL0X9SNchBvgA';
+const sensorId = 'cUq2QVLOQCqKil6eq0El';
 
 findDataFileNamesInDir(currentDir + '\\..\\..\\inputData\\', fileNames);
 processAllFiles();
@@ -57,7 +57,10 @@ function findDataFileNamesInDir(absoluteDir, fileNamesArray) {
   console.log(i + ' files found');
 }
 
-async function processInputDataFile(fileName, processedFileCount) {
+async function processInputDataFile(
+  fileName: string,
+  processedFileCount: number
+) {
   const results: any[] = [];
   const rawDataFirstColumn: number[] = [];
   let singleValueFirstColumn = '';
@@ -68,7 +71,7 @@ async function processInputDataFile(fileName, processedFileCount) {
     fs.createReadStream(fileName)
       .pipe(csvParser({ separator: '\t', headers: false }))
       .on('data', (row) => results.push(row))
-      .on('end', () => {
+      .on('end', async () => {
         for (let i = 0; i < results.length; i++) {
           if (i < maxLinesToProcessPerFile) {
             // first 1000 values used to speed things up  TODO remove this limitation
@@ -84,6 +87,12 @@ async function processInputDataFile(fileName, processedFileCount) {
         rmsValues.push(rmsValueFromFile);
         console.log('RMS value for this file: ' + rmsValueFromFile);
         thresholdDetection(rmsValueFromFile, processedFileCount);
+        await storeSingleRMSValue(
+          rmsValueFromFile,
+          fileName.substr(fileName.lastIndexOf('/') + 1, fileName.length - 1),
+          machineId,
+          sensorId
+        );
 
         resolve();
       });
