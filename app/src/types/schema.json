@@ -6,6 +6,18 @@
                 "name": "MutationResponse",
                 "possibleTypes": [
                     {
+                        "name": "MachineUpdatedResponse"
+                    },
+                    {
+                        "name": "SensorUpdatedResponse"
+                    },
+                    {
+                        "name": "MachineCreationResponse"
+                    },
+                    {
+                        "name": "SensorCreationResponse"
+                    },
+                    {
                         "name": "UserUpdatedResponse"
                     }
                 ]
