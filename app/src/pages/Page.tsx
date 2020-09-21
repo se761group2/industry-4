@@ -11,7 +11,6 @@ import {
 } from "@ionic/react";
 import React from "react";
 import { useParams } from "react-router";
-import ExploreContainer from "../components/ExploreContainer";
 import HealthContainer from "../components/HealthContainer";
 import "./Page.css";
 import { from, useQuery } from "@apollo/client";
@@ -52,37 +51,19 @@ const Page: React.FC = () => {
                             <IonIcon slot="icon-only" icon={personCircle} />
                         </IonButton>
                     </IonButtons>
-                    <IonTitle
-                        style={{
-                            textAlign: "center",
-                            fontFamily: "Share Tech Mono",
-                            fontSize: "24px",
-                        }}
-                    >
-                        Industry 4.0
-                    </IonTitle>
+                    <IonTitle className="text-center text-2xl font-heading">Industry 4.0</IonTitle>
                 </IonToolbar>
             </IonHeader>
 
             <IonContent color="new">
-                <div className="statusBar" style={{ height: "65px" }}>
+                <div className="statusBar h-16">
                     <HealthContainer name={"Sensor name"} value={15} threshold={20} />
                 </div>
                 <div className="graph">
                     <LineGraph title="Sensor Values" redThreshold={600} yellowThreshold={400} data={data} />
                 </div>
-                <div className="download text-center" style={{ height: "65px" }}>
-                    <IonButton
-                        color="light"
-                        style={{
-                            textAlign: "center",
-                            textTransform: "none",
-                            fontSize: "18px",
-                            margin: "25px",
-                            width: "90%",
-                            maxWidth: "600px",
-                        }}
-                    >
+                <div className="download text-center">
+                    <IonButton shape="round" color="light" className="responsive-width text-lg normal-case">
                         Download
                     </IonButton>
                 </div>

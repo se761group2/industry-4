@@ -1,5 +1,4 @@
 import React from "react";
-import "./HealthContainer.css";
 
 interface ContainerProps {
     name: string;
@@ -10,31 +9,17 @@ interface ContainerProps {
 const HealthContainer: React.FC<ContainerProps> = ({ name, value, threshold }) => {
     let bg: string;
     if (value < threshold * 0.95) {
-        // green
-        bg = "#91bd3a";
+        bg = "green";
     } else if (value <= threshold) {
-        // orange
-        bg = "#f5a31a";
+        bg = "yellow";
     } else {
-        // red
-        bg = "#d32626";
+        bg = "red";
     }
     return (
-        <div
-            className="rounded-lg shadow-xl font-bold text-lg"
-            style={{ background: bg, maxWidth: "600px", width: "90%", height: "40px", margin: "25px auto" }}
-        >
-            <div
-                className="truncate text-left text-black float-left"
-                style={{ marginLeft: "15px", marginTop: "5px", marginBottom: "5px" }}
-            >
-                {name}
-            </div>
-            <div
-                className="text-right text-black float-right"
-                style={{ marginRight: "15px", marginTop: "5px", marginBottom: "5px" }}
-            >
-                {value}
+        <div className="flex justify-center text-black">
+            <div className={`rounded-lg shadow-xl font-bold text-lg responsive-width m-6 bg-${bg}-550`}>
+                <div className="truncate text-left text-black float-left m-2 ml-4">{name}</div>
+                <div className="text-right text-black float-right m-2 mr-4">{value}</div>
             </div>
         </div>
     );
