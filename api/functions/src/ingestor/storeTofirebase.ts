@@ -1,22 +1,16 @@
 import admin from 'firebase-admin';
+import Timestamp = admin.firestore.Timestamp;
+import { samplesPerChunk } from './ingestor';
 
 export const firebaseApp = admin.initializeApp({
   credential: admin.credential.applicationDefault(),
   databaseURL: 'https://industry4-uoa.firebaseio.com',
 });
 
-export const Timestamp = admin.firestore.Timestamp;
-
-// var config = {
-//   authDomain: "",
-//   databaseURL: "",
-//   projectId: "",
-//   storageBucket: "firestore-demos.appspot.com"
-// }
-
-const fireStoreInstantiation = firebaseApp.firestore();
+const firestore = firebaseApp.firestore();
 
 interface SampleChunk {
+  chunkNumber: number;
   samples: { timestamp: FirebaseFirestore.Timestamp; value: number }[];
 }
 
@@ -26,16 +20,70 @@ export async function storeSingleRMSValue(
   machineId: string,
   sensorId: string
 ) {
-  const chunks = await fireStoreInstantiation
+  const chunkQuerySnap = await firestore
     .collection(`machines/${machineId}/sensors/${sensorId}/sampleChunks`)
-    .listDocuments();
-  const lastChunk = chunks[chunks.length - 1];
-  const retrievedChunk = await lastChunk.get();
-  const lastChunkId = retrievedChunk.id;
+    .orderBy('chunkNumber')
+    .limitToLast(1)
+    .get();
 
-  const chunk = retrievedChunk.data() as SampleChunk;
+  let lastChunk: SampleChunk | null = null;
+  let lastChunkId: string;
+  if (chunkQuerySnap.size != 0) {
+    const chunkDoc = chunkQuerySnap.docs[0];
+    lastChunk = chunkDoc.data() as SampleChunk;
+    lastChunkId = chunkDoc.id;
+  }
 
-  // Add data to a new chunk (page)
+  const timestamp = timestampFromFilename(timestampStr);
+
+  // If there's no last chunk, we need to create the first one
+  // likewise if the last chunk is full, we need to add another
+  if (lastChunk == null || lastChunk.samples.length > samplesPerChunk) {
+    const chunk: SampleChunk = {
+      chunkNumber: 0,
+      samples: [
+        {
+          timestamp,
+          value: rmsValue,
+        },
+      ],
+    };
+
+    if (lastChunk != null) {
+      chunk.chunkNumber = lastChunk!.chunkNumber + 1;
+    }
+
+    await firestore
+      .collection(`machines/${machineId}/sensors/${sensorId}/sampleChunks`)
+      .add(chunk)
+      .then(() => {
+        console.log('Document successfully written!');
+      })
+      .catch((error) => {
+        console.error('Error writing document: ', error);
+      });
+
+    // otherwise, we can add a value onto the last chunk and push it
+  } else {
+    lastChunk.samples.push({
+      timestamp,
+      value: rmsValue,
+    });
+
+    await firestore
+      .collection(`machines/${machineId}/sensors/${sensorId}/sampleChunks`)
+      .doc(lastChunkId!)
+      .set(lastChunk)
+      .then(() => {
+        console.log('Document successfully written!');
+      })
+      .catch((error) => {
+        console.error('Error writing document: ', error);
+      });
+  }
+}
+
+function timestampFromFilename(timestampStr: string): Timestamp {
   const splitDateString: string[] = timestampStr.split('.');
 
   const date: Date = new Date();
@@ -46,22 +94,5 @@ export async function storeSingleRMSValue(
   date.setMinutes(Number(splitDateString[4]));
   date.setSeconds(39);
 
-  const timestamp = Timestamp.fromDate(date);
-  console.log('firebase timestamp successfully created');
-
-  chunk.samples.push({
-    timestamp,
-    value: rmsValue,
-  });
-
-  await fireStoreInstantiation
-    .collection(`machines/${machineId}/sensors/${sensorId}/sampleChunks`)
-    .doc(lastChunkId)
-    .set(chunk)
-    .then(function () {
-      console.log('Document successfully written!');
-    })
-    .catch(function (error) {
-      console.error('Error writing document: ', error);
-    });
+  return Timestamp.fromDate(date);
 }
