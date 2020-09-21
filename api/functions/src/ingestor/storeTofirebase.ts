@@ -1,6 +1,5 @@
 import admin from 'firebase-admin';
 import Timestamp = admin.firestore.Timestamp;
-import { samplesPerChunk } from './ingestor';
 
 export const firebaseApp = admin.initializeApp({
   credential: admin.credential.applicationDefault(),
@@ -13,6 +12,8 @@ interface SampleChunk {
   chunkNumber: number;
   samples: { timestamp: FirebaseFirestore.Timestamp; value: number }[];
 }
+
+const samplesPerChunk = 1008; // (7 * 24 * 6) 10-minute periods in a week (usually)
 
 export async function storeSingleRMSValue(
   rmsValue: number,
@@ -38,7 +39,7 @@ export async function storeSingleRMSValue(
 
   // If there's no last chunk, we need to create the first one
   // likewise if the last chunk is full, we need to add another
-  if (lastChunk == null || lastChunk.samples.length > samplesPerChunk) {
+  if (lastChunk === null || lastChunk.samples.length > samplesPerChunk) {
     const chunk: SampleChunk = {
       chunkNumber: 0,
       samples: [
@@ -49,7 +50,7 @@ export async function storeSingleRMSValue(
       ],
     };
 
-    if (lastChunk != null) {
+    if (lastChunk !== null) {
       chunk.chunkNumber = lastChunk!.chunkNumber + 1;
     }
 
@@ -93,6 +94,8 @@ function timestampFromFilename(timestampStr: string): Timestamp {
   date.setHours(Number(splitDateString[3]));
   date.setMinutes(Number(splitDateString[4]));
   date.setSeconds(39);
+
+  console.log('timestampStr: ' + timestampStr);
 
   return Timestamp.fromDate(date);
 }

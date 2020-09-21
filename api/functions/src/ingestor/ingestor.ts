@@ -1,27 +1,31 @@
 // This is the ingestor for the project.
 // To run, navigate to the api\functions\src\ingestor directory in console,
 // and enter 'ts-node ingestor.ts'.
-// Authors: Alex Monk
+// Authors: Alex Monk, Marc
 
 import csvParser from 'csv-parser';
 import fs from 'fs';
+import os from 'os';
 import { storeSingleRMSValue } from './storeTofirebase';
-import { thresholdDetection } from './thresholdDetection';
+import { doThresholdDetection } from './thresholdDetection';
 
-const currentDir = __dirname;
-
-// TODO remove this limitation gracefully
-const maxLinesToProcessPerFile = 30000;
-// TODO remove this limitation gracefully (up to X files are processsed)
-const maxFiles = 1000;
-export const samplesPerChunk = 1008; // (7 * 24 * 6) 10-minute periods in a week (usually)
-
-// TODO remove hardcode machineId and sensorId
-const machineId = 'AD1AECvCTuMi29JF0WTC';
+const maxLinesToProcessPerFile = 30000; // TODO remove this limitation gracefully
+const maxFiles = 1000; // TODO remove this limitation gracefully (up to X files are processsed)
+const machineId = 'AD1AECvCTuMi29JF0WTC'; // TODO remove hardcode machineId and sensorId
 const sensorId = 'cUq2QVLOQCqKil6eq0El';
 
-const fileNames = findDataFileNamesInDir(currentDir + '\\..\\..\\inputData\\');
-processAllFiles(fileNames);
+const currentDir = __dirname;
+let directory = '';
+if (os.platform() === 'win32') {
+  directory = currentDir + '\\..\\..\\inputData\\';
+} else {
+  directory = currentDir + '/../../inputData/';
+}
+
+const filePaths = findDataFileNamesInDir(directory);
+processAllFiles(filePaths);
+
+// script run-through ends here
 
 function findDataFileNamesInDir(absoluteDir: string): string[] {
   const fileNamesArray: string[] = [];
@@ -36,10 +40,10 @@ function findDataFileNamesInDir(absoluteDir: string): string[] {
   return fileNamesArray;
 }
 
-async function processAllFiles(fileNames: string[]) {
-  for (let i = 0; i < fileNames.length; i++) {
+async function processAllFiles(filePaths: string[]) {
+  for (let i = 0; i < filePaths.length; i++) {
     if (i < maxFiles) {
-      await processInputDataFile(fileNames[i], i);
+      await processInputDataFile(filePaths[i]);
     } else {
       console.log(
         'The maximum number of ' +
@@ -53,49 +57,46 @@ async function processAllFiles(fileNames: string[]) {
   console.log('All files read. RMS calculations started...');
 }
 
-async function processInputDataFile(
-  fileName: string,
-  processedFileCount: number
-) {
+async function processInputDataFile(filePath: string) {
+  const fileName = filePath.substr(
+    filePath.lastIndexOf('/') + 1,
+    filePath.length - 1
+  );
+
+  const rawDataFirstColumn = await readInputDataFile(filePath);
+  const rmsValueFromFile = calculateRMS(rawDataFirstColumn);
+  console.log('RMS value for ' + fileName + ': ' + rmsValueFromFile);
+  doThresholdDetection(rmsValueFromFile);
+
+  await storeSingleRMSValue(rmsValueFromFile, fileName, machineId, sensorId);
+}
+
+async function readInputDataFile(filePath: string): Promise<number[]> {
   const results: any[] = [];
   const rawDataFirstColumn: number[] = [];
-  const rmsValues: number[] = [];
 
   let singleValueFirstColumn = '';
   let firstRowItemAsNum = 0;
-  let rmsValueFromFile = 0;
 
-  const resultPromise = new Promise<void>((resolve, reject) => {
-    fs.createReadStream(fileName)
+  const resultPromise = new Promise<number[]>((resolve) => {
+    fs.createReadStream(filePath)
       .pipe(csvParser({ separator: '\t', headers: false }))
       .on('data', (row) => results.push(row))
       .on('end', async () => {
         for (let i = 0; i < results.length; i++) {
           if (i < maxLinesToProcessPerFile) {
             // first 1000 values used to speed things up  TODO remove this limitation
-            singleValueFirstColumn = <string>results[i]['0'];
+            singleValueFirstColumn = results[i]['0'] as string;
             // let firstRowItem = singleRow.split('\t')[0];
-            firstRowItemAsNum = +singleValueFirstColumn;
+            firstRowItemAsNum = Number(singleValueFirstColumn);
             rawDataFirstColumn.push(firstRowItemAsNum);
           } else {
             break;
           }
         }
-        rmsValueFromFile = calculateRMS(rawDataFirstColumn);
-        rmsValues.push(rmsValueFromFile);
-        console.log('RMS value for this file: ' + rmsValueFromFile);
-        thresholdDetection(rmsValueFromFile, rmsValues, processedFileCount);
-        await storeSingleRMSValue(
-          rmsValueFromFile,
-          fileName.substr(fileName.lastIndexOf('/') + 1, fileName.length - 1),
-          machineId,
-          sensorId
-        );
 
-        resolve();
+        resolve(rawDataFirstColumn);
       });
-
-    storeSingleRMSValue(rmsValueFromFile, fileName, machineId, sensorId);
   });
 
   return resultPromise;
