@@ -13,7 +13,7 @@ interface SampleChunk {
   samples: { timestamp: FirebaseFirestore.Timestamp; value: number }[];
 }
 
-const samplesPerChunk = 1008; // (7 * 24 * 6) 10-minute periods in a week (usually)
+const SAMPLES_PER_CHUNK = 1008; // (7 * 24 * 6) 10-minute periods in a week (usually)
 
 export async function storeSingleRMSValue(
   rmsValue: number,
@@ -39,7 +39,7 @@ export async function storeSingleRMSValue(
 
   // If there's no last chunk, we need to create the first one
   // likewise if the last chunk is full, we need to add another
-  if (lastChunk === null || lastChunk.samples.length > samplesPerChunk) {
+  if (lastChunk === null || lastChunk.samples.length > SAMPLES_PER_CHUNK) {
     const chunk: SampleChunk = {
       chunkNumber: 0,
       samples: [

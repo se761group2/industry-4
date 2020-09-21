@@ -9,8 +9,8 @@ import os from 'os';
 import { storeSingleRMSValue } from './storeTofirebase';
 import { doThresholdDetection } from './thresholdDetection';
 
-const maxLinesToProcessPerFile = 30000; // TODO remove this limitation gracefully
-const maxFiles = 1000; // TODO remove this limitation gracefully (up to X files are processsed)
+const MAX_LINES_TO_PROCESS_PER_FILE = 30000; // TODO remove this limitation gracefully
+const MAX_FILES = 1000; // TODO remove this limitation gracefully (up to X files are processsed)
 const machineId = 'AD1AECvCTuMi29JF0WTC'; // TODO remove hardcode machineId and sensorId
 const sensorId = 'cUq2QVLOQCqKil6eq0El';
 
@@ -42,12 +42,12 @@ function findDataFileNamesInDir(absoluteDir: string): string[] {
 
 async function processAllFiles(filePaths: string[]) {
   for (let i = 0; i < filePaths.length; i++) {
-    if (i < maxFiles) {
+    if (i < MAX_FILES) {
       await processInputDataFile(filePaths[i]);
     } else {
       console.log(
         'The maximum number of ' +
-          maxFiles +
+          MAX_FILES +
           ' files have been read. All async RMS calcs started...'
       );
       break;
@@ -84,7 +84,7 @@ async function readInputDataFile(filePath: string): Promise<number[]> {
       .on('data', (row) => results.push(row))
       .on('end', async () => {
         for (let i = 0; i < results.length; i++) {
-          if (i < maxLinesToProcessPerFile) {
+          if (i < MAX_LINES_TO_PROCESS_PER_FILE) {
             // first 1000 values used to speed things up  TODO remove this limitation
             singleValueFirstColumn = results[i]['0'] as string;
             // let firstRowItem = singleRow.split('\t')[0];
