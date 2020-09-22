@@ -13,6 +13,11 @@ export enum Status {
   Nominal = "Nominal",
 }
 
+export interface MachineUpdateInput {
+  name?: string | null;
+  healthStatus?: Status | null;
+}
+
 //==============================================================
 // END Enums and Input Objects
 //==============================================================

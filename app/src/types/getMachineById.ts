@@ -25,7 +25,7 @@ export interface getMachineById_machine_sensors {
   name: string;
   healthStatus: Status | null;
   unit: string;
-  threshold: number;
+  threshold: number | null;
   sampleChunks: getMachineById_machine_sensors_sampleChunks[];
 }
 

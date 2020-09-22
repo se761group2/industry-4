@@ -61,7 +61,7 @@ export type Sensor = {
     machineId: Scalars["ID"];
     name: Scalars["String"];
     healthStatus?: Maybe<Status>;
-    threshold: Scalars["Float"];
+    threshold?: Maybe<Scalars["Float"]>;
     unit: Scalars["String"];
     sampleChunks: Array<SampleChunk>;
 };

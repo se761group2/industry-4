@@ -25,7 +25,7 @@ export interface getSensorById_sensor {
   name: string;
   healthStatus: Status | null;
   unit: string;
-  threshold: number;
+  threshold: number | null;
   sampleChunks: getSensorById_sensor_sampleChunks[];
 }
 
