@@ -16,7 +16,7 @@ import "./Page.css";
 import { from, useQuery } from "@apollo/client";
 import { GetUserById } from "../types/GetUserById";
 import { GET_USER_BY_ID } from "../common/graphql/queries/users";
-import { ellipsisHorizontal, ellipsisVertical, personCircle, search } from "ionicons/icons";
+import Heading from "../components/Heading";
 import LineGraph from "../components/LineGraph";
 
 const Page: React.FC = () => {
@@ -44,16 +44,7 @@ const Page: React.FC = () => {
     return (
         <IonPage>
             <link href="https://fonts.googleapis.com/css?family=Share Tech Mono" rel="stylesheet"></link>
-            <IonHeader>
-                <IonToolbar color="dark">
-                    <IonButtons slot="secondary">
-                        <IonButton>
-                            <IonIcon slot="icon-only" icon={personCircle} />
-                        </IonButton>
-                    </IonButtons>
-                    <IonTitle className="text-center text-2xl font-heading">Industry 4.0</IonTitle>
-                </IonToolbar>
-            </IonHeader>
+            <Heading title="Industry 4.0" />
 
             <IonContent color="new">
                 <div className="statusBar h-16">
