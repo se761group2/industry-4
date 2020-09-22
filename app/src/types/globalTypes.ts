@@ -18,6 +18,13 @@ export interface MachineUpdateInput {
   healthStatus?: Status | null;
 }
 
+export interface SensorUpdateInput {
+  name?: string | null;
+  healthStatus?: Status | null;
+  threshold?: number | null;
+  unit?: string | null;
+}
+
 //==============================================================
 // END Enums and Input Objects
 //==============================================================

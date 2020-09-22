@@ -14,7 +14,7 @@ export const CREATE_MACHINE = gql`
 
 export const UPDATE_MACHINE = gql`
     mutation updateMachine($id: ID!, $input: MachineUpdateInput) {
-        updateMachine(input: $input) {
+        updateMachine(id: $id, input: $input) {
             machine {
                 id
                 name
