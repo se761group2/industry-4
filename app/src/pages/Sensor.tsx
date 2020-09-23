@@ -19,8 +19,8 @@ import { GET_USER_BY_ID } from "../common/graphql/queries/users";
 import Heading from "../components/Heading";
 import LineGraph from "../components/LineGraph";
 
-const Page: React.FC = () => {
-    const { name } = useParams<{ name: string }>();
+const Sensor: React.FC = () => {
+    const { id } = useParams<{ id: string }>();
     const dummyUserQuery = useQuery<GetUserById>(GET_USER_BY_ID, {
         variables: { id: "dummy" },
     });
@@ -44,10 +44,10 @@ const Page: React.FC = () => {
     return (
         <IonPage>
             <link href="https://fonts.googleapis.com/css?family=Share Tech Mono" rel="stylesheet"></link>
-            <Heading title="Industry 4.0" />
+            <Heading title={id} />
 
             <IonContent color="new">
-                <div className="statusBar h-16">
+                <div className=" h-16">
                     <HealthContainer name={"Sensor name"} value={15} threshold={20} />
                 </div>
                 <div className="graph">
@@ -63,4 +63,4 @@ const Page: React.FC = () => {
     );
 };
 
-export default Page;
+export default Sensor;
