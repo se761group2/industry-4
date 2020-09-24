@@ -10,7 +10,9 @@
 export interface GetUserById_user {
   __typename: "User";
   id: string;
+  username: string;
   email: string;
+  phoneNumber: string;
 }
 
 export interface GetUserById {

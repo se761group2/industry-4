@@ -128,7 +128,7 @@ export type Sensor = {
   machineId: Scalars['ID'];
   name: Scalars['String'];
   healthStatus?: Maybe<Status>;
-  threshold: Scalars['Float'];
+  threshold?: Maybe<Scalars['Float']>;
   unit: Scalars['String'];
   sampleChunks: Array<SampleChunk>;
 };
@@ -383,7 +383,7 @@ export type SensorResolvers<ContextType = GraphQLContext, ParentType extends Res
   machineId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   healthStatus?: Resolver<Maybe<ResolversTypes['Status']>, ParentType, ContextType>;
-  threshold?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  threshold?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   unit?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   sampleChunks?: Resolver<Array<ResolversTypes['SampleChunk']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;

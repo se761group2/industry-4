@@ -23,7 +23,7 @@ type Sensor {
   machineId: ID!
   name: String!
   healthStatus: Status
-  threshold: Float!
+  threshold: Float
   unit: String!
   sampleChunks: [SampleChunk!]!
 }
