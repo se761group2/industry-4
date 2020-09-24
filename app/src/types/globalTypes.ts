@@ -18,6 +18,11 @@ export interface MachineUpdateInput {
   healthStatus?: Status | null;
 }
 
+export interface SensorInput {
+  machineID: string;
+  name: string;
+}
+
 export interface SensorUpdateInput {
   name?: string | null;
   healthStatus?: Status | null;
