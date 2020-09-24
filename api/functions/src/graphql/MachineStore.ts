@@ -60,7 +60,6 @@ const updateMachine = async (
   name: string | null | undefined,
   healthStatus: string | null | undefined
 ): Promise<Machine> => {
-
   const machineDoc = await firestore.doc(`machines/${machineId}`);
 
   // Filter out any null or undefined parameters, so that they are not persisted
@@ -74,7 +73,6 @@ const updateMachine = async (
 };
 
 const createSensor = async (machineId, sensorName): Promise<Sensor> => {
-
   const sensorDoc = await firestore
     .collection('machines')
     .doc(machineId)
@@ -86,7 +84,8 @@ const createSensor = async (machineId, sensorName): Promise<Sensor> => {
       unit: Unit.Mps2Rms,
     });
 
-  await sensorDoc.collection('/sampleChunks').doc('1').create({
+  await sensorDoc.collection('/sampleChunks').add({
+    chunkNumber: 0,
     samples: [],
   });
 

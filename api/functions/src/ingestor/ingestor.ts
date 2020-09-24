@@ -1,93 +1,119 @@
 // This is the ingestor for the project.
 // To run, navigate to the api\functions\src\ingestor directory in console,
 // and enter 'ts-node ingestor.ts'.
-// Authors: Alex Monk
+// Authors: Alex Monk, Marc
 
 import csvParser from 'csv-parser';
 import fs from 'fs';
-import { notifyUsers } from '../sendgrid/sendgrid';
+import os from 'os';
+import { storeSingleRMSValue } from './storeTofirebase';
+import { doThresholdDetection } from './thresholdDetection';
 
-csvParser();
-// csvParser(['sensor value']); // this data label doesn't work for some reason
+const MAX_LINES_TO_PROCESS_PER_FILE = 30000; // TODO remove this limitation gracefully
+const MAX_FILES = 1000; // TODO remove this limitation gracefully (up to X files are processsed)
+const machineId = 'AD1AECvCTuMi29JF0WTC'; // TODO remove hardcode machineId and sensorId
+const sensorId = 'cUq2QVLOQCqKil6eq0El';
 
 const currentDir = __dirname;
-const fileNames: string[] = [];
-let thresholdValue; //hardcoded rn
-const rmsValues: number[] = [];
-
-// TODO remove this limitation gracefully
-const maxLinesToProcessPerFile = 30000;
-// TODO remove this limitation gracefully (up to X files are processsed)
-const maxFiles = 1000;
-
-let notified = false;
-
-findDataFileNamesInDir(currentDir + '\\..\\..\\inputData\\', fileNames);
-processAllFiles();
-
-async function processAllFiles() {
-  for (let i = 0; i < fileNames.length; i++) {
-    if (i < maxFiles) {
-      await processInputDataFile(fileNames[i], i); // THIS SHOULD BE ASYNC
-    } else {
-      console.log(
-        'The maximum number of ' +
-          maxFiles +
-          ' files have been read. All async RMS calcs started...'
-      );
-      break;
-    }
-  }
-  // TODO remove this hardcoded check once heap overflow is fixed
-  // processInputDataFile(fileNames[650], 650);
-
-  console.log('All files read. RMS calculations started...');
+let directory = '';
+const isWindows = os.platform() === 'win32';
+if (isWindows) {
+  directory = currentDir + '\\..\\..\\inputData\\';
+} else {
+  directory = currentDir + '/../../inputData/';
 }
 
-function findDataFileNamesInDir(absoluteDir, fileNamesArray) {
+const filePaths = findDataFileNamesInDir(directory);
+processAllFiles(filePaths);
+
+// script run-through ends here
+
+function findDataFileNamesInDir(absoluteDir: string): string[] {
+  const fileNamesArray: string[] = [];
+
   let i = 0;
   fs.readdirSync(absoluteDir).forEach((file) => {
     i += 1;
     fileNamesArray.push(absoluteDir + file);
   });
   console.log(i + ' files found');
+
+  return fileNamesArray;
 }
 
-async function processInputDataFile(fileName, processedFileCount) {
+async function processAllFiles(filePaths: string[]) {
+  for (let i = 0; i < filePaths.length; i++) {
+    if (i < MAX_FILES) {
+      await processInputDataFile(filePaths[i]);
+    } else {
+      console.log(
+        'The maximum number of ' +
+          MAX_FILES +
+          ' files have been read. All async RMS calcs started...'
+      );
+      break;
+    }
+  }
+
+  console.log('All files read. RMS calculations started...');
+}
+
+async function processInputDataFile(filePath: string) {
+  let fileName = '';
+
+  if (isWindows) {
+    fileName = filePath.substr(
+      filePath.lastIndexOf('\\') + 1,
+      filePath.length - 1
+    );
+  } else {
+    fileName = filePath.substr(
+      filePath.lastIndexOf('/') + 1,
+      filePath.length - 1
+    );
+  }
+
+  const rawDataFirstColumn = await readInputDataFile(filePath);
+  const rmsValueFromFile = calculateRMS(rawDataFirstColumn);
+  console.log('RMS value for ' + fileName + ': ' + rmsValueFromFile);
+  doThresholdDetection(rmsValueFromFile);
+
+  await storeSingleRMSValue(rmsValueFromFile, fileName, machineId, sensorId);
+}
+
+async function readInputDataFile(filePath: string): Promise<number[]> {
   const results: any[] = [];
   const rawDataFirstColumn: number[] = [];
+
   let singleValueFirstColumn = '';
   let firstRowItemAsNum = 0;
-  let rmsValueFromFile = 0;
 
-  const resultPromise = new Promise<void>((resolve, reject) => {
-    fs.createReadStream(fileName)
+  const resultPromise = new Promise<number[]>((resolve) => {
+    fs.createReadStream(filePath)
       .pipe(csvParser({ separator: '\t', headers: false }))
       .on('data', (row) => results.push(row))
-      .on('end', () => {
+      .on('end', async () => {
         for (let i = 0; i < results.length; i++) {
-          if (i < maxLinesToProcessPerFile) {
+          if (i < MAX_LINES_TO_PROCESS_PER_FILE) {
             // first 1000 values used to speed things up  TODO remove this limitation
-            singleValueFirstColumn = <string>results[i]['0'];
+            singleValueFirstColumn = results[i]['0'] as string;
             // let firstRowItem = singleRow.split('\t')[0];
-            firstRowItemAsNum = +singleValueFirstColumn;
+            firstRowItemAsNum = Number(singleValueFirstColumn);
             rawDataFirstColumn.push(firstRowItemAsNum);
           } else {
             break;
           }
         }
-        rmsValueFromFile = calculateRMS(rawDataFirstColumn);
-        rmsValues.push(rmsValueFromFile);
-        console.log('RMS value for this file: ' + rmsValueFromFile);
-        thresholdDetection(rmsValueFromFile, processedFileCount);
-        resolve();
+
+        resolve(rawDataFirstColumn);
       });
   });
 
   return resultPromise;
 }
+
 /* calculate rms value. see 4.1.2 of the full research doc (pg 9) for info on how this is calculated*/
-function calculateRMS(values) {
+function calculateRMS(values: number[]): number {
   let currentTotal = 0;
 
   // square
@@ -102,70 +128,4 @@ function calculateRMS(values) {
   currentTotal = Math.sqrt(currentTotal);
 
   return currentTotal;
-}
-
-function thresholdDetection(rmsValue, processedFileCount) {
-  // first 200 values are used to determine the threshold, and as such
-  // are not checked against a threshold
-  if (processedFileCount == 199) {
-    thresholdValue = calculateThreshold();
-  } else if (processedFileCount > 199) {
-    if (rmsValue >= thresholdValue) {
-      console.log(
-        'Record number ' +
-          processedFileCount +
-          ': Threshold of ' +
-          thresholdValue +
-          ' met, notification being sent.'
-      );
-      sendNotification(thresholdValue, rmsValue);
-    } else {
-      console.log(
-        'Record number ' +
-          processedFileCount +
-          ': Threshold of ' +
-          thresholdValue +
-          ' NOT met.'
-      );
-    }
-  } else {
-    console.log(
-      'Record number ' +
-        processedFileCount +
-        ' is being used to determine the threshold (first 200 records).'
-    );
-  }
-}
-
-function calculateThreshold() {
-  // Expects 200 rms values
-  // Threshold is the mean plus 6 times standard deviation
-  let total = 0;
-  for (let i = 0; i < rmsValues.length; i++) {
-    total += rmsValues[i];
-  }
-  const rmsMean = total / rmsValues.length;
-
-  total = 0;
-  for (let i = 0; i < rmsValues.length; i++) {
-    total += Math.pow(rmsValues[i] - rmsMean, 2);
-  }
-  const squaredDifferencesMean = total / rmsValues.length;
-
-  const standardDeviation = Math.sqrt(squaredDifferencesMean);
-
-  return rmsMean + 6 * standardDeviation;
-}
-
-function sendNotification(thresholdValue, rmsValue) {
-  /* TODO add checker for notification frequency (or do it somewhere else) 
-     Currently this is done using a notified flag which ensures the email is only sent once,
-     (for demo purposes)
-  */
-  if (!notified) {
-    // Hardcoded values for the sensor and machine ID were used, these will be changed
-    // The values used for the IDs are not reflective of realistic IDs within the system.
-    notifyUsers(thresholdValue, rmsValue, 'A1', 'B2');
-    notified = true;
-  }
 }
