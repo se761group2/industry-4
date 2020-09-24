@@ -20,6 +20,7 @@ import LineGraph from "../components/LineGraph";
 import { GET_SENSOR_BY_ID } from "../common/graphql/queries/sensors";
 // import { QuerySensorArgs } from "../types/types";
 // import { Scalars } from "../types/types";
+import { getLinkForSensor } from "../services/download/download";
 
 const Sensor: React.FC = () => {
     // const { machineId } = useParams<{ machineId: Scalars["ID"] }>();
@@ -61,7 +62,13 @@ const Sensor: React.FC = () => {
                     <LineGraph title="Sensor Values" redThreshold={600} yellowThreshold={400} data={data} />
                 </div>
                 <div className="download text-center">
-                    <IonButton shape="round" color="light" className="responsive-width text-lg normal-case">
+                    <IonButton
+                        shape="round"
+                        color="light"
+                        className="responsive-width text-lg normal-case"
+                        download="sensor data"
+                        href={getLinkForSensor("AD1AECvCTuMi29JF0WTC", "cUq2QVLOQCqKil6eq0El")}
+                    >
                         Download
                     </IonButton>
                 </div>
