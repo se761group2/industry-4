@@ -14,8 +14,8 @@ export const CREATE_SENSOR = gql`
 `;
 
 export const UPDATE_SENSOR = gql`
-    mutation updateSensor($id: ID!, $input: SensorUpdateInput) {
-        updateSensor(id: $id, input: $input) {
+    mutation updateSensor($id: ID!, $machineID: ID!, $input: SensorUpdateInput) {
+        updateSensor(id: $id, machineID: $machineID, input: $input) {
             sensor {
                 name
                 healthStatus

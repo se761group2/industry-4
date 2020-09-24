@@ -40,5 +40,6 @@ export interface updateSensor {
 
 export interface updateSensorVariables {
   id: string;
+  machineID: string;
   input?: SensorUpdateInput | null;
 }
