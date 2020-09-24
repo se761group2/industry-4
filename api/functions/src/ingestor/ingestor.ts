@@ -16,7 +16,8 @@ const sensorId = 'cUq2QVLOQCqKil6eq0El';
 
 const currentDir = __dirname;
 let directory = '';
-if (os.platform() === 'win32') {
+const isWindows = os.platform() === 'win32';
+if (isWindows) {
   directory = currentDir + '\\..\\..\\inputData\\';
 } else {
   directory = currentDir + '/../../inputData/';
@@ -58,10 +59,19 @@ async function processAllFiles(filePaths: string[]) {
 }
 
 async function processInputDataFile(filePath: string) {
-  const fileName = filePath.substr(
-    filePath.lastIndexOf('/') + 1,
-    filePath.length - 1
-  );
+  let fileName = '';
+
+  if (isWindows) {
+    fileName = filePath.substr(
+      filePath.lastIndexOf('\\') + 1,
+      filePath.length - 1
+    );
+  } else {
+    fileName = filePath.substr(
+      filePath.lastIndexOf('/') + 1,
+      filePath.length - 1
+    );
+  }
 
   const rawDataFirstColumn = await readInputDataFile(filePath);
   const rmsValueFromFile = calculateRMS(rawDataFirstColumn);
