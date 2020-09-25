@@ -15,7 +15,6 @@ import HealthContainer from "../components/HealthContainer";
 import "./Page.css";
 import { from, useQuery } from "@apollo/client";
 import { getSensorById } from "../types/getSensorById";
-import { GET_USER_BY_ID } from "../common/graphql/queries/users";
 import Heading from "../components/Heading";
 import LineGraph from "../components/LineGraph";
 import { GET_SENSOR_BY_ID } from "../common/graphql/queries/sensors";
