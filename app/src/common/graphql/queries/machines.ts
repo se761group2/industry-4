@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const GET_MACHINES = gql`
-    query getMachines() {
+    query getMachines {
         machines {
             id
             name
