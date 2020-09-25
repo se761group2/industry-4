@@ -21,8 +21,13 @@ export const LoginPage: React.FC<any> = () => {
     return (
         <IonPage>
             <IonContent>
-                <div className="bg-gray-400 h-full w-full items-center flex justify-center flex-col">
-                    <h1 className="text-3xl font-bold my-4">Industry 4.0</h1>
+                <div className="bg-gray-900 h-full w-full items-center flex justify-center flex-col">
+                    <div className="text-center my-4">
+                        <h1 className="text-4xl text-gray-100 font-bold ">Industry 4.0</h1>
+                        <h2 className="text-2xl text-gray-300">
+                            <em>Monitor your machines like never before.</em>
+                        </h2>
+                    </div>
                     <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
                 </div>
             </IonContent>
