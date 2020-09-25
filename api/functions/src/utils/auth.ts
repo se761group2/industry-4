@@ -16,7 +16,7 @@ async function getMockIdToken(uid) {
       const user = await firebaseApp.auth().getUser(uid);
 
       mockCachedToken = {
-        iss: 'https://securetoken.google.com/zorbit',
+        iss: 'https://securetoken.google.com/industry4-uoa',
         aud: 'industry4-uoa',
         auth_time: -1,
         user_id: user.uid,
@@ -47,7 +47,7 @@ export const attachFirebaseIdToken = async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer ')
   ) {
     // read token from auth header
-    idToken = req.headers.authorization.split('Bearer ')[2];
+    idToken = req.headers.authorization.split('Bearer ')[1];
   } else if (req.cookies) {
     // Read the ID Token from cookie.
     idToken = req.cookies.__session;
