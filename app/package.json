@@ -38,7 +38,7 @@
         "test": "react-scripts test --passWithNoTests",
         "eject": "react-scripts eject",
         "lint": "eslint '*/**/*.{js,ts,tsx}'",
-        "lint:fix": "eslint '*/**/*.{js,ts,tsx}' --fix",
+        "lint:fix": "eslint ./src/pages/Page.tsx --fix",
         "generate": "rimraf src/types && apollo client:codegen --target=typescript --endpoint=http://localhost:5001/industry4-uoa/us-central1/graph --outputFlat src/types && npm run introspect",
         "introspect": "graphql-codegen --config codegen.yml"
     },

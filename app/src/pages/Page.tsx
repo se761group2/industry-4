@@ -9,9 +9,10 @@ import {
     IonTitle,
     IonToolbar,
 } from "@ionic/react";
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router";
 import HealthContainer from "../components/HealthContainer";
+import NotificationContainer from "../components/NotificationContainer";
 import "./Page.css";
 import { from, useQuery } from "@apollo/client";
 import { GetUserById } from "../types/GetUserById";
@@ -40,6 +41,16 @@ const Page: React.FC = () => {
         { name: "13", value: 650 },
         { name: "14", value: 425 },
     ];
+    const [functioning, setFunctioning] = useState(false);
+    const [acknowledged, setAcknowledged] = useState(false);
+
+    function handleAcknowledgement() {
+        setAcknowledged(true);
+    }
+
+    function handleFixing() {
+        setFunctioning(true);
+    }
 
     return (
         <IonPage>
@@ -50,6 +61,20 @@ const Page: React.FC = () => {
                 <div className="statusBar h-16">
                     <HealthContainer name={"Sensor name"} value={15} threshold={20} />
                 </div>
+                {!functioning && !acknowledged && (
+                    <NotificationContainer
+                        type={"Acknowledgement"}
+                        handleAcknowledge={handleAcknowledgement}
+                        handleFixed={handleFixing}
+                    />
+                )}
+                {!functioning && acknowledged && (
+                    <NotificationContainer
+                        type={"Fixed"}
+                        handleAcknowledge={handleAcknowledgement}
+                        handleFixed={handleFixing}
+                    />
+                )}
                 <div className="graph">
                     <LineGraph title="Sensor Values" redThreshold={600} yellowThreshold={400} data={data} />
                 </div>
