@@ -27,13 +27,16 @@ import "./theme/main.css";
 import { ApolloProvider } from "@apollo/client";
 import { apolloClient } from "./services/api/apolloClient";
 import { AppRouter } from "./AppRouter";
+import UserProvider from "./pages/auth/UserProvider";
 
 const App: React.FC = () => {
     return (
         <IonApp>
             <IonReactRouter>
                 <ApolloProvider client={apolloClient}>
-                    <AppRouter />
+                    <UserProvider>
+                        <AppRouter />
+                    </UserProvider>
                 </ApolloProvider>
             </IonReactRouter>
         </IonApp>

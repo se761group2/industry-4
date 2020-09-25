@@ -2,9 +2,13 @@ import { auth } from "firebase";
 import React, { Component, createContext } from "react";
 import { firebaseAuth } from "../../services/firebase";
 
-export const UserContext = createContext({ user: null, loaded: false });
+interface UserContextType {
+    user: firebase.User | null;
+    loaded: boolean;
+}
+export const UserContext = createContext<UserContextType>({ user: null, loaded: false });
 
-class UserProvider extends Component<{ user?: firebase.auth.UserCredential }> {
+class UserProvider extends Component {
     state = {
         user: null,
         loaded: false,
