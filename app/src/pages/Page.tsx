@@ -18,6 +18,7 @@ import { GetUserById } from "../types/GetUserById";
 import { GET_USER_BY_ID } from "../common/graphql/queries/users";
 import Heading from "../components/Heading";
 import LineGraph from "../components/LineGraph";
+import { addCircle } from "ionicons/icons";
 
 const Page: React.FC = () => {
     const { name } = useParams<{ name: string }>();
@@ -45,16 +46,24 @@ const Page: React.FC = () => {
             <Heading title="Industry 4.0" />
 
             <IonContent color="new">
-                <div className="statusBar h-16">
-                    <HealthContainer name={"Sensor name"} value={15} threshold={20} />
-                </div>
-                <div className="graph">
-                    <LineGraph title="Sensor Values" redThreshold={600} yellowThreshold={400} data={data} />
-                </div>
-                <div className="download text-center">
-                    <IonButton shape="round" color="light" className="responsive-width text-lg normal-case">
-                        Download
-                    </IonButton>
+                <div className="w-full flex justify-center">
+                    <div className="max-w-xl flex flex-grow flex-col justify-center justify-items-center p-6">
+                        <div className="w-full h-16">
+                            <HealthContainer name={"Sensor name"} value={15} threshold={20} />
+                        </div>
+                        <div className="w-full">
+                            <LineGraph title="Sensor Values" redThreshold={600} yellowThreshold={400} data={data} />
+                        </div>
+                        <div className="flex w-auto justify-between my-4 ">
+                            <IonButton shape="round" color="light" className="text-lg normal-case">
+                                Download
+                            </IonButton>
+                            <IonButton color="light" fill="clear">
+                                <IonIcon color="light" slot="start" icon={addCircle}></IonIcon>
+                                <strong> New Machine</strong>
+                            </IonButton>
+                        </div>
+                    </div>
                 </div>
             </IonContent>
         </IonPage>
