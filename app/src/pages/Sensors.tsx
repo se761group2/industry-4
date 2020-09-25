@@ -10,19 +10,26 @@ import {
     IonToolbar,
 } from "@ionic/react";
 import React from "react";
+import { from, useQuery } from "@apollo/client";
 import HealthContainer from "../components/HealthContainer";
 import "./Page.css";
 import Heading from "../components/Heading";
 import { Link } from "react-router-dom";
+import { useParams } from "react-router";
+import { GET_MACHINE_BY_ID } from "../common/graphql/queries/machines";
 
 const Sensors: React.FC = () => {
+    const { id } = useParams<{ id: string }>();
+    // const sensor_data = useQuery<getMachineById>(GET_MACHINE_BY_ID, {
+    //     variables: { id: { id } },
+    // });
     return (
         <IonPage>
             <link href="https://fonts.googleapis.com/css?family=Share Tech Mono" rel="stylesheet"></link>
             <Heading title="Industry 4.0" />
 
             <IonContent color="new">
-                <Link to="/machine/sensor/5">
+                <Link to="/sensor/5">
                     <HealthContainer name={"Sensor 1"} value={19} threshold={20} />
                 </Link>
                 <HealthContainer name={"Sensor 2"} value={18} threshold={20} />
