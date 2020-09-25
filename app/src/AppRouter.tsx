@@ -29,11 +29,10 @@ const AppRoutes: React.FC = () => {
 export const AppRouter: React.FC = () => {
     const userContext = useUserContext();
 
-    if (!userContext.loading) {
+    if (userContext.loading) {
         return <FullPageLoader />;
     }
 
-    console.log(userContext);
     if (!userContext.user) {
         return <UnauthenticatedUserRoutes />;
     }

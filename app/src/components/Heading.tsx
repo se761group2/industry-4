@@ -33,8 +33,8 @@ const Heading: React.FC<HeadingProps> = ({ title }) => {
                     <div className="flex flex-row items-center">
                         <IonIcon slot="start" icon={personCircle} />
                         <p className="mx-2 hidden md:block">{userContext.user && userContext.user!.email}</p>
-                        <IonButton onClick={() => firebaseAuth.signOut()}>
-                            <IonIcon slot="icon-only" icon={logOut} />
+                        <IonButton fill="clear" onClick={() => firebaseAuth.signOut()}>
+                            <IonIcon size="small" color="danger" slot="icon-only" icon={logOut} />
                         </IonButton>
                     </div>
                 </div>
