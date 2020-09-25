@@ -1,9 +1,11 @@
-import { notifyUsers } from '../sendgrid/sendgrid';
+import { notifyUsers } from '../notifications/notificationService';
 
 interface ThresholdDetectionState {
   thresholdValue: number;
   notified: boolean;
   processedFileCount: number;
+  badReadingCounter;
+  goodReadingCounter;
   rmsValues: number[];
 }
 
@@ -11,6 +13,8 @@ const state: ThresholdDetectionState = {
   thresholdValue: 0,
   notified: false,
   processedFileCount: 0,
+  badReadingCounter: 0,
+  goodReadingCounter: 0,
   rmsValues: [],
 };
 
@@ -31,8 +35,18 @@ export function doThresholdDetection(rmsValue: number) {
           state.thresholdValue +
           ' met, notification being sent.'
       );
-      sendNotification(state.thresholdValue, rmsValue);
+      state.badReadingCounter++;
+      state.goodReadingCounter = 0;
+
+      if (state.badReadingCounter >= 10) {
+        sendNotification(state.thresholdValue, rmsValue);
+      }
     } else {
+      state.goodReadingCounter++;
+      // 5 consecutive readings above the threshold resets the bad reading counter
+      if (state.goodReadingCounter > 5) {
+        state.badReadingCounter = 0;
+      }
       console.log(
         'Record number ' +
           state.processedFileCount +
@@ -75,6 +89,7 @@ function sendNotification(thresholdValue: number, rmsValue: number) {
        Currently this is done using a state.notified flag which ensures the email is only sent once,
        (for demo purposes)
     */
+  // Update the db to reflect this issue.
   if (!state.notified) {
     // Hardcoded values for the sensor and machine ID were used, these will be changed
     // The values used for the IDs are not reflective of realistic IDs within the system.
