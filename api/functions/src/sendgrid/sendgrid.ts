@@ -1,7 +1,7 @@
 import sgMail from '@sendgrid/mail';
-// import config from '../../secrets.json';
+import config from '../../secrets.json';
 
-// sgMail.setApiKey(config.SENDGRID_API_KEY);
+sgMail.setApiKey(config.SENDGRID_API_KEY);
 
 export function notifyUsers(threshold, recordedValue, sensorId, machineId) {
   const senderEmail = 'industry4errornotification@gmail.com';
