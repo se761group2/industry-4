@@ -35,8 +35,8 @@ const App: React.FC = () => {
                 <ApolloProvider client={apolloClient}>
                     <IonSplitPane contentId="main">
                         <IonRouterOutlet id="main">
-                            <Route path="/machine/sensor" component={Sensors} exact />
-                            <Route path="/machine/sensor/:id" component={Sensor} exact />
+                            <Route path="/machine/:id" component={Sensors} exact />
+                            <Route path="/sensor/:id" component={Sensor} exact />
                         </IonRouterOutlet>
                     </IonSplitPane>
                 </ApolloProvider>
