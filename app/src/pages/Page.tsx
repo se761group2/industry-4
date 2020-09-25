@@ -1,4 +1,5 @@
 import {
+    IonAlert,
     IonBackButton,
     IonButton,
     IonButtons,
@@ -9,7 +10,7 @@ import {
     IonTitle,
     IonToolbar,
 } from "@ionic/react";
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router";
 import HealthContainer from "../components/HealthContainer";
 import "./Page.css";
@@ -19,9 +20,11 @@ import { GET_USER_BY_ID } from "../common/graphql/queries/users";
 import Heading from "../components/Heading";
 import LineGraph from "../components/LineGraph";
 import { addCircle } from "ionicons/icons";
+import { AddMachineModal } from "./modals/AddMachineModal";
 
 const Page: React.FC = () => {
     const { name } = useParams<{ name: string }>();
+    const [addMachineOpen, setAddMachineOpen] = useState<boolean>(false);
 
     const data = [
         { name: "1", value: 350 },
@@ -45,6 +48,7 @@ const Page: React.FC = () => {
             <link href="https://fonts.googleapis.com/css?family=Share Tech Mono" rel="stylesheet"></link>
             <Heading title="Industry 4.0" />
 
+            <AddMachineModal open={addMachineOpen} setOpen={setAddMachineOpen} />
             <IonContent color="new">
                 <div className="w-full flex justify-center">
                     <div className="max-w-xl flex flex-grow flex-col justify-center justify-items-center p-6">
@@ -58,7 +62,13 @@ const Page: React.FC = () => {
                             <IonButton shape="round" color="light" className="text-lg normal-case">
                                 Download
                             </IonButton>
-                            <IonButton color="light" fill="clear">
+                            <IonButton
+                                color="light"
+                                fill="clear"
+                                onClick={() => {
+                                    setAddMachineOpen(true);
+                                }}
+                            >
                                 <IonIcon color="light" slot="start" icon={addCircle}></IonIcon>
                                 <strong> New Machine</strong>
                             </IonButton>
