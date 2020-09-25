@@ -21,9 +21,7 @@ import LineGraph from "../components/LineGraph";
 
 const Page: React.FC = () => {
     const { name } = useParams<{ name: string }>();
-    const dummyUserQuery = useQuery<GetUserById>(GET_USER_BY_ID, {
-        variables: { id: "dummy" },
-    });
+
     const data = [
         { name: "1", value: 350 },
         { name: "2", value: 250 },
