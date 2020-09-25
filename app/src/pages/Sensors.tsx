@@ -19,6 +19,7 @@ import Heading from "../components/Heading";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router";
 import { GET_MACHINE_BY_ID, GET_MACHINES } from "../common/graphql/queries/machines";
+import Error404 from "../components/ErrorMessage";
 
 const Sensors: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -29,6 +30,7 @@ const Sensors: React.FC = () => {
     console.log(machine_data);
     console.log(machine_data.data);
     console.log(machine_data.data?.machine?.name);
+    console.log(machine_data.data?.machine?.sensors);
     // console.log(machines);
     return (
         <IonPage>
@@ -38,9 +40,15 @@ const Sensors: React.FC = () => {
             <IonContent color="new">
                 {machine_data.data?.machine ? (
                     <>
-                        <Link to="/sensor/5">
-                            <HealthContainer name={"Sensor 1"} value={19} threshold={20} />
-                        </Link>
+                        {machine_data.data.machine.sensors.length != 0 ? (
+                            machine_data.data.machine.sensors.map((sensor) => (
+                                <Link to="/sensor/5" key={sensor.name}>
+                                    <HealthContainer name={sensor.name} value={19} threshold={20} />
+                                </Link>
+                            ))
+                        ) : (
+                            <Error404 message="There are no sensors for this machine" />
+                        )}
                         <div className="download text-center">
                             <IonButton shape="round" color="light" className="m-4 responsive-width text-lg normal-case">
                                 Add Sensor
@@ -48,7 +56,7 @@ const Sensors: React.FC = () => {
                         </div>
                     </>
                 ) : (
-                    <div className="m6">This machine does not exist</div>
+                    <Error404 message="This machine does not exist" />
                 )}
             </IonContent>
         </IonPage>
