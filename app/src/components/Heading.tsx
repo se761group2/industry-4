@@ -10,8 +10,9 @@ import {
     IonTitle,
     IonToolbar,
 } from "@ionic/react";
-import { ellipsisHorizontal, ellipsisVertical, personCircle, search } from "ionicons/icons";
+import { ellipsisHorizontal, ellipsisVertical, logOut, personCircle, search } from "ionicons/icons";
 import { useUserContext } from "../utils/useUserContext";
+import { firebaseAuth } from "../services/firebase";
 
 interface HeadingProps {
     title: string;
@@ -32,6 +33,9 @@ const Heading: React.FC<HeadingProps> = ({ title }) => {
                     <div className="flex flex-row items-center">
                         <IonIcon slot="start" icon={personCircle} />
                         <p className="mx-2 hidden md:block">{userContext.user && userContext.user!.email}</p>
+                        <IonButton onClick={() => firebaseAuth.signOut()}>
+                            <IonIcon slot="icon-only" icon={logOut} />
+                        </IonButton>
                     </div>
                 </div>
             </IonToolbar>

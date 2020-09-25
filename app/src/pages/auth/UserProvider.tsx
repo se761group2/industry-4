@@ -4,19 +4,19 @@ import { firebaseAuth } from "../../services/firebase";
 
 interface UserContextType {
     user: firebase.User | null;
-    loaded: boolean;
+    loading: boolean;
 }
-export const UserContext = createContext<UserContextType>({ user: null, loaded: false });
+export const UserContext = createContext<UserContextType>({ user: null, loading: true });
 
 class UserProvider extends Component {
     state = {
         user: null,
-        loaded: false,
+        loading: true,
     };
 
     componentDidMount = () => {
         firebaseAuth.onAuthStateChanged((userAuth) => {
-            this.setState({ user: userAuth, loaded: true });
+            this.setState({ user: userAuth, loading: false });
         });
     };
     render() {
