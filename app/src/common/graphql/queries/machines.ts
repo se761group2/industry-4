@@ -16,6 +16,7 @@ export const GET_MACHINE_BY_ID = gql`
             name
             healthStatus
             sensors {
+                id
                 name
                 healthStatus
                 unit
