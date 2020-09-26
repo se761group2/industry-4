@@ -1,7 +1,13 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require('dotenv').config();
 import sgMail from '@sendgrid/mail';
-import config from '../../secrets.json';
+import { firebaseApp } from '../firebase'
+// import config from '../../secrets.json';
+import { MachineStore } from '../graphql/MachineStore';
 
-sgMail.setApiKey(config.SENDGRID_API_KEY);
+const firestore = firebaseApp.firestore();
+
+// sgMail.setApiKey(config.SENDGRID_API_KEY);
 
 export function notifyUsers(threshold, recordedValue, sensorId, machineId) {
   const senderEmail = 'industry4errornotification@gmail.com';
@@ -33,7 +39,7 @@ export function notifyUsers(threshold, recordedValue, sensorId, machineId) {
 export function updateUsers() {
   // Need to go into the db and get all sensors with problems to do this will need to update the schema,
   // To do that talk to Marc
-  const failingSensors = [];
+  const machines = MachineStore.getMachines();
 
   // Get users associated with the failing sensors
 

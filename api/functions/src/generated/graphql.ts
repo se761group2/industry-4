@@ -86,6 +86,12 @@ export type MutationResponse = {
   message: Scalars['String'];
 };
 
+export enum NotificationStatus {
+  Working = 'Working',
+  Unacknowledged = 'Unacknowledged',
+  Acknowledged = 'Acknowledged'
+}
+
 export type Query = {
   __typename?: 'Query';
   user?: Maybe<User>;
@@ -128,6 +134,7 @@ export type Sensor = {
   machineId: Scalars['ID'];
   name: Scalars['String'];
   healthStatus?: Maybe<Status>;
+  notificationStatus?: Maybe<NotificationStatus>;
   threshold?: Maybe<Scalars['Float']>;
   unit: Scalars['String'];
   sampleChunks: Array<SampleChunk>;
@@ -157,6 +164,7 @@ export type SensorUpdatedResponse = MutationResponse & {
 export type SensorUpdateInput = {
   name?: Maybe<Scalars['String']>;
   healthStatus?: Maybe<Status>;
+  notificationStatus?: Maybe<NotificationStatus>;
   threshold?: Maybe<Scalars['Float']>;
   unit?: Maybe<Scalars['String']>;
 };
@@ -273,6 +281,7 @@ export type ResolversTypes = ResolversObject<{
   Machine: ResolverTypeWrapper<Machine>;
   Status: Status;
   Sensor: ResolverTypeWrapper<Sensor>;
+  NotificationStatus: NotificationStatus;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   SampleChunk: ResolverTypeWrapper<SampleChunk>;
   Sample: ResolverTypeWrapper<Sample>;
@@ -383,6 +392,7 @@ export type SensorResolvers<ContextType = GraphQLContext, ParentType extends Res
   machineId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   healthStatus?: Resolver<Maybe<ResolversTypes['Status']>, ParentType, ContextType>;
+  notificationStatus?: Resolver<Maybe<ResolversTypes['NotificationStatus']>, ParentType, ContextType>;
   threshold?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   unit?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   sampleChunks?: Resolver<Array<ResolversTypes['SampleChunk']>, ParentType, ContextType>;

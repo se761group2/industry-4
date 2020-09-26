@@ -9,6 +9,12 @@ enum Status {
   Critical
 }
 
+enum NotificationStatus {
+  Working
+  Unacknowledged
+  Acknowledged
+}
+
 scalar Date
 
 type Machine {
@@ -23,6 +29,7 @@ type Sensor {
   machineId: ID!
   name: String!
   healthStatus: Status
+  notificationStatus: NotificationStatus
   threshold: Float
   unit: String!
   sampleChunks: [SampleChunk!]!
@@ -105,6 +112,7 @@ input MachineUpdateInput {
 input SensorUpdateInput {
   name: String
   healthStatus: Status
+  notificationStatus: NotificationStatus
   threshold: Float
   unit: String
 }

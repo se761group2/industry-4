@@ -32,6 +32,7 @@ export const mutationResolvers: MutationResolvers = {
       args.id,
       args.input?.name,
       args.input?.healthStatus,
+      args.input?.notificationStatus,
       args.input?.threshold,
       args.input?.unit
     )
@@ -69,7 +70,7 @@ export const mutationResolvers: MutationResolvers = {
       code: 'sensor_create/success',
       success: true,
       message: 'Sensor Created Successfully.',
-      sensor: newSensor
+      sensor: newSensor,
     };
 
     return resp;
