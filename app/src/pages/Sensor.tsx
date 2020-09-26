@@ -21,14 +21,15 @@ import { GET_SENSOR_BY_ID } from "../common/graphql/queries/sensors";
 
 const Sensor: React.FC = () => {
     const { machineid } = useParams<{ machineid: string }>();
+    const { id } = useParams<{ id: string }>();
     // const machine_data = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
     //     variables: { id: machineid },
     // });
-    const { id } = useParams<{ id: string }>();
     const sensor_data = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
         variables: { id: id, machineID: id },
     });
     console.log(sensor_data);
+    console.log(sensor_data.data?.sensor?.healthStatus);
     const data = [
         { name: "1", value: 350 },
         { name: "2", value: 250 },
@@ -53,7 +54,7 @@ const Sensor: React.FC = () => {
 
             <IonContent color="new">
                 <div className=" h-16">
-                    <HealthContainer name={"Sensor name"} value={15} threshold={20} />
+                    <HealthContainer name={"Sensor name"} value={15} health={sensor_data.data?.sensor?.healthStatus} />
                 </div>
                 <div className="graph">
                     <LineGraph title="Sensor Values" redThreshold={600} yellowThreshold={400} data={data} />
