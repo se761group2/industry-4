@@ -20,3 +20,7 @@
     width: 90%;
     max-width: 600px;
 }
+
+.ion-title{
+  font-size: 10em;
+}
