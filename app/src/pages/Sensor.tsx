@@ -20,10 +20,15 @@ import LineGraph from "../components/LineGraph";
 import { GET_SENSOR_BY_ID } from "../common/graphql/queries/sensors";
 
 const Sensor: React.FC = () => {
+    const { machineid } = useParams<{ machineid: string }>();
+    // const machine_data = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
+    //     variables: { id: machineid },
+    // });
     const { id } = useParams<{ id: string }>();
     const sensor_data = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
-        variables: { id: { id } },
+        variables: { id: id, machineID: id },
     });
+    console.log(sensor_data);
     const data = [
         { name: "1", value: 350 },
         { name: "2", value: 250 },
