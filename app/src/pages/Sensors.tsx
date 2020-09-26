@@ -37,15 +37,7 @@ const Sensors: React.FC = () => {
         if (b == "Nominal") return 1;
         return 0;
     };
-    console.log("before", sensors);
 
-    // const machines = useQuery<getMachines>(GET_MACHINES);
-    console.log(machine_data);
-    console.log(machine_data.data);
-    console.log(machine_data.data?.machine?.name);
-    console.log(machine_data.data?.machine?.sensors);
-    console.log(machine_data.data?.machine?.sensors[0].id);
-    // console.log(machines);
     return (
         <IonPage>
             <link href="https://fonts.googleapis.com/css?family=Share Tech Mono" rel="stylesheet"></link>
@@ -62,7 +54,6 @@ const Sensors: React.FC = () => {
                                     <Link to={`/machine/${id}/sensor/${sensor.id}`} key={sensor.id}>
                                         <HealthContainer
                                             name={sensor.name}
-                                            // value={sensor.sampleChunks && sensor.sampleChunks[sensor.sampleChunks.length]}
                                             value={sensor.sampleChunks[0]?.samples[0]?.value}
                                             health={sensor.healthStatus}
                                         />
