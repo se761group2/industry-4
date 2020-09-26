@@ -26,11 +26,25 @@ const Sensors: React.FC = () => {
     const machine_data = useQuery<getMachineById>(GET_MACHINE_BY_ID, {
         variables: { id: id },
     });
+    const sensors = machine_data.data?.machine?.sensors;
+    const stringCompare = (a: string | null, b: string | null) => {
+        if (a == b) return 0;
+        if (a == "Critical") return -1;
+        if (b == "Critical") return 1;
+        if (a == "Moderate") return -1;
+        if (b == "Moderate") return 1;
+        if (a == "Nominal") return -1;
+        if (b == "Nominal") return 1;
+        return 0;
+    };
+    console.log("before", sensors);
+
     // const machines = useQuery<getMachines>(GET_MACHINES);
     console.log(machine_data);
     console.log(machine_data.data);
     console.log(machine_data.data?.machine?.name);
     console.log(machine_data.data?.machine?.sensors);
+    console.log(machine_data.data?.machine?.sensors[0].id);
     // console.log(machines);
     return (
         <IonPage>
@@ -40,12 +54,20 @@ const Sensors: React.FC = () => {
             <IonContent color="new">
                 {machine_data.data?.machine ? (
                     <>
-                        {machine_data.data.machine.sensors.length != 0 ? (
-                            machine_data.data.machine.sensors.map((sensor) => (
-                                <Link to="/sensor/5" key={sensor.name}>
-                                    <HealthContainer name={sensor.name} value={19} threshold={20} />
-                                </Link>
-                            ))
+                        {sensors ? (
+                            sensors
+                                .slice()
+                                .sort((a, b) => stringCompare(a.healthStatus, b.healthStatus))
+                                .map((sensor) => (
+                                    <Link to={`/machine/${id}/sensor/${sensor.id}`} key={sensor.id}>
+                                        <HealthContainer
+                                            name={sensor.name}
+                                            // value={sensor.sampleChunks && sensor.sampleChunks[sensor.sampleChunks.length]}
+                                            value={sensor.sampleChunks[0]?.samples[0]?.value}
+                                            health={sensor.healthStatus}
+                                        />
+                                    </Link>
+                                ))
                         ) : (
                             <Error404 message="There are no sensors for this machine" />
                         )}
