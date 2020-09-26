@@ -25,13 +25,11 @@ const HomePage: React.FC = () => {
                     <div className="info ion-margin" style={{ display: "block" }}>
                         <div className="graphInfo">
                             <div
-                                className="ion-text-justify text-lg"
+                                className="ion-text-start text-lg responsive-width"
                                 style={{ width: "90%", marginLeft: "auto", marginRight: "auto" }}
                             >
                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque id fringilla metus.
-                                Aenean eget commodo elit, nec elementum enim. Aenean id tincidunt orci, eu malesuada
-                                diam. Cras id neque in libero consectetur suscipit in in nunc. Aliquam pharetra, mi non
-                                ultrices tincidunt, diam risus commodo sem, vitae semper ante elit vel mi
+                                Aenean eget commodo elit, nec elementum enim.
                             </div>
                             <div
                                 className="info responsive-width ion-margin"
@@ -43,13 +41,12 @@ const HomePage: React.FC = () => {
 
                         <div className="graphInfo">
                             <div
-                                className="ion-text-start text-lg"
+                                className="ion-text-start text-lg responsive-width"
                                 style={{ width: "90%", marginLeft: "auto", marginRight: "auto" }}
                             >
                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque id fringilla metus.
                                 Aenean eget commodo elit, nec elementum enim. Aenean id tincidunt orci, eu malesuada
-                                diam. Cras id neque in libero consectetur suscipit in in nunc. Aliquam pharetra, mi non
-                                ultrices tincidunt, diam risus commodo sem, vitae semper ante elit vel mi.
+                                diam.
                             </div>
                             <div
                                 className="info responsive-width ion-margin"
