@@ -25,11 +25,11 @@ import { getLinkForSensor } from "../services/download/download";
 const Sensor: React.FC = () => {
     // const { machineId } = useParams<{ machineId: Scalars["ID"] }>();
     // const { id } = useParams<{ id: Scalars["ID"] }>();
-    const { machineId } = useParams<{ machineId: string }>();
+    const { machineid } = useParams<{ machineid: string }>();
     const { id } = useParams<{ id: string }>();
     // const tmp: QuerySensorArgs = { id: id, machineId: machineId };
     const sensor_data = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
-        variables: { machineId: machineId, id: id },
+        variables: { machineId: machineid, id: id },
     });
     console.log(sensor_data);
     const data = [
@@ -67,7 +67,7 @@ const Sensor: React.FC = () => {
                         color="light"
                         className="responsive-width text-lg normal-case"
                         download="sensor data"
-                        href={getLinkForSensor("AD1AECvCTuMi29JF0WTC", "cUq2QVLOQCqKil6eq0El")}
+                        href={getLinkForSensor(machineid || "", id || "")}
                     >
                         Download
                     </IonButton>
