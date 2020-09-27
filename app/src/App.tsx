@@ -1,4 +1,5 @@
 import Menu from "./components/Menu";
+import Machines from "./pages/Machines";
 import Sensors from "./pages/Sensors";
 import Sensor from "./pages/Sensor";
 import React from "react";
@@ -27,7 +28,8 @@ import "./theme/variables.css";
 import "./theme/main.css";
 import { ApolloProvider } from "@apollo/client";
 import { apolloClient } from "./services/api/apolloClient";
-import Machines from "./pages/Machines";
+import { AppRouter } from "./AppRouter";
+import UserProvider from "./pages/auth/UserProvider";
 
 const App: React.FC = () => {
     return (
@@ -42,6 +44,9 @@ const App: React.FC = () => {
                             <Redirect from="/" to="/machine" exact />
                         </IonRouterOutlet>
                     </IonSplitPane>
+                    <UserProvider>
+                        <AppRouter />
+                    </UserProvider>
                 </ApolloProvider>
             </IonReactRouter>
         </IonApp>

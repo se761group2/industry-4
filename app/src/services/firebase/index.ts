@@ -12,6 +12,7 @@ const firebaseConfig = {
 };
 
 export const firebaseApp = firebase.initializeApp(firebaseConfig);
+export const firebaseAuth = firebaseApp.auth();
 
 export const useLocalUserId = () => {
     return firebaseApp.auth().currentUser?.uid;

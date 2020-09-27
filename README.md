@@ -21,3 +21,7 @@ This should redirect you to your browser, where you can log in, provided you hav
 `$ npm i`
 
 `$ npm start`
+
+## GraphQL Playground
+
+- You need to set `LOCAL_MOCK_USER` in `api/functions/.env` if you want to be able to use the playground. You can find your user id from the authentication tab in the firebase console.
