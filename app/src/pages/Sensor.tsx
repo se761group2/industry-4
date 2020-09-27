@@ -18,13 +18,19 @@ import { getSensorById } from "../types/getSensorById";
 import Heading from "../components/Heading";
 import LineGraph from "../components/LineGraph";
 import { GET_SENSOR_BY_ID } from "../common/graphql/queries/sensors";
+// import { QuerySensorArgs } from "../types/types";
+// import { Scalars } from "../types/types";
 
 const Sensor: React.FC = () => {
+    // const { machineId } = useParams<{ machineId: Scalars["ID"] }>();
+    // const { id } = useParams<{ id: Scalars["ID"] }>();
     const { machineId } = useParams<{ machineId: string }>();
     const { id } = useParams<{ id: string }>();
+    // const tmp: QuerySensorArgs = { id: id, machineId: machineId };
     const sensor_data = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
-        variables: { id: id, machineId: machineId },
+        variables: { machineId: machineId, id: id },
     });
+    console.log(sensor_data);
     const data = [
         { name: "1", value: 350 },
         { name: "2", value: 250 },
