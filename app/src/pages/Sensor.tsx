@@ -18,19 +18,16 @@ import { getSensorById } from "../types/getSensorById";
 import Heading from "../components/Heading";
 import LineGraph from "../components/LineGraph";
 import { GET_SENSOR_BY_ID } from "../common/graphql/queries/sensors";
-// import { QuerySensorArgs } from "../types/types";
-// import { Scalars } from "../types/types";
 
 const Sensor: React.FC = () => {
-    // const { machineId } = useParams<{ machineId: Scalars["ID"] }>();
-    // const { id } = useParams<{ id: Scalars["ID"] }>();
     const { machineId } = useParams<{ machineId: string }>();
     const { id } = useParams<{ id: string }>();
-    // const tmp: QuerySensorArgs = { id: id, machineId: machineId };
     const sensor_data = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
         variables: { machineId: machineId, id: id },
     });
     console.log(sensor_data);
+    console.log(sensor_data.data?.sensor);
+    console.log(sensor_data.data?.sensor?.sampleChunks[0]);
     const data = [
         { name: "1", value: 350 },
         { name: "2", value: 250 },
@@ -55,7 +52,12 @@ const Sensor: React.FC = () => {
 
             <IonContent color="new">
                 <div className=" h-16">
-                    <HealthContainer name={"Sensor name"} value={15} health={sensor_data.data?.sensor?.healthStatus} />
+                    <HealthContainer
+                        name={sensor_data.data?.sensor?.name}
+                        value={5}
+                        // value={sensor_data.data?.sensor?.sampleChunks[0]?.samples[0]}
+                        health={sensor_data.data?.sensor?.healthStatus}
+                    />
                 </div>
                 <div className="graph">
                     <LineGraph title="Sensor Values" redThreshold={600} yellowThreshold={400} data={data} />
