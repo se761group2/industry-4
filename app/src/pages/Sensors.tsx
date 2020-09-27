@@ -43,7 +43,6 @@ const Sensors: React.FC = () => {
 
     return (
         <IonPage>
-            <link href="https://fonts.googleapis.com/css?family=Share Tech Mono" rel="stylesheet"></link>
             <Heading title={machine_data.data?.machine?.name} />
 
             <IonContent color="new">

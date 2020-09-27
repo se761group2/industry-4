@@ -31,7 +31,6 @@ const Sensor: React.FC = () => {
     const sensor_data = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
         variables: { machineId: machineid, id: id },
     });
-    console.log(sensor_data);
     const data = [
         { name: "1", value: 350 },
         { name: "2", value: 250 },
@@ -51,7 +50,6 @@ const Sensor: React.FC = () => {
 
     return (
         <IonPage>
-            <link href="https://fonts.googleapis.com/css?family=Share Tech Mono" rel="stylesheet"></link>
             <Heading title={sensor_data.data?.sensor?.name} />
 
             <IonContent color="new">
