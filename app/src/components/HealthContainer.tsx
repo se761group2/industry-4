@@ -10,7 +10,6 @@ interface ContainerProps {
 
 const HealthContainer: React.FC<ContainerProps> = ({ name, value, health }) => {
     const bg: string = statusColour(health);
-    console.log(bg);
     return (
         <div className="flex justify-center text-black">
             <div className={`rounded-lg shadow-xl font-bold text-lg responsive-width m-4 bg-${bg}-550`}>

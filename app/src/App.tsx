@@ -1,4 +1,5 @@
 import Menu from "./components/Menu";
+import Machines from "./pages/Machines";
 import Sensors from "./pages/Sensors";
 import Sensor from "./pages/Sensor";
 import React from "react";
@@ -39,6 +40,8 @@ const App: React.FC = () => {
                         <IonRouterOutlet id="main">
                             <Route path="/machine/:id" component={Sensors} exact />
                             <Route path="/machine/:machineId/sensor/:id" component={Sensor} exact />
+                            <Route path="/machine" component={Machines} exact />
+                            <Redirect from="/" to="/machine" exact />
                         </IonRouterOutlet>
                     </IonSplitPane>
                     <UserProvider>
