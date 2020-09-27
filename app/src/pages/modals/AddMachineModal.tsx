@@ -2,6 +2,7 @@ import { FetchResult, MutationResult, useMutation } from "@apollo/client";
 import { IonAlert } from "@ionic/react";
 import React, { useState } from "react";
 import { CREATE_MACHINE } from "../../common/graphql/mutations/machines";
+import { GET_MACHINES } from "../../common/graphql/queries/machines";
 import { createMachine } from "../../types/createMachine";
 
 interface ModalProps {
@@ -11,7 +12,9 @@ interface ModalProps {
 }
 
 export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onCompleted }) => {
-    const [createMachineMutation] = useMutation<createMachine>(CREATE_MACHINE);
+    const [createMachineMutation] = useMutation<createMachine>(CREATE_MACHINE, {
+        refetchQueries: [{ query: GET_MACHINES }],
+    });
 
     const handleAddMachine = async (alertData) => {
         const machineName = alertData["machineName"]?.trim();
