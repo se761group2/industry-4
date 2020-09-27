@@ -38,7 +38,7 @@ const Machines: React.FC = () => {
     return (
         <IonPage>
             <AddMachineModal open={addMachineOpen} setOpen={setAddMachineOpen} />
-            <Heading title="Industry 4.0" />
+            <Heading title="Industry 4.0" showBackButton={false} />
 
             <IonContent color="new">
                 {machines ? (
