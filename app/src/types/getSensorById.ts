@@ -35,4 +35,5 @@ export interface getSensorById {
 
 export interface getSensorByIdVariables {
   id: string;
+  machineId: string;
 }
