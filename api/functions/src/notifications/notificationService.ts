@@ -49,43 +49,51 @@ export async function updateUsers() {
   const faultySensors = [] as any;
   const machinesRef = firestore.collection('machines');
   const machines = await machinesRef.get();
-  machines.forEach((machine) => {
-    machine.data().sensors.forEach((sensor) => {
-      if (sensor.notificationStatus == 'Unacknowledged') {
-        faultySensors.push({
-          machineName: machine.data().name,
-          sensorName: sensor.name,
+  if (machines == null || machines == undefined) {
+    console.log('There was an issue retrieving the machine data');
+  } else {
+    machines.forEach((machine) => {
+      if (machine.data().sensors != null) {
+        machine.data().sensors.forEach((sensor) => {
+          if (sensor.notificationStatus == 'Unacknowledged') {
+            faultySensors.push({
+              machineName: machine.data().name,
+              sensorName: sensor.name,
+            });
+          }
         });
       }
     });
-  });
+  }
 
-  let emailMsg = 'Issues have been detected with the following sensors:<br/>';
+  if (faultySensors.length != 0) {
+    let emailMsg = 'Issues have been detected with the following sensors:<br/>';
 
-  faultySensors.forEach((sensor) => {
+    faultySensors.forEach((sensor) => {
+      emailMsg +=
+        'Sensor ' +
+        sensor.sensorName +
+        ', Machine ' +
+        sensor.machineName +
+        '<br/>';
+    });
+
     emailMsg +=
-      'Sensor ' +
-      sensor.sensorName +
-      ', Machine ' +
-      sensor.machineName +
-      '<br/>';
-  });
+      'Please acknowledge and resolve these issues within the industry 4.0 application';
+    // This will be updated to link the the application when we have it deployed
+    emailMsg += '<a>Click here to visit the application</a>';
 
-  emailMsg +=
-    'Please acknowledge and resolve these issues within the industry 4.0 application';
-  // This will be updated to link the the application when we have it deployed
-  emailMsg += '<a>Click here to visit the application</a>';
+    // Notify users which of their sensors are failing
+    const senderEmail = 'industry4errornotification@gmail.com';
+    // This will be updated to send to the group of people who are tracking this machine
+    const receiverEmail = 'fake@email.com';
+    const msg = {
+      to: receiverEmail,
+      from: senderEmail,
+      subject: 'You have machine(s) with unacknowledged issues',
+      html: emailMsg,
+    };
 
-  // Notify users which of their sensors are failing
-  const senderEmail = 'industry4errornotification@gmail.com';
-  // This will be updated to send to the group of people who are tracking this machine
-  const receiverEmail = 'fake@email.com';
-  const msg = {
-    to: receiverEmail,
-    from: senderEmail,
-    subject: 'You have machine(s) with unacknowledged issues',
-    html: emailMsg,
-  };
-
-  sgMail.send(msg);
+    sgMail.send(msg);
+  }
 }

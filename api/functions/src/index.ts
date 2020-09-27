@@ -7,10 +7,10 @@ const USCentralRegion = functions.SUPPORTED_REGIONS[0];
 exports.graph = functions
   .region(USCentralRegion)
   .https.onRequest(ConstructGraphQLServer());
-exports.notify = functions.pubsub
-  .schedule('0 * * * *')
-  .timeZone('Pacific/Auckland')
-  .onRun(updateUsers);
+// exports.notify = functions.pubsub
+//   .schedule('0 * * * *')
+//   .timeZone('Pacific/Auckland')
+//   .onRun(updateUsers);
 exports.download = functions
   .region(USCentralRegion)
   .https.onRequest(ConstructFileDownloadServer());
