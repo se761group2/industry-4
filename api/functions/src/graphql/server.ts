@@ -3,6 +3,7 @@ import cors from 'cors';
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
+import { attachFirebaseIdToken } from '../utils/auth';
 import { resolvers } from './resolvers';
 const schema = fs.readFileSync(
   path.resolve(__dirname, './schema.graphql'),
@@ -13,6 +14,7 @@ export function ConstructGraphQLServer() {
   const app = express();
   app.use(cors());
   app.options('*');
+  app.use(attachFirebaseIdToken);
 
   const apolloServer = new ApolloServer({
     typeDefs: schema as any,

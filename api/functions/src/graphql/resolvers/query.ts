@@ -21,7 +21,8 @@ export const queryResolvers: QueryResolvers = {
     };
   },
 
-  machine: async (parent, args) => { // handles query to retrieve one machine, given an ID
+  machine: async (parent, args) => {
+    // handles query to retrieve one machine, given an ID
     const machineData = await MachineStore.getMachine(args.id);
 
     if (!machineData) {
@@ -33,13 +34,15 @@ export const queryResolvers: QueryResolvers = {
     };
   },
 
-  machines: async (parent, args) => { // handles query to retrieve all machines in the database
+  machines: async (parent, args, context) => {
+    // handles query to retrieve all machines in the database
     const machineDocs = await MachineStore.getMachines();
 
     return machineDocs;
   },
 
-  sensor: async (parent, args) => { // Handles query to retrieve a sensor in the database
+  sensor: async (parent, args) => {
+    // Handles query to retrieve a sensor in the database
     const sensorData = await MachineStore.getSensor(args.machineId, args.id);
 
     if (!sensorData) {
