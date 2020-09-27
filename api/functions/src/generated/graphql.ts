@@ -1,8 +1,15 @@
-import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
+import {
+  GraphQLResolveInfo,
+  GraphQLScalarType,
+  GraphQLScalarTypeConfig,
+} from 'graphql';
 import { GraphQLContext } from '../../src/types';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
-export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
+export type RequireFields<T, K extends keyof T> = {
+  [X in Exclude<keyof T, K>]?: T[X];
+} &
+  { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -12,7 +19,6 @@ export type Scalars = {
   Float: number;
   Date: any;
 };
-
 
 export type Machine = {
   __typename?: 'Machine';
@@ -52,17 +58,14 @@ export type Mutation = {
   createSensor?: Maybe<SensorCreationResponse>;
 };
 
-
 export type MutationUpdateUserArgs = {
   id: Scalars['ID'];
 };
-
 
 export type MutationUpdateMachineArgs = {
   id: Scalars['ID'];
   input?: Maybe<MachineUpdateInput>;
 };
-
 
 export type MutationUpdateSensorArgs = {
   id: Scalars['ID'];
@@ -70,11 +73,9 @@ export type MutationUpdateSensorArgs = {
   input?: Maybe<SensorUpdateInput>;
 };
 
-
 export type MutationCreateMachineArgs = {
   name: Scalars['String'];
 };
-
 
 export type MutationCreateSensorArgs = {
   input?: Maybe<SensorInput>;
@@ -100,16 +101,13 @@ export type Query = {
   sensor?: Maybe<Sensor>;
 };
 
-
 export type QueryUserArgs = {
   id: Scalars['ID'];
 };
 
-
 export type QueryMachineArgs = {
   id: Scalars['ID'];
 };
-
 
 export type QuerySensorArgs = {
   machineId: Scalars['ID'];
@@ -172,12 +170,12 @@ export type SensorUpdateInput = {
 export enum Status {
   Nominal = 'Nominal',
   Moderate = 'Moderate',
-  Critical = 'Critical'
+  Critical = 'Critical',
 }
 
 export enum Unit {
   Mps2 = 'MPS2',
-  Mps2Rms = 'MPS2_RMS'
+  Mps2Rms = 'MPS2_RMS',
 }
 
 export type User = {
@@ -200,7 +198,6 @@ export type ResolversObject<TObject> = WithIndex<TObject>;
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
-
 export type LegacyStitchingResolver<TResult, TParent, TContext, TArgs> = {
   fragment: string;
   resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
@@ -210,7 +207,9 @@ export type NewStitchingResolver<TResult, TParent, TContext, TArgs> = {
   selectionSet: string;
   resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
 };
-export type StitchingResolver<TResult, TParent, TContext, TArgs> = LegacyStitchingResolver<TResult, TParent, TContext, TArgs> | NewStitchingResolver<TResult, TParent, TContext, TArgs>;
+export type StitchingResolver<TResult, TParent, TContext, TArgs> =
+  | LegacyStitchingResolver<TResult, TParent, TContext, TArgs>
+  | NewStitchingResolver<TResult, TParent, TContext, TArgs>;
 export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> =
   | ResolverFn<TResult, TParent, TContext, TArgs>
   | StitchingResolver<TResult, TParent, TContext, TArgs>;
@@ -236,9 +235,25 @@ export type SubscriptionResolveFn<TResult, TParent, TContext, TArgs> = (
   info: GraphQLResolveInfo
 ) => TResult | Promise<TResult>;
 
-export interface SubscriptionSubscriberObject<TResult, TKey extends string, TParent, TContext, TArgs> {
-  subscribe: SubscriptionSubscribeFn<{ [key in TKey]: TResult }, TParent, TContext, TArgs>;
-  resolve?: SubscriptionResolveFn<TResult, { [key in TKey]: TResult }, TContext, TArgs>;
+export interface SubscriptionSubscriberObject<
+  TResult,
+  TKey extends string,
+  TParent,
+  TContext,
+  TArgs
+> {
+  subscribe: SubscriptionSubscribeFn<
+    { [key in TKey]: TResult },
+    TParent,
+    TContext,
+    TArgs
+  >;
+  resolve?: SubscriptionResolveFn<
+    TResult,
+    { [key in TKey]: TResult },
+    TContext,
+    TArgs
+  >;
 }
 
 export interface SubscriptionResolverObject<TResult, TParent, TContext, TArgs> {
@@ -246,12 +261,26 @@ export interface SubscriptionResolverObject<TResult, TParent, TContext, TArgs> {
   resolve: SubscriptionResolveFn<TResult, any, TContext, TArgs>;
 }
 
-export type SubscriptionObject<TResult, TKey extends string, TParent, TContext, TArgs> =
+export type SubscriptionObject<
+  TResult,
+  TKey extends string,
+  TParent,
+  TContext,
+  TArgs
+> =
   | SubscriptionSubscriberObject<TResult, TKey, TParent, TContext, TArgs>
   | SubscriptionResolverObject<TResult, TParent, TContext, TArgs>;
 
-export type SubscriptionResolver<TResult, TKey extends string, TParent = {}, TContext = {}, TArgs = {}> =
-  | ((...args: any[]) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
+export type SubscriptionResolver<
+  TResult,
+  TKey extends string,
+  TParent = {},
+  TContext = {},
+  TArgs = {}
+> =
+  | ((
+      ...args: any[]
+    ) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
   | SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>;
 
 export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
@@ -260,11 +289,19 @@ export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
   info: GraphQLResolveInfo
 ) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
 
-export type IsTypeOfResolverFn<T = {}> = (obj: T, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
+export type IsTypeOfResolverFn<T = {}> = (
+  obj: T,
+  info: GraphQLResolveInfo
+) => boolean | Promise<boolean>;
 
 export type NextResolverFn<T> = () => Promise<T>;
 
-export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs = {}> = (
+export type DirectiveResolverFn<
+  TResult = {},
+  TParent = {},
+  TContext = {},
+  TArgs = {}
+> = (
   next: NextResolverFn<TResult>,
   parent: TParent,
   args: TArgs,
@@ -325,14 +362,22 @@ export type ResolversParentTypes = ResolversObject<{
   UserUpdatedResponse: UserUpdatedResponse;
 }>;
 
-export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
+export interface DateScalarConfig
+  extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
   name: 'Date';
 }
 
-export type MachineResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Machine'] = ResolversParentTypes['Machine']> = ResolversObject<{
+export type MachineResolvers<
+  ContextType = GraphQLContext,
+  ParentType extends ResolversParentTypes['Machine'] = ResolversParentTypes['Machine']
+> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  healthStatus?: Resolver<Maybe<ResolversTypes['Status']>, ParentType, ContextType>;
+  healthStatus?: Resolver<
+    Maybe<ResolversTypes['Status']>,
+    ParentType,
+    ContextType
+  >;
   sensors?: Resolver<Array<ResolversTypes['Sensor']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
@@ -368,26 +413,57 @@ export type MutationResponseResolvers<ContextType = GraphQLContext, ParentType e
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 }>;
 
-export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
-  machines?: Resolver<Array<ResolversTypes['Machine']>, ParentType, ContextType>;
-  machine?: Resolver<Maybe<ResolversTypes['Machine']>, ParentType, ContextType, RequireFields<QueryMachineArgs, 'id'>>;
-  sensor?: Resolver<Maybe<ResolversTypes['Sensor']>, ParentType, ContextType, RequireFields<QuerySensorArgs, 'machineId' | 'id'>>;
+export type QueryResolvers<
+  ContextType = GraphQLContext,
+  ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']
+> = ResolversObject<{
+  user?: Resolver<
+    Maybe<ResolversTypes['User']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryUserArgs, 'id'>
+  >;
+  machines?: Resolver<
+    Array<ResolversTypes['Machine']>,
+    ParentType,
+    ContextType
+  >;
+  machine?: Resolver<
+    Maybe<ResolversTypes['Machine']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryMachineArgs, 'id'>
+  >;
+  sensor?: Resolver<
+    Maybe<ResolversTypes['Sensor']>,
+    ParentType,
+    ContextType,
+    RequireFields<QuerySensorArgs, 'machineId' | 'id'>
+  >;
 }>;
 
-export type SampleResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Sample'] = ResolversParentTypes['Sample']> = ResolversObject<{
+export type SampleResolvers<
+  ContextType = GraphQLContext,
+  ParentType extends ResolversParentTypes['Sample'] = ResolversParentTypes['Sample']
+> = ResolversObject<{
   timestamp?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   value?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
 
-export type SampleChunkResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['SampleChunk'] = ResolversParentTypes['SampleChunk']> = ResolversObject<{
+export type SampleChunkResolvers<
+  ContextType = GraphQLContext,
+  ParentType extends ResolversParentTypes['SampleChunk'] = ResolversParentTypes['SampleChunk']
+> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   samples?: Resolver<Array<ResolversTypes['Sample']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
 
-export type SensorResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Sensor'] = ResolversParentTypes['Sensor']> = ResolversObject<{
+export type SensorResolvers<
+  ContextType = GraphQLContext,
+  ParentType extends ResolversParentTypes['Sensor'] = ResolversParentTypes['Sensor']
+> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   machineId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -395,11 +471,18 @@ export type SensorResolvers<ContextType = GraphQLContext, ParentType extends Res
   notificationStatus?: Resolver<Maybe<ResolversTypes['NotificationStatus']>, ParentType, ContextType>;
   threshold?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   unit?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  sampleChunks?: Resolver<Array<ResolversTypes['SampleChunk']>, ParentType, ContextType>;
+  sampleChunks?: Resolver<
+    Array<ResolversTypes['SampleChunk']>,
+    ParentType,
+    ContextType
+  >;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
 
-export type SensorCreationResponseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['SensorCreationResponse'] = ResolversParentTypes['SensorCreationResponse']> = ResolversObject<{
+export type SensorCreationResponseResolvers<
+  ContextType = GraphQLContext,
+  ParentType extends ResolversParentTypes['SensorCreationResponse'] = ResolversParentTypes['SensorCreationResponse']
+> = ResolversObject<{
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -423,7 +506,10 @@ export type UserResolvers<ContextType = GraphQLContext, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
 
-export type UserUpdatedResponseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['UserUpdatedResponse'] = ResolversParentTypes['UserUpdatedResponse']> = ResolversObject<{
+export type UserUpdatedResponseResolvers<
+  ContextType = GraphQLContext,
+  ParentType extends ResolversParentTypes['UserUpdatedResponse'] = ResolversParentTypes['UserUpdatedResponse']
+> = ResolversObject<{
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -446,7 +532,6 @@ export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
   User?: UserResolvers<ContextType>;
   UserUpdatedResponse?: UserUpdatedResponseResolvers<ContextType>;
 }>;
-
 
 /**
  * @deprecated

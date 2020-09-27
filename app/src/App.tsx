@@ -1,5 +1,6 @@
 import Menu from "./components/Menu";
-import Page from "./pages/Page";
+import Sensors from "./pages/Sensors";
+import Sensor from "./pages/Sensor";
 import React from "react";
 import { IonApp, IonRouterOutlet, IonSplitPane } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
@@ -26,6 +27,7 @@ import "./theme/variables.css";
 import "./theme/main.css";
 import { ApolloProvider } from "@apollo/client";
 import { apolloClient } from "./services/api/apolloClient";
+import Machines from "./pages/Machines";
 
 const App: React.FC = () => {
     return (
@@ -34,8 +36,10 @@ const App: React.FC = () => {
                 <ApolloProvider client={apolloClient}>
                     <IonSplitPane contentId="main">
                         <IonRouterOutlet id="main">
-                            <Route path="/page/:name" component={Page} exact />
-                            <Redirect from="/" to="/page/SensorData" exact />
+                            <Route path="/machine/:id" component={Sensors} exact />
+                            <Route path="/machine/:machineid/sensor/:id" component={Sensor} exact />
+                            <Route path="/machine" component={Machines} exact />
+                            <Redirect from="/" to="/machine" exact />
                         </IonRouterOutlet>
                     </IonSplitPane>
                 </ApolloProvider>

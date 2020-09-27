@@ -11,6 +11,7 @@ import { doThresholdDetection } from './thresholdDetection';
 
 const MAX_LINES_TO_PROCESS_PER_FILE = 30000; // TODO remove this limitation gracefully
 const MAX_FILES = 1000; // TODO remove this limitation gracefully (up to X files are processsed)
+const DELAY_IN_MILLISECONDS = 1000;
 const machineId = 'AD1AECvCTuMi29JF0WTC'; // TODO remove hardcode machineId and sensorId
 const sensorId = 'cUq2QVLOQCqKil6eq0El';
 
@@ -41,8 +42,15 @@ function findDataFileNamesInDir(absoluteDir: string): string[] {
   return fileNamesArray;
 }
 
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function processAllFiles(filePaths: string[]) {
   for (let i = 0; i < filePaths.length; i++) {
+    // delay for getting "real-time" data
+    await delay(DELAY_IN_MILLISECONDS);
+
     if (i < MAX_FILES) {
       await processInputDataFile(filePaths[i]);
     } else {
