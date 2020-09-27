@@ -20,15 +20,16 @@ import LineGraph from "../components/LineGraph";
 import { GET_SENSOR_BY_ID } from "../common/graphql/queries/sensors";
 // import { QuerySensorArgs } from "../types/types";
 // import { Scalars } from "../types/types";
+import { getLinkForSensor } from "../services/download/download";
 
 const Sensor: React.FC = () => {
     // const { machineId } = useParams<{ machineId: Scalars["ID"] }>();
     // const { id } = useParams<{ id: Scalars["ID"] }>();
-    const { machineId } = useParams<{ machineId: string }>();
+    const { machineid } = useParams<{ machineid: string }>();
     const { id } = useParams<{ id: string }>();
     // const tmp: QuerySensorArgs = { id: id, machineId: machineId };
     const sensor_data = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
-        variables: { machineId: machineId, id: id },
+        variables: { machineId: machineid, id: id },
     });
     console.log(sensor_data);
     const data = [
@@ -61,7 +62,13 @@ const Sensor: React.FC = () => {
                     <LineGraph title="Sensor Values" redThreshold={600} yellowThreshold={400} data={data} />
                 </div>
                 <div className="download text-center">
-                    <IonButton shape="round" color="light" className="responsive-width text-lg normal-case">
+                    <IonButton
+                        shape="round"
+                        color="light"
+                        className="responsive-width text-lg normal-case"
+                        download="sensor data"
+                        href={getLinkForSensor(machineid || "", id || "")}
+                    >
                         Download
                     </IonButton>
                 </div>
