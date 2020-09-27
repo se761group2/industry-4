@@ -30,7 +30,6 @@ const Sensor: React.FC = () => {
     const sensor_data = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
         variables: { machineId: machineId, id: id },
     });
-    console.log(sensor_data);
     const data = [
         { name: "1", value: 350 },
         { name: "2", value: 250 },

@@ -38,7 +38,7 @@ const App: React.FC = () => {
                         <IonRouterOutlet id="main">
                             <Route path="/machine/:id" component={Sensors} exact />
                             <Route path="/machine/:machineid/sensor/:id" component={Sensor} exact />
-                            <Route path="/machine/" component={Machines} exact />
+                            <Route path="/machine" component={Machines} exact />
                             <Redirect from="/" to="/machine" exact />
                         </IonRouterOutlet>
                     </IonSplitPane>

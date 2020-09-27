@@ -28,7 +28,6 @@ import Error404 from "../components/ErrorMessage";
 
 const Machines: React.FC = () => {
     const machinesQuery = useQuery<getMachines>(GET_MACHINES);
-    console.log(machinesQuery.data?.machines);
 
     // sort machines by health status
     // (critcal, moderate, nominal) happens to be alphabetical so currently just sorting alphabetically

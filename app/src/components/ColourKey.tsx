@@ -1,5 +1,6 @@
 import React from "react";
 import "./Component.css";
+import { statusColour } from "../common/StatusColour";
 
 const ColourKey: React.FC = () => {
     const statuses: string[] = ["Nominal", "Moderate", "Critical"];
@@ -7,13 +8,7 @@ const ColourKey: React.FC = () => {
     return (
         <div className="flex flex-row justify-evenly m-auto">
             {statuses?.map(function (status) {
-                if (status == "Nominal") {
-                    colour = "green";
-                } else if (status == "Moderate") {
-                    colour = "yellow";
-                } else if (status == "Critical") {
-                    colour = "red";
-                }
+                colour = statusColour(status);
                 return (
                     <div key={colour} className="flex flex-col text-center">
                         <div className="m-auto">
