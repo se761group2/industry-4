@@ -7,6 +7,12 @@
 // START Enums and Input Objects
 //==============================================================
 
+export enum NotificationStatus {
+  Acknowledged = "Acknowledged",
+  Unacknowledged = "Unacknowledged",
+  Working = "Working",
+}
+
 export enum Status {
   Critical = "Critical",
   Moderate = "Moderate",
@@ -26,6 +32,7 @@ export interface SensorInput {
 export interface SensorUpdateInput {
   name?: string | null;
   healthStatus?: Status | null;
+  notificationStatus?: NotificationStatus | null;
   threshold?: number | null;
   unit?: string | null;
 }

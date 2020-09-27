@@ -14,11 +14,12 @@ import { useParams } from "react-router";
 import HealthContainer from "../components/HealthContainer";
 import NotificationContainer from "../components/NotificationContainer";
 import "./Page.css";
-import { from, useQuery } from "@apollo/client";
+import { from, useQuery, useMutation } from "@apollo/client";
 import { getSensorById } from "../types/getSensorById";
 import Heading from "../components/Heading";
 import LineGraph from "../components/LineGraph";
 import { GET_SENSOR_BY_ID } from "../common/graphql/queries/sensors";
+import { UPDATE_SENSOR } from "../common/graphql/mutations/sensors";
 // import { QuerySensorArgs } from "../types/types";
 // import { Scalars } from "../types/types";
 import { getLinkForSensor } from "../services/download/download";
@@ -29,6 +30,7 @@ const Sensor: React.FC = () => {
     const { machineid } = useParams<{ machineid: string }>();
     const { id } = useParams<{ id: string }>();
     // const tmp: QuerySensorArgs = { id: id, machineId: machineId };
+    const [updateSensor] = useMutation(UPDATE_SENSOR);
     const sensor_data = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
         variables: { machineId: machineid, id: id },
     });
@@ -48,14 +50,16 @@ const Sensor: React.FC = () => {
         { name: "13", value: 650 },
         { name: "14", value: 425 },
     ];
-    const [functioning, setFunctioning] = useState(false);
-    const [acknowledged, setAcknowledged] = useState(false);
+    const [functioning, setFunctioning] = useState(sensor_data.data?.sensor?.notificationStatus == "Working");
+    const [acknowledged, setAcknowledged] = useState(sensor_data.data?.sensor?.notificationStatus == "Acknowledged");
 
     function handleAcknowledgement() {
+        updateSensor({ variables: { id: id, machineID: machineid, input: { notificationStatus: "Acknowledged" } } });
         setAcknowledged(true);
     }
 
     function handleFixing() {
+        updateSensor({ variables: { id: id, machineID: machineid, input: { notificationStatus: "Working" } } });
         setFunctioning(true);
     }
 

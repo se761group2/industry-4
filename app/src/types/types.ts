@@ -61,10 +61,17 @@ export type Sensor = {
     machineId: Scalars["ID"];
     name: Scalars["String"];
     healthStatus?: Maybe<Status>;
+    notificationStatus?: Maybe<NotificationStatus>;
     threshold?: Maybe<Scalars["Float"]>;
     unit: Scalars["String"];
     sampleChunks: Array<SampleChunk>;
 };
+
+export enum NotificationStatus {
+    Working = "Working",
+    Unacknowledged = "Unacknowledged",
+    Acknowledged = "Acknowledged",
+}
 
 export type SampleChunk = {
     __typename?: "SampleChunk";
@@ -132,6 +139,7 @@ export type MachineUpdatedResponse = MutationResponse & {
 export type SensorUpdateInput = {
     name?: Maybe<Scalars["String"]>;
     healthStatus?: Maybe<Status>;
+    notificationStatus?: Maybe<NotificationStatus>;
     threshold?: Maybe<Scalars["Float"]>;
     unit?: Maybe<Scalars["String"]>;
 };
