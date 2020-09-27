@@ -27,6 +27,7 @@ import "./theme/variables.css";
 import "./theme/main.css";
 import { ApolloProvider } from "@apollo/client";
 import { apolloClient } from "./services/api/apolloClient";
+import Machines from "./pages/Machines";
 
 const App: React.FC = () => {
     return (
@@ -37,6 +38,8 @@ const App: React.FC = () => {
                         <IonRouterOutlet id="main">
                             <Route path="/machine/:id" component={Sensors} exact />
                             <Route path="/machine/:machineid/sensor/:id" component={Sensor} exact />
+                            <Route path="/machine/" component={Machines} exact />
+                            <Redirect from="/" to="/machine" exact />
                         </IonRouterOutlet>
                     </IonSplitPane>
                 </ApolloProvider>

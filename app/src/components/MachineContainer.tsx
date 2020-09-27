@@ -1,28 +1,38 @@
 import React from "react";
+import "./Component.css";
+import img1 from "../images/1.jpg";
+import img2 from "../images/2.jpg";
+import img3 from "../images/3.jpg";
+import img4 from "../images/4.jpg";
+import img5 from "../images/ps5.jpg";
+import { Status } from "../types/globalTypes";
 
 interface ContainerProps {
     name: string;
-    health: number;
+    health: Status | null;
+    image: string;
 }
 
-const MachineContainer: React.FC<ContainerProps> = ({ name, health }) => {
+const MachineContainer: React.FC<ContainerProps> = ({ name, health, image }) => {
     let bg: string;
-    // health background colour
-    if (health == 1) {
+    if (health == "Nominal") {
         bg = "green";
-    } else if (health == 2) {
+    } else if (health == "Moderate") {
         bg = "yellow";
     } else {
         bg = "red";
     }
 
-    //
+    const images: string[] = [img1, img2, img3, img4, img5];
+    if (image == "random") {
+        image = images[Math.floor(Math.random() * images.length)];
+    }
+
     return (
-        <div className="flex justify-center text-black">
-            <div className={`rounded-lg shadow-xl font-bold text-lg responsive-width m-6 bg-${bg}-550`}>
-                <div className={"flex justify-center w-2/3 bg-white"}>
-                    <div className="truncate text-left text-black float-left m-2 ml-4">{name}</div>
-                </div>
+        <div className={`container-1 rounded-lg shadow-xl m-auto bg-${bg}-550`}>
+            <div className={"container-2 rounded flex flex-col justify-between text-center bg-white"}>
+                <img className="machine-image rounded" src={image} alt="Machine image" />
+                <div className="text-black font-bold text-lg">{name}</div>
             </div>
         </div>
     );

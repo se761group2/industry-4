@@ -50,7 +50,6 @@ const Sensor: React.FC = () => {
 
     return (
         <IonPage>
-            <link href="https://fonts.googleapis.com/css?family=Share Tech Mono" rel="stylesheet"></link>
             <Heading title={sensor_data.data?.sensor?.name} />
 
             <IonContent color="new">
