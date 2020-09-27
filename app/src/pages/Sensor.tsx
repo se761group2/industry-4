@@ -14,14 +14,23 @@ import { useParams } from "react-router";
 import HealthContainer from "../components/HealthContainer";
 import "./Page.css";
 import { from, useQuery } from "@apollo/client";
-import { GetUserById } from "../types/GetUserById";
-import { GET_USER_BY_ID } from "../common/graphql/queries/users";
+import { getSensorById } from "../types/getSensorById";
 import Heading from "../components/Heading";
 import LineGraph from "../components/LineGraph";
+import { GET_SENSOR_BY_ID } from "../common/graphql/queries/sensors";
+// import { QuerySensorArgs } from "../types/types";
+// import { Scalars } from "../types/types";
+import { getLinkForSensor } from "../services/download/download";
 
-const Page: React.FC = () => {
-    const { name } = useParams<{ name: string }>();
-
+const Sensor: React.FC = () => {
+    // const { machineId } = useParams<{ machineId: Scalars["ID"] }>();
+    // const { id } = useParams<{ id: Scalars["ID"] }>();
+    const { machineid } = useParams<{ machineid: string }>();
+    const { id } = useParams<{ id: string }>();
+    // const tmp: QuerySensorArgs = { id: id, machineId: machineId };
+    const sensor_data = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
+        variables: { machineId: machineid, id: id },
+    });
     const data = [
         { name: "1", value: 350 },
         { name: "2", value: 250 },
@@ -41,18 +50,23 @@ const Page: React.FC = () => {
 
     return (
         <IonPage>
-            <link href="https://fonts.googleapis.com/css?family=Share Tech Mono" rel="stylesheet"></link>
-            <Heading title="Industry 4.0" />
+            <Heading title={sensor_data.data?.sensor?.name} />
 
             <IonContent color="new">
-                <div className="statusBar h-16">
-                    <HealthContainer name={"Sensor name"} value={15} threshold={20} />
+                <div className=" h-16">
+                    <HealthContainer name={"Sensor name"} value={15} health={sensor_data.data?.sensor?.healthStatus} />
                 </div>
                 <div className="graph">
                     <LineGraph title="Sensor Values" redThreshold={600} yellowThreshold={400} data={data} />
                 </div>
                 <div className="download text-center">
-                    <IonButton shape="round" color="light" className="responsive-width text-lg normal-case">
+                    <IonButton
+                        shape="round"
+                        color="light"
+                        className="responsive-width text-lg normal-case"
+                        download="sensor data"
+                        href={getLinkForSensor(machineid || "", id || "")}
+                    >
                         Download
                     </IonButton>
                 </div>
@@ -61,4 +75,4 @@ const Page: React.FC = () => {
     );
 };
 
-export default Page;
+export default Sensor;

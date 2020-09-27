@@ -4,7 +4,9 @@ import { Redirect, Route, Switch } from "react-router";
 import { LoginPage } from "./pages/auth/LoginPage";
 import { UserContext } from "./pages/auth/UserProvider";
 import { FullPageLoader } from "./pages/FullPageLoader";
-import Page from "./pages/Page";
+import Machines from "./pages/Machines";
+import Sensor from "./pages/Sensor";
+import Sensors from "./pages/Sensors";
 import { useUserContext } from "./utils/useUserContext";
 const UnauthenticatedUserRoutes: React.FC = () => {
     return (
@@ -19,8 +21,10 @@ const AppRoutes: React.FC = () => {
     return (
         <>
             <Switch>
-                <Route path="/page/:name" component={Page} exact />
-                <Route path="/" render={() => <Redirect to={`/page/SensorData`} />} />
+                <Route path="/machine/:id" component={Sensors} exact />
+                <Route path="/machine/:machineid/sensor/:id" component={Sensor} exact />
+                <Route path="/machine" component={Machines} exact />
+                <Route path="/" render={() => <Redirect to={`/machine`} />} />
             </Switch>
         </>
     );

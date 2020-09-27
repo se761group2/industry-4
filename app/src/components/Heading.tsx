@@ -16,7 +16,7 @@ import { useUserContext } from "../utils/useUserContext";
 import { firebaseAuth } from "../services/firebase";
 
 interface HeadingProps {
-    title: string;
+    title: string | null | undefined;
 }
 
 const Heading: React.FC<HeadingProps> = ({ title }) => {
