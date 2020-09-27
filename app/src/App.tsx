@@ -47,6 +47,12 @@ const App: React.FC = () => {
                     <UserProvider>
                         <AppRouter />
                     </UserProvider>
+                    <IonSplitPane contentId="main">
+                        <IonRouterOutlet id="main">
+                            <Route path="/machine/:id" component={Sensors} exact />
+                            <Route path="/machine/:machineId/sensor/:id" component={Sensor} exact />
+                        </IonRouterOutlet>
+                    </IonSplitPane>
                 </ApolloProvider>
             </IonReactRouter>
         </IonApp>
