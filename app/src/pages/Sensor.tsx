@@ -74,8 +74,7 @@ const Sensor: React.FC = () => {
                 <div className=" h-16">
                     <HealthContainer
                         name={sensor_data.data?.sensor?.name}
-                        value={5}
-                        // value={sensor_data.data?.sensor?.sampleChunks[0]?.samples[0]}
+                        value={sensor_data.data?.sensor?.sampleChunks[0]?.samples[0]?.value}
                         health={sensor_data.data?.sensor?.healthStatus}
                     />
                 </div>
