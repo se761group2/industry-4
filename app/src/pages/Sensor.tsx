@@ -20,22 +20,16 @@ import Heading from "../components/Heading";
 import LineGraph from "../components/LineGraph";
 import { GET_SENSOR_BY_ID } from "../common/graphql/queries/sensors";
 import { UPDATE_SENSOR } from "../common/graphql/mutations/sensors";
-// import { QuerySensorArgs } from "../types/types";
-// import { Scalars } from "../types/types";
 import { getLinkForSensor } from "../services/download/download";
 
 const Sensor: React.FC = () => {
-    // const { machineId } = useParams<{ machineId: Scalars["ID"] }>();
-    // const { id } = useParams<{ id: Scalars["ID"] }>();
     const { machineid } = useParams<{ machineid: string }>();
     const { id } = useParams<{ id: string }>();
-    // const tmp: QuerySensorArgs = { id: id, machineId: machineId };
     const [updateSensor] = useMutation(UPDATE_SENSOR);
     const sensor_data = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
         variables: { machineId: machineid, id: id },
         fetchPolicy: "network-only",
     });
-
     const data = [
         { name: "1", value: 350 },
         { name: "2", value: 250 },
@@ -77,8 +71,13 @@ const Sensor: React.FC = () => {
             <Heading title={sensor_data.data?.sensor?.name} />
 
             <IonContent color="new">
-                <div className="responsive-width m-auto py-5 h-16">
-                    <HealthContainer name={"Sensor name"} value={15} health={sensor_data.data?.sensor?.healthStatus} />
+                <div className=" h-16">
+                    <HealthContainer
+                        name={sensor_data.data?.sensor?.name}
+                        value={5}
+                        // value={sensor_data.data?.sensor?.sampleChunks[0]?.samples[0]}
+                        health={sensor_data.data?.sensor?.healthStatus}
+                    />
                 </div>
                 {((!updated && sensor_data.data?.sensor?.notificationStatus == "Unacknowledged") || unacknowledged) && (
                     <NotificationContainer
