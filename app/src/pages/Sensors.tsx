@@ -3,6 +3,8 @@ import {
     IonButton,
     IonButtons,
     IonContent,
+    IonFab,
+    IonFabButton,
     IonHeader,
     IonIcon,
     IonPage,
@@ -20,6 +22,7 @@ import { Link } from "react-router-dom";
 import { useParams } from "react-router";
 import { GET_MACHINE_BY_ID, GET_MACHINES } from "../common/graphql/queries/machines";
 import Error404 from "../components/ErrorMessage";
+import { add } from "ionicons/icons";
 
 const Sensors: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -63,9 +66,11 @@ const Sensors: React.FC = () => {
                             <Error404 message="There are no sensors for this machine" />
                         )}
                         <div className="download text-center">
-                            <IonButton shape="round" color="light" className="m-4 responsive-width text-lg normal-case">
-                                Add Sensor
-                            </IonButton>
+                            <IonFab vertical="bottom" horizontal="center" slot="fixed">
+                                <IonFabButton color="light">
+                                    <IonIcon icon={add} />
+                                </IonFabButton>
+                            </IonFab>
                         </div>
                     </>
                 ) : (
