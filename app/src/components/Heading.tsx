@@ -13,7 +13,7 @@ import {
 import { ellipsisHorizontal, ellipsisVertical, personCircle, search } from "ionicons/icons";
 
 interface HeadingProps {
-    title: string;
+    title: string | null | undefined;
 }
 
 const Heading: React.FC<HeadingProps> = ({ title }) => {

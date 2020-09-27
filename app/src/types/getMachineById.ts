@@ -22,6 +22,7 @@ export interface getMachineById_machine_sensors_sampleChunks {
 
 export interface getMachineById_machine_sensors {
   __typename: "Sensor";
+  id: string;
   name: string;
   healthStatus: Status | null;
   unit: string;
