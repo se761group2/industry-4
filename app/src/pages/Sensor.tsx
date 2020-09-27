@@ -19,6 +19,7 @@ import Heading from "../components/Heading";
 import LineGraph from "../components/LineGraph";
 import { GET_SENSOR_BY_ID } from "../common/graphql/queries/sensors";
 import Error404 from "../components/ErrorMessage";
+import { getLinkForSensor } from "../services/download/download";
 
 const Sensor: React.FC = () => {
     const { machineId } = useParams<{ machineId: string }>();
@@ -75,7 +76,13 @@ const Sensor: React.FC = () => {
                             <Error404 message="There is no data for this sensor" />
                         )}
                         <div className="download text-center">
-                            <IonButton shape="round" color="light" className="responsive-width text-lg normal-case">
+                            <IonButton
+                                shape="round"
+                                color="light"
+                                className="responsive-width text-lg normal-case"
+                                download="sensor data"
+                                href={getLinkForSensor(machineId || "", id || "")}
+                            >
                                 Download
                             </IonButton>
                         </div>
