@@ -61,6 +61,7 @@ const Heading: React.FC<HeadingProps> = ({ title, showBackButton = true }) => {
                         <IonIcon slot="icon-only" icon={arrowBack}></IonIcon>
                     </IonButton>
                     <div className="block flex-grow">
+                        <link href="https://fonts.googleapis.com/css?family=Share Tech Mono" rel="stylesheet"></link>
                         <IonTitle className="text-2xl font-heading">{title ? title : "Industry 4.0"}</IonTitle>
                     </div>
                     <div className="flex flex-row justify-self-end items-center">
