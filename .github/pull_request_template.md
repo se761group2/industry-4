@@ -17,6 +17,7 @@ Remember to check the following
  - [ ] Tag specific people to review your PR
  - [ ] Update the ReadMe with any new run instructions
  - [ ] Closes the associated issue (if applicable)
+ - [ ] Updated kanban board
 
 ## Notes
 
