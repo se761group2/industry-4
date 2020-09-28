@@ -27,22 +27,32 @@ const Sensor: React.FC = () => {
         variables: { machineId: machineId, id: id },
     }).data?.sensor;
 
-    const formatTime = (unix_timestamp: number) => {
+    const getTime = (unix_timestamp: number) => {
         if (!unix_timestamp) return "unknown";
         const datetime = new Date(unix_timestamp * 1000);
         const hours = datetime.getHours();
         const minutes = "0" + datetime.getMinutes();
         return hours + ":" + minutes.substr(-2);
     };
+    const getDate = (unix_timestamp: number) => {
+        if (!unix_timestamp) return "unknown";
+        const datetime = new Date(unix_timestamp * 1000);
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const year = datetime.getFullYear();
+        const month = months[datetime.getMonth()];
+        const date = datetime.getDate();
+        return date + " " + month + " " + year;
+    };
 
     const samples = sensor?.sampleChunks[0]?.samples.slice(-20, -1);
+    const currentValue = sensor?.sampleChunks.slice(-1)[0]?.samples.slice(-1)[0];
 
     let data: { name: any; value: number }[];
     data = [];
 
     if (samples) {
         data = samples.map((sample) => {
-            return { name: formatTime(sample.timestamp?._seconds), value: sample.value };
+            return { name: getTime(sample.timestamp?._seconds), value: sample.value };
         });
     }
 
@@ -54,13 +64,13 @@ const Sensor: React.FC = () => {
             <IonContent color="new">
                 {sensor ? (
                     <>
-                        <HealthContainer
-                            name={sensor.name}
-                            value={sensor.sampleChunks.slice(-1)[0]?.samples.slice(-1)[0]?.value}
-                            health={sensor.healthStatus}
-                        />
-                        {sensor?.sampleChunks.slice(-1)[0]?.samples.slice(-1)[0] ? (
-                            <LineGraph title="Sensor Values" redThreshold={sensor?.threshold} data={data} />
+                        <HealthContainer name={sensor.name} value={currentValue?.value} health={sensor.healthStatus} />
+                        {data ? (
+                            <LineGraph
+                                title={`Sensor Values ~ ${getDate(currentValue?.timestamp?._seconds)}`}
+                                redThreshold={sensor?.threshold}
+                                data={data}
+                            />
                         ) : (
                             <Error404 message="There is no data for this sensor" />
                         )}
