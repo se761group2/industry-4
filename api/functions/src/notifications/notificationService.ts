@@ -9,8 +9,6 @@ if (process.env.NODE_ENV == 'development') {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
 }
 
-updateUsers();
-
 export function notifyUsers(threshold, recordedValue, sensorId, machineId) {
   const senderEmail = 'industry4errornotification@gmail.com';
   // This will be updated to send to the group of people who are tracking this machine
@@ -45,12 +43,10 @@ export async function updateUsers() {
   const faultySensors = [] as any;
   const sensorsRef = firestore.collection(`machines/${machineId}/sensors`);
   const sensors = await sensorsRef.get();
-  console.log(sensors);
   if (sensors == null || sensors == undefined) {
     console.log('There was an issue retrieving the machine data');
   } else {
     sensors.forEach((sensor) => {
-      console.log(sensor.data());
       if (sensor.data().notificationStatus == 'Unacknowledged') {
         faultySensors.push({
           sensorName: sensor.data().name,
@@ -58,8 +54,6 @@ export async function updateUsers() {
       }
     });
   }
-
-  console.log('hello');
 
   if (faultySensors.length != 0) {
     let emailMsg = 'Issues have been detected with the following sensors:<br/>';
@@ -73,8 +67,6 @@ export async function updateUsers() {
       'Please acknowledge and resolve these issues within the industry 4.0 application';
     // This will be updated to link the the application when we have it deployed
     emailMsg += '<a>Click here to visit the application</a>';
-
-    console.log('hello' + emailMsg);
 
     // Notify users which of their sensors are failing
     const senderEmail = 'industry4errornotification@gmail.com';
