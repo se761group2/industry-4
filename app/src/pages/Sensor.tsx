@@ -23,27 +23,19 @@ import Error404 from "../components/ErrorMessage";
 const Sensor: React.FC = () => {
     const { machineId } = useParams<{ machineId: string }>();
     const { id } = useParams<{ id: string }>();
-    const sensor_data = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
+    const sensor = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
         variables: { machineId: machineId, id: id },
-    });
+    }).data?.sensor;
 
     const formatTime = (unix_timestamp: number) => {
         if (!unix_timestamp) return "unknown";
         const datetime = new Date(unix_timestamp * 1000);
-        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        const month = months[datetime.getMonth()];
-        const date = datetime.getDate();
         const hours = datetime.getHours();
         const minutes = "0" + datetime.getMinutes();
-        // return date + " " + month + " " + hours + ":" + minutes.substr(-2);
         return hours + ":" + minutes.substr(-2);
     };
 
-    console.log("sensor_data", sensor_data);
-    console.log("sensor", sensor_data.data?.sensor);
-    console.log("sample chunks", sensor_data.data?.sensor?.sampleChunks[0]);
-    console.log("samples", sensor_data.data?.sensor?.sampleChunks[0]?.samples.slice(-20, -1));
-    const samples = sensor_data.data?.sensor?.sampleChunks[0]?.samples.slice(-20, -1);
+    const samples = sensor?.sampleChunks[0]?.samples.slice(-20, -1);
 
     let data: { name: any; value: number }[];
     data = [];
@@ -53,54 +45,34 @@ const Sensor: React.FC = () => {
             return { name: formatTime(sample.timestamp?._seconds), value: sample.value };
         });
     }
-    console.log("data", data);
-
-    // const data = [
-    //     { name: "1", value: 350 },
-    //     { name: "2", value: 250 },
-    //     { name: "3", value: 300 },
-    //     { name: "4", value: 325 },
-    //     { name: "5", value: 400 },
-    //     { name: "6", value: 450 },
-    //     { name: "7", value: 425 },
-    //     { name: "8", value: 450 },
-    //     { name: "9", value: 650 },
-    //     { name: "10", value: 300 },
-    //     { name: "11", value: 425 },
-    //     { name: "12", value: 700 },
-    //     { name: "13", value: 650 },
-    //     { name: "14", value: 425 },
-    // ];
 
     return (
         <IonPage>
             <link href="https://fonts.googleapis.com/css?family=Share Tech Mono" rel="stylesheet"></link>
-            <Heading title={sensor_data.data?.sensor?.name} />
+            <Heading title={sensor?.name} />
 
             <IonContent color="new">
-                <div className=" h-16">
-                    <HealthContainer
-                        name={sensor_data.data?.sensor?.name}
-                        value={sensor_data.data?.sensor?.sampleChunks.slice(-1)[0]?.samples.slice(-1)[0]?.value}
-                        health={sensor_data.data?.sensor?.healthStatus}
-                    />
-                </div>
-                {sensor_data.data?.sensor?.sampleChunks.slice(-1)[0]?.samples.slice(-1)[0] ? (
-                    <div className="graph">
-                        <LineGraph
-                            title="Sensor Values"
-                            redThreshold={sensor_data.data?.sensor?.threshold}
-                            data={data}
+                {sensor ? (
+                    <>
+                        <HealthContainer
+                            name={sensor.name}
+                            value={sensor.sampleChunks.slice(-1)[0]?.samples.slice(-1)[0]?.value}
+                            health={sensor.healthStatus}
                         />
-                    </div>
+                        {sensor?.sampleChunks.slice(-1)[0]?.samples.slice(-1)[0] ? (
+                            <LineGraph title="Sensor Values" redThreshold={sensor?.threshold} data={data} />
+                        ) : (
+                            <Error404 message="There is no data for this sensor" />
+                        )}
+                        <div className="download text-center">
+                            <IonButton shape="round" color="light" className="responsive-width text-lg normal-case">
+                                Download
+                            </IonButton>
+                        </div>
+                    </>
                 ) : (
-                    <Error404 message="There is no data for this sensor" />
+                    <Error404 message="Couldn't find the sensor you were looking for" />
                 )}
-                <div className="download text-center">
-                    <IonButton shape="round" color="light" className="responsive-width text-lg normal-case">
-                        Download
-                    </IonButton>
-                </div>
             </IonContent>
         </IonPage>
     );
