@@ -27,21 +27,17 @@ import "./theme/variables.css";
 import "./theme/main.css";
 import { ApolloProvider } from "@apollo/client";
 import { apolloClient } from "./services/api/apolloClient";
-import Machines from "./pages/Machines";
+import { AppRouter } from "./AppRouter";
+import UserProvider from "./pages/auth/UserProvider";
 
 const App: React.FC = () => {
     return (
         <IonApp>
             <IonReactRouter>
                 <ApolloProvider client={apolloClient}>
-                    <IonSplitPane contentId="main">
-                        <IonRouterOutlet id="main">
-                            <Route path="/machine/:id" component={Sensors} exact />
-                            <Route path="/machine/:machineid/sensor/:id" component={Sensor} exact />
-                            <Route path="/machine" component={Machines} exact />
-                            <Redirect from="/" to="/machine" exact />
-                        </IonRouterOutlet>
-                    </IonSplitPane>
+                    <UserProvider>
+                        <AppRouter />
+                    </UserProvider>
                 </ApolloProvider>
             </IonReactRouter>
         </IonApp>

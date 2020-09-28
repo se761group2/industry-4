@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+require('dotenv').config();
 import * as functions from 'firebase-functions';
 import { ConstructGraphQLServer } from './graphql/server';
 import { updateUsers } from './notifications/notificationService';
