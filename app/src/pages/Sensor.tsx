@@ -44,7 +44,7 @@ const Sensor: React.FC = () => {
         return date + " " + month + " " + year;
     };
 
-    const samples = sensor?.sampleChunks[0]?.samples.slice(-20, -1);
+    const samples = sensor?.sampleChunks[0]?.samples.slice(-20);
     const currentValue = sensor?.sampleChunks.slice(-1)[0]?.samples.slice(-1)[0];
 
     let data: { name: any; value: number }[];
