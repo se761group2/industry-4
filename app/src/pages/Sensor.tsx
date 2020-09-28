@@ -48,8 +48,12 @@ const Sensor: React.FC = () => {
         return date + " " + month + " " + year;
     };
 
+<<<<<<< HEAD
     const samples = sensor?.sampleChunks[0]?.samples.slice(-20);
     const currentValue = sensor?.sampleChunks.slice(-1)[0]?.samples.slice(-1)[0];
+=======
+    const samples = sensor?.sampleChunks[0]?.samples.slice(-20, -1);
+>>>>>>> 86a6c2b... Remove redundant code
 
     let data: { name: any; value: number }[];
     data = [];
