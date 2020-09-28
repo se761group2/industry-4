@@ -44,7 +44,7 @@ export function doThresholdDetection(rmsValue: number, machineId, sensorId) {
         if (!state.notified) {
           updateSensorNotificationStatus(machineId, sensorId);
         }
-        sendNotification(state.thresholdValue, rmsValue);
+        sendNotification(state.thresholdValue, rmsValue, machineId, sensorId);
       }
     } else {
       state.goodReadingCounter++;
@@ -89,7 +89,12 @@ function calculateThreshold() {
   return rmsMean + 6 * standardDeviation;
 }
 
-function sendNotification(thresholdValue: number, rmsValue: number) {
+function sendNotification(
+  thresholdValue: number,
+  rmsValue: number,
+  machineId,
+  sensorId
+) {
   /* TODO add checker for notification frequency (or do it somewhere else) 
        Currently this is done using a state.notified flag which ensures the email is only sent once,
        (for demo purposes)
@@ -98,7 +103,7 @@ function sendNotification(thresholdValue: number, rmsValue: number) {
   if (!state.notified) {
     // Hardcoded values for the sensor and machine ID were used, these will be changed
     // The values used for the IDs are not reflective of realistic IDs within the system.
-    notifyUsers(thresholdValue, rmsValue, 'A1', 'B2');
+    notifyUsers(thresholdValue, rmsValue, machineId, sensorId);
     state.notified = true;
   }
 }
