@@ -77,7 +77,7 @@ const Sensor: React.FC = () => {
             <Heading title={sensor_data.data?.sensor?.name} />
 
             <IonContent color="new">
-                <div className=" h-16">
+                <div className="responsive-width m-auto py-5 h-16">
                     <HealthContainer name={"Sensor name"} value={15} health={sensor_data.data?.sensor?.healthStatus} />
                 </div>
                 {((!updated && sensor_data.data?.sensor?.notificationStatus == "Unacknowledged") || unacknowledged) && (
@@ -94,7 +94,7 @@ const Sensor: React.FC = () => {
                         handleFixed={handleFixing}
                     />
                 )}
-                <div className="graph">
+                <div className="graph py-5">
                     <LineGraph title="Sensor Values" redThreshold={600} yellowThreshold={400} data={data} />
                 </div>
                 <div className="download text-center">

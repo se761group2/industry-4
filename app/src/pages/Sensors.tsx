@@ -53,24 +53,26 @@ const Sensors: React.FC = () => {
                                 .slice()
                                 .sort((a, b) => stringCompare(a.healthStatus, b.healthStatus))
                                 .map((sensor) => (
-                                    <Link to={`/machine/${id}/sensor/${sensor.id}`} key={sensor.id}>
-                                        <HealthContainer
-                                            name={sensor.name}
-                                            value={sensor.sampleChunks[0]?.samples[0]?.value}
-                                            health={sensor.healthStatus}
-                                        />
-                                    </Link>
+                                    <div className="responsive-width grid grid-cols-1 m-auto p-3" key={sensor.id}>
+                                        <Link to={`/machine/${id}/sensor/${sensor.id}`}>
+                                            <div className="darken-on-hover">
+                                                <HealthContainer
+                                                    name={sensor.name}
+                                                    value={sensor.sampleChunks[0]?.samples[0]?.value}
+                                                    health={sensor.healthStatus}
+                                                />
+                                            </div>
+                                        </Link>
+                                    </div>
                                 ))
                         ) : (
                             <Error404 message="There are no sensors for this machine" />
                         )}
-                        <div className="download text-center">
-                            <IonFab vertical="bottom" horizontal="center" slot="fixed">
-                                <IonFabButton color="light">
-                                    <IonIcon icon={add} />
-                                </IonFabButton>
-                            </IonFab>
-                        </div>
+                        <IonFab vertical="bottom" horizontal="center" slot="fixed">
+                            <IonFabButton color="light">
+                                <IonIcon icon={add} />
+                            </IonFabButton>
+                        </IonFab>
                     </>
                 ) : (
                     <Error404 message="This machine does not exist" />

@@ -4,19 +4,29 @@
     margin: auto;
 }
 
-.container-1 {
+.machine-container-1 {
     padding: 10px;
     height: 100%;
 }
 
-.container-2 {
+.machine-container-2 {
     padding: 10px;
     width: 100%;
     height: 100%;
+}
+
+.health-container-1 {
+    padding: 10px;
+    height: 47px;
+    padding: 10px 0;
 }
 
 .square {
     height: 15px;
     width: 15px;
     border-radius: 0.25rem;
+}
+
+.darken-on-hover:hover {
+    filter: brightness(85%);
 }
