@@ -57,7 +57,7 @@ const Sensors: React.FC = () => {
                                     <Link to={`/machine/${id}/sensor/${sensor.id}`} key={sensor.id}>
                                         <HealthContainer
                                             name={sensor.name}
-                                            value={sensor.sampleChunks[0]?.samples[0]?.value}
+                                            value={sensor.sampleChunks.slice(-1)[0]?.samples.slice(-1)[0]?.value}
                                             health={sensor.healthStatus}
                                         />
                                     </Link>
