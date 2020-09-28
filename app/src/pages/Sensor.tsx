@@ -33,6 +33,7 @@ const Sensor: React.FC = () => {
     const [updateSensor] = useMutation(UPDATE_SENSOR);
     const sensor_data = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
         variables: { machineId: machineid, id: id },
+        fetchPolicy: "network-only",
     });
     const data = [
         { name: "1", value: 350 },
