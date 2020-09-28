@@ -31,23 +31,34 @@ const Sensor: React.FC = () => {
         variables: { machineId: machineid, id: id },
         fetchPolicy: "network-only",
     });
-    const data = [
-        { name: "1", value: 350 },
-        { name: "2", value: 250 },
-        { name: "3", value: 300 },
-        { name: "4", value: 325 },
-        { name: "5", value: 400 },
-        { name: "6", value: 450 },
-        { name: "7", value: 425 },
-        { name: "8", value: 450 },
-        { name: "9", value: 650 },
-        { name: "10", value: 300 },
-        { name: "11", value: 425 },
-        { name: "12", value: 700 },
-        { name: "13", value: 650 },
-        { name: "14", value: 425 },
-    ];
-    console.log(sensor_data.data?.sensor?.notificationStatus);
+
+    const formatTime = (unix_timestamp: number) => {
+        if (!unix_timestamp) return "unknown";
+        const datetime = new Date(unix_timestamp * 1000);
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const month = months[datetime.getMonth()];
+        const date = datetime.getDate();
+        const hours = datetime.getHours();
+        const minutes = "0" + datetime.getMinutes();
+        // return date + " " + month + " " + hours + ":" + minutes.substr(-2);
+        return hours + ":" + minutes.substr(-2);
+    };
+
+    console.log("sensor_data", sensor_data);
+    console.log("sensor", sensor_data.data?.sensor);
+    console.log("sample chunks", sensor_data.data?.sensor?.sampleChunks[0]);
+    console.log("samples", sensor_data.data?.sensor?.sampleChunks[0]?.samples.slice(-20, -1));
+    const samples = sensor_data.data?.sensor?.sampleChunks[0]?.samples.slice(-20, -1);
+
+    let data: { name: any; value: number }[];
+    data = [];
+
+    if (samples) {
+        data = samples.map((sample) => {
+            return { name: formatTime(sample.timestamp?._seconds), value: sample.value };
+        });
+    }
+
     const [updated, setUpdated] = useState(false);
     const [unacknowledged, setUnacknowledged] = useState(
         sensor_data.data?.sensor?.notificationStatus == "Unacknowledged",
