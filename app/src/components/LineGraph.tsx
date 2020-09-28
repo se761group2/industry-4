@@ -63,7 +63,7 @@ const LineGraph: React.FC<LineGraphProps> = ({ title, data, redThreshold, yellow
     });
 
     return (
-        <div className="flex text-black">
+        <div className="flex justify-center text-black">
             <div className="bg-white rounded-lg items-center pt-4 pb-4 max-w-lg flex-grow">
                 <h1 className="text-xl text-center leading-normal">{title}</h1>
                 <LineChart
