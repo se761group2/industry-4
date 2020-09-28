@@ -18,6 +18,7 @@ import { getSensorById } from "../types/getSensorById";
 import Heading from "../components/Heading";
 import LineGraph from "../components/LineGraph";
 import { GET_SENSOR_BY_ID } from "../common/graphql/queries/sensors";
+import Error404 from "../components/ErrorMessage";
 
 const Sensor: React.FC = () => {
     const { machineId } = useParams<{ machineId: string }>();
@@ -58,9 +59,13 @@ const Sensor: React.FC = () => {
                         health={sensor_data.data?.sensor?.healthStatus}
                     />
                 </div>
-                <div className="graph">
-                    <LineGraph title="Sensor Values" redThreshold={600} yellowThreshold={400} data={data} />
-                </div>
+                {sensor_data.data?.sensor?.sampleChunks.slice(-1)[0]?.samples.slice(-1)[0] ? (
+                    <div className="graph">
+                        <LineGraph title="Sensor Values" redThreshold={600} yellowThreshold={400} data={data} />
+                    </div>
+                ) : (
+                    <Error404 message="There is no data for this sensor" />
+                )}
                 <div className="download text-center">
                     <IonButton shape="round" color="light" className="responsive-width text-lg normal-case">
                         Download
