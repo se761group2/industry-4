@@ -1,10 +1,17 @@
 import React from "react";
 import { CartesianGrid, DotProps, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from "recharts";
 
-type CustomDotProps = DotProps & { value?: number; redThreshold: number; yellowThreshold: number };
+type CustomDotProps = DotProps & { value?: number; redThreshold: number };
 
 const DotType: React.FC<CustomDotProps> = (props: CustomDotProps) => {
-    const { cx, cy, value, redThreshold, yellowThreshold } = props;
+    const { cx, cy, value, redThreshold } = props;
+    if (!redThreshold) {
+        return (
+            <svg x={(cx || 0) - 10} y={(cy || 0) - 10} width={20} height={20}>
+                <circle cx="10" cy="10" r="6" stroke="#8884df" strokeWidth="2" fill="white" />
+            </svg>
+        );
+    }
 
     if (value && value > redThreshold) {
         return (
@@ -17,7 +24,7 @@ const DotType: React.FC<CustomDotProps> = (props: CustomDotProps) => {
         );
     }
 
-    if (value && value > yellowThreshold) {
+    if (value && value > 0.9 * redThreshold) {
         return (
             <svg x={(cx || 0) - 10} y={(cy || 0) - 14} height="20" width="20">
                 <polygon points="10,0 20,20 0,20" fill="orange" />
@@ -38,11 +45,10 @@ const DotType: React.FC<CustomDotProps> = (props: CustomDotProps) => {
 interface LineGraphProps {
     title: string;
     data: { name: string; value: number }[];
-    redThreshold: number;
-    yellowThreshold: number;
+    redThreshold: number | null;
 }
 
-const LineGraph: React.FC<LineGraphProps> = ({ title, data, redThreshold, yellowThreshold }) => {
+const LineGraph: React.FC<LineGraphProps> = ({ title, data, redThreshold }) => {
     /* Keeps track of the window dimensions.  Updates when window resizes */
     const [dimensions, setDimensions] = React.useState({
         height: window.innerHeight,
@@ -78,7 +84,7 @@ const LineGraph: React.FC<LineGraphProps> = ({ title, data, redThreshold, yellow
                         stroke="#8884df"
                         isAnimationActive={false} // allows hollow dots to appear for unkown reason
                         activeDot={{ r: 8 }}
-                        dot={<DotType redThreshold={redThreshold} yellowThreshold={yellowThreshold} />}
+                        dot={<DotType redThreshold={redThreshold} />}
                     />
                     <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
                     <XAxis dataKey="name" />

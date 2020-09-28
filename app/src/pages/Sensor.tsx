@@ -87,7 +87,11 @@ const Sensor: React.FC = () => {
                 </div>
                 {sensor_data.data?.sensor?.sampleChunks.slice(-1)[0]?.samples.slice(-1)[0] ? (
                     <div className="graph">
-                        <LineGraph title="Sensor Values" redThreshold={600} yellowThreshold={400} data={data} />
+                        <LineGraph
+                            title="Sensor Values"
+                            redThreshold={sensor_data.data?.sensor?.threshold}
+                            data={data}
+                        />
                     </div>
                 ) : (
                     <Error404 message="There is no data for this sensor" />
