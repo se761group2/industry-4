@@ -51,17 +51,29 @@ const Sensor: React.FC = () => {
         { name: "13", value: 650 },
         { name: "14", value: 425 },
     ];
+    console.log(sensor_data.data?.sensor?.notificationStatus);
+    let notificationType = "Working";
+    if (sensor_data.data?.sensor?.notificationStatus == "Acknowledged") {
+        notificationType = "Acknowledged";
+    } else if (sensor_data.data?.sensor?.notificationStatus == "Unacknowledged") {
+        notificationType = "Unacknowledged";
+    }
     const [functioning, setFunctioning] = useState(sensor_data.data?.sensor?.notificationStatus == "Working");
     const [acknowledged, setAcknowledged] = useState(sensor_data.data?.sensor?.notificationStatus == "Acknowledged");
 
+    console.log(functioning);
+    console.log(acknowledged);
+
     function handleAcknowledgement() {
         updateSensor({ variables: { id: id, machineID: machineid, input: { notificationStatus: "Acknowledged" } } });
+        notificationType = "Acknowledged";
         setAcknowledged(true);
     }
 
     function handleFixing() {
         updateSensor({ variables: { id: id, machineID: machineid, input: { notificationStatus: "Working" } } });
         setFunctioning(true);
+        notificationType = "Working";
     }
 
     return (
@@ -72,14 +84,14 @@ const Sensor: React.FC = () => {
                 <div className=" h-16">
                     <HealthContainer name={"Sensor name"} value={15} health={sensor_data.data?.sensor?.healthStatus} />
                 </div>
-                {!functioning && !acknowledged && (
+                {notificationType == "Unacknowledged" && (
                     <NotificationContainer
                         type={"Acknowledgement"}
                         handleAcknowledge={handleAcknowledgement}
                         handleFixed={handleFixing}
                     />
                 )}
-                {!functioning && acknowledged && (
+                {notificationType == "Acknowledged" && (
                     <NotificationContainer
                         type={"Fixed"}
                         handleAcknowledge={handleAcknowledgement}

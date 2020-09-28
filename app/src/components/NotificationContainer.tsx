@@ -26,8 +26,8 @@ const NotificationContainer: React.FC<ContainerProps> = ({ type, handleAcknowled
                 {type == "Fixed" && (
                     <>
                         <div className="text-left text-black float-left m-2 ml-4 break-words pre">
-                            This machine/sensor is currently malfunctioning please fix the machine then mark it as fixed
-                            to turn notifications back on.
+                            This machine is malfunctioning. Please fix the machine then indicate below that it has been
+                            fixed to turn notifications back on.
                         </div>
                         <button
                             className="bg-red-500 hover:bg-red-700 text-white font-bold mb-3 py-2 px-4 rounded"
