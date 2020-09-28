@@ -1,5 +1,5 @@
 import { notifyUsers } from '../notifications/notificationService';
-import admin from 'firebase-admin';
+import { updateSensorNotificationStatus } from './storeTofirebase';
 
 interface ThresholdDetectionState {
   thresholdValue: number;
@@ -19,14 +19,7 @@ const state: ThresholdDetectionState = {
   rmsValues: [],
 };
 
-export const firebaseApp = admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
-  databaseURL: 'https://industry4-uoa.firebaseio.com',
-});
-
-const firestore = firebaseApp.firestore();
-
-export function doThresholdDetection(rmsValue: number) {
+export function doThresholdDetection(rmsValue: number, machineId, sensorId) {
   state.rmsValues.push(rmsValue);
   state.processedFileCount += 1;
 
@@ -48,7 +41,9 @@ export function doThresholdDetection(rmsValue: number) {
 
       if (state.badReadingCounter >= 10) {
         // TODO: Update this section to set the corresponding sensor notificationStatus value to unacknowledged
-        // firestore.collection()
+        if (!state.notified) {
+          updateSensorNotificationStatus(machineId, sensorId);
+        }
         sendNotification(state.thresholdValue, rmsValue);
       }
     } else {

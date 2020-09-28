@@ -1,10 +1,6 @@
 import admin from 'firebase-admin';
+import { firebaseApp } from '../firebase';
 import Timestamp = admin.firestore.Timestamp;
-
-export const firebaseApp = admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
-  databaseURL: 'https://industry4-uoa.firebaseio.com',
-});
 
 const firestore = firebaseApp.firestore();
 
@@ -82,6 +78,15 @@ export async function storeSingleRMSValue(
         console.error('Error writing document: ', error);
       });
   }
+}
+
+export async function updateSensorNotificationStatus(machineId, sensorId) {
+  await firestore
+    .collection(`machines/${machineId}/sensors`)
+    .doc(sensorId)
+    .update({
+      notificationStatus: 'Unacknowledged',
+    });
 }
 
 function timestampFromFilename(timestampStr: string): Timestamp {

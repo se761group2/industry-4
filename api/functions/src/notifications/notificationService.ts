@@ -1,12 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 import sgMail from '@sendgrid/mail';
-import admin from 'firebase-admin';
-
-export const firebaseApp = admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
-  databaseURL: 'https://industry4-uoa.firebaseio.com',
-});
+import { firebaseApp } from '../firebase';
 
 const firestore = firebaseApp.firestore();
 
@@ -40,7 +35,7 @@ export function notifyUsers(threshold, recordedValue, sensorId, machineId) {
       '<a>Click here to view the error</a>',
   };
 
-  sgMail.send(msg);
+  // sgMail.send(msg);
 }
 
 export async function updateUsers() {
@@ -94,6 +89,6 @@ export async function updateUsers() {
       html: emailMsg,
     };
 
-    sgMail.send(msg);
+    // sgMail.send(msg);
   }
 }
