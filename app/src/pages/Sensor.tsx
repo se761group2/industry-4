@@ -21,7 +21,6 @@ import LineGraph from "../components/LineGraph";
 import { GET_SENSOR_BY_ID } from "../common/graphql/queries/sensors";
 import { UPDATE_SENSOR } from "../common/graphql/mutations/sensors";
 import { getLinkForSensor } from "../services/download/download";
-import Error404 from "../components/ErrorMessage";
 
 const Sensor: React.FC = () => {
     const { machineId } = useParams<{ machineId: string }>();
