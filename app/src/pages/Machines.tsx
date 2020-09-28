@@ -11,7 +11,7 @@ import {
     IonTitle,
     IonToolbar,
 } from "@ionic/react";
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router";
 import MachineContainer from "../components/MachineContainer";
 import "./Page.css";
@@ -25,10 +25,11 @@ import { GET_MACHINES } from "../common/graphql/queries/machines";
 import { Link } from "react-router-dom";
 import ColourKey from "../components/ColourKey";
 import Error404 from "../components/ErrorMessage";
+import { AddMachineModal } from "./modals/AddMachineModal";
 
 const Machines: React.FC = () => {
     const machinesQuery = useQuery<getMachines>(GET_MACHINES);
-
+    const [addMachineOpen, setAddMachineOpen] = useState<boolean>(false);
     // sort machines by health status
     // (critcal, moderate, nominal) happens to be alphabetical so currently just sorting alphabetically
     let machines = machinesQuery.data?.machines;
@@ -36,7 +37,8 @@ const Machines: React.FC = () => {
 
     return (
         <IonPage>
-            <Heading title="Industry 4.0" />
+            <AddMachineModal open={addMachineOpen} setOpen={setAddMachineOpen} />
+            <Heading title="Industry 4.0" showBackButton={false} />
 
             <IonContent color="new">
                 {machines ? (
@@ -62,7 +64,7 @@ const Machines: React.FC = () => {
                     <Error404 message="There are no machines." />
                 )}
                 <IonFab vertical="bottom" horizontal="center" slot="fixed">
-                    <IonFabButton color="light">
+                    <IonFabButton color="light" onClick={() => setAddMachineOpen(true)}>
                         <IonIcon icon={add} />
                     </IonFabButton>
                 </IonFab>
