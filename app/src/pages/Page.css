@@ -41,3 +41,7 @@
     width: 90%;
     max-width: 600px;
 }
+
+.darken-on-hover:hover {
+    filter: brightness(85%);
+}

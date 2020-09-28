@@ -53,10 +53,10 @@ const Sensor: React.FC = () => {
             <Heading title={sensor_data.data?.sensor?.name} />
 
             <IonContent color="new">
-                <div className=" h-16">
+                <div className="responsive-width m-auto p-5 h-16">
                     <HealthContainer name={"Sensor name"} value={15} health={sensor_data.data?.sensor?.healthStatus} />
                 </div>
-                <div className="graph">
+                <div className="graph p-5">
                     <LineGraph title="Sensor Values" redThreshold={600} yellowThreshold={400} data={data} />
                 </div>
                 <div className="download text-center">

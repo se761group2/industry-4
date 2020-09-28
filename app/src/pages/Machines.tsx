@@ -44,7 +44,7 @@ const Machines: React.FC = () => {
                 {machines ? (
                     <>
                         <div className="responsive-width m-auto p-3">
-                            <ColourKey>Key</ColourKey>
+                            <ColourKey />
                         </div>
                         <div className="responsive-width grid grid-cols-2 gap-5 m-auto pb-3">
                             {machines?.map(function (machine) {
