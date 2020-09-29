@@ -1,35 +1,32 @@
-import {
-    IonBackButton,
-    IonButton,
-    IonButtons,
-    IonContent,
-    IonHeader,
-    IonIcon,
-    IonPage,
-    IonTitle,
-    IonToolbar,
-} from "@ionic/react";
-import React, { useEffect, useState } from "react";
+import { IonButton, IonContent, IonPage } from "@ionic/react";
+import React, { useState } from "react";
 import { useParams } from "react-router";
 import HealthContainer from "../components/HealthContainer";
 import NotificationContainer from "../components/NotificationContainer";
 import "./Page.css";
-import { from, useQuery, useMutation } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import { getSensorById } from "../types/getSensorById";
 import Heading from "../components/Heading";
 import LineGraph from "../components/LineGraph";
 import { GET_SENSOR_BY_ID } from "../common/graphql/queries/sensors";
 import { UPDATE_SENSOR } from "../common/graphql/mutations/sensors";
 import { getLinkForSensor } from "../services/download/download";
+import Error404 from "../components/ErrorMessage";
 
 const Sensor: React.FC = () => {
-    const { machineId } = useParams<{ machineId: string }>();
+    const { machineid } = useParams<{ machineid: string }>();
     const { id } = useParams<{ id: string }>();
     const [updateSensor] = useMutation(UPDATE_SENSOR);
     const sensor = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
-        variables: { machineId: machineId, id: id },
+        variables: { machineId: machineid, id: id },
         fetchPolicy: "network-only",
     }).data?.sensor;
+
+    console.log(
+        useQuery<getSensorById>(GET_SENSOR_BY_ID, {
+            variables: { machineId: machineid, id: id },
+        }),
+    );
 
     const getTime = (unix_timestamp: number) => {
         if (!unix_timestamp) return "unknown";
@@ -65,14 +62,14 @@ const Sensor: React.FC = () => {
     const [acknowledged, setAcknowledged] = useState(sensor?.notificationStatus == "Acknowledged");
 
     function handleAcknowledgement() {
-        updateSensor({ variables: { id: id, machineID: machineId, input: { notificationStatus: "Acknowledged" } } });
+        updateSensor({ variables: { id: id, machineID: machineid, input: { notificationStatus: "Acknowledged" } } });
         setUnacknowledged(false);
         setAcknowledged(true);
         setUpdated(true);
     }
 
     function handleFixing() {
-        updateSensor({ variables: { id: id, machineID: machineId, input: { notificationStatus: "Working" } } });
+        updateSensor({ variables: { id: id, machineID: machineid, input: { notificationStatus: "Working" } } });
         setAcknowledged(false);
         setUpdated(true);
     }
@@ -116,7 +113,7 @@ const Sensor: React.FC = () => {
                                 color="light"
                                 className="responsive-width text-lg normal-case m-4"
                                 download="sensor data"
-                                href={getLinkForSensor(machineId || "", id || "")}
+                                href={getLinkForSensor(machineid || "", id || "")}
                             >
                                 Download
                             </IonButton>
