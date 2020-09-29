@@ -84,7 +84,7 @@ async function processInputDataFile(filePath: string) {
   const rawDataFirstColumn = await readInputDataFile(filePath);
   const rmsValueFromFile = calculateRMS(rawDataFirstColumn);
   console.log('RMS value for ' + fileName + ': ' + rmsValueFromFile);
-  doThresholdDetection(rmsValueFromFile);
+  doThresholdDetection(rmsValueFromFile, machineId, sensorId);
 
   await storeSingleRMSValue(rmsValueFromFile, fileName, machineId, sensorId);
 }

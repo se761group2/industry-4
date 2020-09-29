@@ -79,7 +79,8 @@ const createSensor = async (machineId, sensorName): Promise<Sensor> => {
     .collection('sensors')
     .add({
       name: sensorName,
-      healthStatus: 'Nominal',
+      healthStatus: 'Critical',
+      notificationStatus: 'Working',
       threshold: null,
       unit: Unit.Mps2Rms,
     });
@@ -97,6 +98,7 @@ const updateSensor = async (
   sensorId,
   name: string | null | undefined,
   healthStatus: string | null | undefined,
+  notificationStatus: string | null | undefined,
   threshold: number | null | undefined,
   unit: string | null | undefined
 ): Promise<Sensor> => {
@@ -108,6 +110,7 @@ const updateSensor = async (
   const toUpdate = Object.entries({
     name,
     healthStatus,
+    notificationStatus,
     threshold,
     unit,
   }).filter(([_, v]) => v !== null && v !== undefined);

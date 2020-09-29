@@ -5,6 +5,7 @@ export const GET_SENSOR_BY_ID = gql`
         sensor(machineId: $machineId, id: $id) {
             name
             healthStatus
+            notificationStatus
             unit
             threshold
             sampleChunks {

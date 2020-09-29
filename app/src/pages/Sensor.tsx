@@ -9,15 +9,17 @@ import {
     IonTitle,
     IonToolbar,
 } from "@ionic/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import HealthContainer from "../components/HealthContainer";
+import NotificationContainer from "../components/NotificationContainer";
 import "./Page.css";
-import { from, useQuery } from "@apollo/client";
+import { from, useQuery, useMutation } from "@apollo/client";
 import { getSensorById } from "../types/getSensorById";
 import Heading from "../components/Heading";
 import LineGraph from "../components/LineGraph";
 import { GET_SENSOR_BY_ID } from "../common/graphql/queries/sensors";
+import { UPDATE_SENSOR } from "../common/graphql/mutations/sensors";
 // import { QuerySensorArgs } from "../types/types";
 // import { Scalars } from "../types/types";
 import { getLinkForSensor } from "../services/download/download";
@@ -28,9 +30,12 @@ const Sensor: React.FC = () => {
     const { machineid } = useParams<{ machineid: string }>();
     const { id } = useParams<{ id: string }>();
     // const tmp: QuerySensorArgs = { id: id, machineId: machineId };
+    const [updateSensor] = useMutation(UPDATE_SENSOR);
     const sensor_data = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
         variables: { machineId: machineid, id: id },
+        fetchPolicy: "network-only",
     });
+
     const data = [
         { name: "1", value: 350 },
         { name: "2", value: 250 },
@@ -47,6 +52,25 @@ const Sensor: React.FC = () => {
         { name: "13", value: 650 },
         { name: "14", value: 425 },
     ];
+    console.log(sensor_data.data?.sensor?.notificationStatus);
+    const [updated, setUpdated] = useState(false);
+    const [unacknowledged, setUnacknowledged] = useState(
+        sensor_data.data?.sensor?.notificationStatus == "Unacknowledged",
+    );
+    const [acknowledged, setAcknowledged] = useState(sensor_data.data?.sensor?.notificationStatus == "Acknowledged");
+
+    function handleAcknowledgement() {
+        updateSensor({ variables: { id: id, machineID: machineid, input: { notificationStatus: "Acknowledged" } } });
+        setUnacknowledged(false);
+        setAcknowledged(true);
+        setUpdated(true);
+    }
+
+    function handleFixing() {
+        updateSensor({ variables: { id: id, machineID: machineid, input: { notificationStatus: "Working" } } });
+        setAcknowledged(false);
+        setUpdated(true);
+    }
 
     return (
         <IonPage>
@@ -56,6 +80,20 @@ const Sensor: React.FC = () => {
                 <div className=" h-16">
                     <HealthContainer name={"Sensor name"} value={15} health={sensor_data.data?.sensor?.healthStatus} />
                 </div>
+                {((!updated && sensor_data.data?.sensor?.notificationStatus == "Unacknowledged") || unacknowledged) && (
+                    <NotificationContainer
+                        type={"Acknowledgement"}
+                        handleAcknowledge={handleAcknowledgement}
+                        handleFixed={handleFixing}
+                    />
+                )}
+                {((!updated && sensor_data.data?.sensor?.notificationStatus == "Acknowledged") || acknowledged) && (
+                    <NotificationContainer
+                        type={"Fixed"}
+                        handleAcknowledge={handleAcknowledgement}
+                        handleFixed={handleFixing}
+                    />
+                )}
                 <div className="graph">
                     <LineGraph title="Sensor Values" redThreshold={600} yellowThreshold={400} data={data} />
                 </div>

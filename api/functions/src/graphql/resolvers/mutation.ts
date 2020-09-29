@@ -32,6 +32,7 @@ export const mutationResolvers: MutationResolvers = {
       args.id,
       args.input?.name,
       args.input?.healthStatus,
+      args.input?.notificationStatus,
       args.input?.threshold,
       args.input?.unit
     )

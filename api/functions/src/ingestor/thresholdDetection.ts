@@ -1,9 +1,12 @@
-import { notifyUsers } from '../sendgrid/sendgrid';
+import { notifyUsers } from '../notifications/notificationService';
+import { updateSensorNotificationStatus } from './storeTofirebase';
 
 interface ThresholdDetectionState {
   thresholdValue: number;
   notified: boolean;
   processedFileCount: number;
+  badReadingCounter;
+  goodReadingCounter;
   rmsValues: number[];
 }
 
@@ -11,10 +14,12 @@ const state: ThresholdDetectionState = {
   thresholdValue: 0,
   notified: false,
   processedFileCount: 0,
+  badReadingCounter: 0,
+  goodReadingCounter: 0,
   rmsValues: [],
 };
 
-export function doThresholdDetection(rmsValue: number) {
+export function doThresholdDetection(rmsValue: number, machineId, sensorId) {
   state.rmsValues.push(rmsValue);
   state.processedFileCount += 1;
 
@@ -29,10 +34,24 @@ export function doThresholdDetection(rmsValue: number) {
           state.processedFileCount +
           ': Threshold of ' +
           state.thresholdValue +
-          ' met, notification being sent.'
+          ' met, Potential machine malfunction.'
       );
-      sendNotification(state.thresholdValue, rmsValue);
+      state.badReadingCounter++;
+      state.goodReadingCounter = 0;
+
+      if (state.badReadingCounter >= 10) {
+        // TODO: Update this section to set the corresponding sensor notificationStatus value to unacknowledged
+        if (!state.notified) {
+          updateSensorNotificationStatus(machineId, sensorId);
+        }
+        sendNotification(state.thresholdValue, rmsValue, machineId, sensorId);
+      }
     } else {
+      state.goodReadingCounter++;
+      // 5 consecutive readings above the threshold resets the bad reading counter
+      if (state.goodReadingCounter > 5) {
+        state.badReadingCounter = 0;
+      }
       console.log(
         'Record number ' +
           state.processedFileCount +
@@ -70,15 +89,21 @@ function calculateThreshold() {
   return rmsMean + 6 * standardDeviation;
 }
 
-function sendNotification(thresholdValue: number, rmsValue: number) {
+function sendNotification(
+  thresholdValue: number,
+  rmsValue: number,
+  machineId,
+  sensorId
+) {
   /* TODO add checker for notification frequency (or do it somewhere else) 
        Currently this is done using a state.notified flag which ensures the email is only sent once,
        (for demo purposes)
     */
+  // Update the db to reflect this issue.
   if (!state.notified) {
     // Hardcoded values for the sensor and machine ID were used, these will be changed
     // The values used for the IDs are not reflective of realistic IDs within the system.
-    notifyUsers(thresholdValue, rmsValue, 'A1', 'B2');
+    notifyUsers(thresholdValue, rmsValue, machineId, sensorId);
     state.notified = true;
   }
 }

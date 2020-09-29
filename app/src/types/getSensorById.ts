@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { Status } from "./globalTypes";
+import { Status, NotificationStatus } from "./globalTypes";
 
 // ====================================================
 // GraphQL query operation: getSensorById
@@ -24,6 +24,7 @@ export interface getSensorById_sensor {
   __typename: "Sensor";
   name: string;
   healthStatus: Status | null;
+  notificationStatus: NotificationStatus | null;
   unit: string;
   threshold: number | null;
   sampleChunks: getSensorById_sensor_sampleChunks[];
@@ -34,6 +35,6 @@ export interface getSensorById {
 }
 
 export interface getSensorByIdVariables {
-  id: string;
   machineId: string;
+  id: string;
 }
