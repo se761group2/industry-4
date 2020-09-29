@@ -9,7 +9,7 @@ import {
     IonTitle,
     IonToolbar,
 } from "@ionic/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import HealthContainer from "../components/HealthContainer";
 import NotificationContainer from "../components/NotificationContainer";
@@ -35,6 +35,7 @@ const Sensor: React.FC = () => {
         variables: { machineId: machineid, id: id },
         fetchPolicy: "network-only",
     });
+
     const data = [
         { name: "1", value: 350 },
         { name: "2", value: 250 },
@@ -52,28 +53,23 @@ const Sensor: React.FC = () => {
         { name: "14", value: 425 },
     ];
     console.log(sensor_data.data?.sensor?.notificationStatus);
-    let notificationType = "Working";
-    if (sensor_data.data?.sensor?.notificationStatus == "Acknowledged") {
-        notificationType = "Acknowledged";
-    } else if (sensor_data.data?.sensor?.notificationStatus == "Unacknowledged") {
-        notificationType = "Unacknowledged";
-    }
-    const [functioning, setFunctioning] = useState(sensor_data.data?.sensor?.notificationStatus == "Working");
+    const [updated, setUpdated] = useState(false);
+    const [unacknowledged, setUnacknowledged] = useState(
+        sensor_data.data?.sensor?.notificationStatus == "Unacknowledged",
+    );
     const [acknowledged, setAcknowledged] = useState(sensor_data.data?.sensor?.notificationStatus == "Acknowledged");
-
-    console.log(functioning);
-    console.log(acknowledged);
 
     function handleAcknowledgement() {
         updateSensor({ variables: { id: id, machineID: machineid, input: { notificationStatus: "Acknowledged" } } });
-        notificationType = "Acknowledged";
+        setUnacknowledged(false);
         setAcknowledged(true);
+        setUpdated(true);
     }
 
     function handleFixing() {
         updateSensor({ variables: { id: id, machineID: machineid, input: { notificationStatus: "Working" } } });
-        setFunctioning(true);
-        notificationType = "Working";
+        setAcknowledged(false);
+        setUpdated(true);
     }
 
     return (
@@ -84,14 +80,14 @@ const Sensor: React.FC = () => {
                 <div className=" h-16">
                     <HealthContainer name={"Sensor name"} value={15} health={sensor_data.data?.sensor?.healthStatus} />
                 </div>
-                {notificationType == "Unacknowledged" && (
+                {((!updated && sensor_data.data?.sensor?.notificationStatus == "Unacknowledged") || unacknowledged) && (
                     <NotificationContainer
                         type={"Acknowledgement"}
                         handleAcknowledge={handleAcknowledgement}
                         handleFixed={handleFixing}
                     />
                 )}
-                {notificationType == "Acknowledged" && (
+                {((!updated && sensor_data.data?.sensor?.notificationStatus == "Acknowledged") || acknowledged) && (
                     <NotificationContainer
                         type={"Fixed"}
                         handleAcknowledge={handleAcknowledgement}
