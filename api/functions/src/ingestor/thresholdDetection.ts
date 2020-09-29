@@ -34,7 +34,7 @@ export function doThresholdDetection(rmsValue: number, machineId, sensorId) {
           state.processedFileCount +
           ': Threshold of ' +
           state.thresholdValue +
-          ' met, notification being sent.'
+          ' met, Potential machine malfunction.'
       );
       state.badReadingCounter++;
       state.goodReadingCounter = 0;
