@@ -114,7 +114,7 @@ const Sensor: React.FC = () => {
                             <IonButton
                                 shape="round"
                                 color="light"
-                                className="responsive-width text-lg normal-case"
+                                className="responsive-width text-lg normal-case m-4"
                                 download="sensor data"
                                 href={getLinkForSensor(machineId || "", id || "")}
                             >
