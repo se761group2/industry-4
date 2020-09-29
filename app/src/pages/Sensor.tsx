@@ -22,12 +22,6 @@ const Sensor: React.FC = () => {
         fetchPolicy: "network-only",
     }).data?.sensor;
 
-    console.log(
-        useQuery<getSensorById>(GET_SENSOR_BY_ID, {
-            variables: { machineId: machineid, id: id },
-        }),
-    );
-
     const getTime = (unix_timestamp: number) => {
         if (!unix_timestamp) return "unknown";
         const datetime = new Date(unix_timestamp * 1000);
