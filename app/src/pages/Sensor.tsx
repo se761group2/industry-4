@@ -1,14 +1,4 @@
-import {
-    IonBackButton,
-    IonButton,
-    IonButtons,
-    IonContent,
-    IonHeader,
-    IonIcon,
-    IonPage,
-    IonTitle,
-    IonToolbar,
-} from "@ionic/react";
+import { IonButton, IonContent, IonPage } from "@ionic/react";
 import React from "react";
 import { useParams } from "react-router";
 import HealthContainer from "../components/HealthContainer";
@@ -22,11 +12,17 @@ import Error404 from "../components/ErrorMessage";
 import { getLinkForSensor } from "../services/download/download";
 
 const Sensor: React.FC = () => {
-    const { machineId } = useParams<{ machineId: string }>();
+    const { machineid } = useParams<{ machineid: string }>();
     const { id } = useParams<{ id: string }>();
     const sensor = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
         variables: { machineId: machineid, id: id },
     }).data?.sensor;
+
+    console.log(
+        useQuery<getSensorById>(GET_SENSOR_BY_ID, {
+            variables: { machineId: machineid, id: id },
+        }),
+    );
 
     const getTime = (unix_timestamp: number) => {
         if (!unix_timestamp) return "unknown";
@@ -81,7 +77,7 @@ const Sensor: React.FC = () => {
                                 color="light"
                                 className="responsive-width text-lg normal-case m-4"
                                 download="sensor data"
-                                href={getLinkForSensor(machineId || "", id || "")}
+                                href={getLinkForSensor(machineid || "", id || "")}
                             >
                                 Download
                             </IonButton>
