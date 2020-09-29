@@ -23,8 +23,8 @@ const MachineContainer: React.FC<ContainerProps> = ({ name, health, image }) => 
     }
 
     return (
-        <div className={`container-1 rounded-lg shadow-xl m-auto bg-${bg}-550`}>
-            <div className={"container-2 rounded flex flex-col justify-between text-center bg-white"}>
+        <div className={`machine-container-1 rounded-lg shadow-xl m-auto bg-${bg}-550 darken-on-hover`}>
+            <div className={"machine-container-2 rounded flex flex-col justify-between text-center bg-white"}>
                 <img className="machine-image rounded" src={image} alt="Machine image" />
                 <div className="text-black font-bold text-lg">{name}</div>
             </div>
