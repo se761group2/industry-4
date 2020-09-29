@@ -23,7 +23,8 @@ export const LoginPage: React.FC<any> = () => {
             <IonContent color="new">
                 <div className=" h-full w-full items-center flex justify-center flex-col">
                     <div className="text-center my-4">
-                        <IonTitle className="text-4xl text-gray-100 font-heading">Industry 4.0</IonTitle>
+                        <link href="https://fonts.googleapis.com/css?family=Share Tech Mono" rel="stylesheet"></link>
+                        <IonTitle className="text-5xl font-heading">Industry 4.0</IonTitle>
                         <h2 className="text-2xl text-gray-300 font-heading">
                             Monitor your machines like never before.
                         </h2>
