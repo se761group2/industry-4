@@ -91,7 +91,13 @@ const Sensor: React.FC = () => {
             <IonContent color="new">
                 {sensor ? (
                     <>
-                        <HealthContainer name={sensor.name} value={currentValue?.value} health={sensor.healthStatus} />
+                        <div className="responsive-width m-auto py-5 h-16">
+                            <HealthContainer
+                                name={sensor.name}
+                                value={currentValue?.value}
+                                health={sensor.healthStatus}
+                            />
+                        </div>
                         {data ? (
                             <LineGraph
                                 title={`Sensor Values ~ ${getDate(currentValue?.timestamp?._seconds)}`}

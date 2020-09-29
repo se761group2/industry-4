@@ -53,13 +53,19 @@ const Sensors: React.FC = () => {
                                 .slice()
                                 .sort((a, b) => stringCompare(a.healthStatus, b.healthStatus))
                                 .map((sensor) => (
-                                    <Link to={`/machine/${id}/sensor/${sensor.id}`} key={sensor.id}>
-                                        <HealthContainer
-                                            name={sensor.name}
-                                            value={sensor.sampleChunks.slice(-1)[0]?.samples.slice(-1)[0]?.value}
-                                            health={sensor.healthStatus}
-                                        />
-                                    </Link>
+                                    <div className="responsive-width grid grid-cols-1 m-auto p-3" key={sensor.id}>
+                                        <Link to={`/machine/${id}/sensor/${sensor.id}`}>
+                                            <div className="darken-on-hover">
+                                                <HealthContainer
+                                                    name={sensor.name}
+                                                    value={
+                                                        sensor.sampleChunks.slice(-1)[0]?.samples.slice(-1)[0]?.value
+                                                    }
+                                                    health={sensor.healthStatus}
+                                                />
+                                            </div>
+                                        </Link>
+                                    </div>
                                 ))
                         ) : (
                             <Error404 message="There are no sensors for this machine" />
