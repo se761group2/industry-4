@@ -25,7 +25,7 @@ const Sensor: React.FC = () => {
     const { machineId } = useParams<{ machineId: string }>();
     const { id } = useParams<{ id: string }>();
     const sensor = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
-        variables: { machineId: machineId, id: id },
+        variables: { machineId: machineid, id: id },
     }).data?.sensor;
 
     const getTime = (unix_timestamp: number) => {
@@ -79,7 +79,7 @@ const Sensor: React.FC = () => {
                             <IonButton
                                 shape="round"
                                 color="light"
-                                className="responsive-width text-lg normal-case"
+                                className="responsive-width text-lg normal-case m-4"
                                 download="sensor data"
                                 href={getLinkForSensor(machineId || "", id || "")}
                             >

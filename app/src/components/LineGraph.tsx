@@ -70,10 +70,10 @@ const LineGraph: React.FC<LineGraphProps> = ({ title, data, redThreshold }) => {
 
     return (
         <div className="flex justify-center text-black">
-            <div className="bg-white rounded-lg items-center pt-4 pb-4 max-w-lg flex-grow">
+            <div className="bg-white rounded-lg shadow-xl pt-4 pb-4 responsive-width m-4 ">
                 <h1 className="text-xl text-center leading-normal">{title}</h1>
                 <LineChart
-                    width={dimensions.width > 588 ? 512 : dimensions.width - 46}
+                    width={dimensions.width > 655 ? 590 : dimensions.width - 70}
                     height={300}
                     data={data}
                     margin={{ top: 20, right: 30, bottom: 5, left: 0 }}
