@@ -46,7 +46,7 @@ const Machines: React.FC = () => {
                         <div className="responsive-width m-auto p-3">
                             <ColourKey />
                         </div>
-                        <div className="responsive-width grid grid-cols-2 gap-5 m-auto pb-3">
+                        <div className="responsive-width grid grid-cols-2 gap-5 m-auto pb-20">
                             {machines?.map(function (machine) {
                                 return (
                                     <Link to={`/machine/${machine.id}`} key={machine.id}>
