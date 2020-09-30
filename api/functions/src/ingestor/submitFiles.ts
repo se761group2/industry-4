@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require('dotenv').config();
 import fs from 'fs';
 import fetch, { RequestInit } from 'node-fetch';
 import os from 'os';
