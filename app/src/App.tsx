@@ -29,7 +29,6 @@ import { ApolloProvider } from "@apollo/client";
 import { apolloClient } from "./services/api/apolloClient";
 import { AppRouter } from "./AppRouter";
 import UserProvider from "./pages/auth/UserProvider";
-import Profile from "./pages/Profile";
 
 const App: React.FC = () => {
     return (
@@ -41,8 +40,7 @@ const App: React.FC = () => {
                             <Route path="/machine/:id" component={Sensors} exact />
                             <Route path="/machine/:machineid/sensor/:id" component={Sensor} exact />
                             <Route path="/machine" component={Machines} exact />
-                            <Route path="/profile" component={Profile} exact />
-                            <Redirect from="/" to="/profile" exact />
+                            <Redirect from="/" to="/machine" exact />
                         </IonRouterOutlet>
                     </IonSplitPane>
                     <UserProvider>
