@@ -5,6 +5,7 @@ import { LoginPage } from "./pages/auth/LoginPage";
 import { UserContext } from "./pages/auth/UserProvider";
 import { FullPageLoader } from "./pages/FullPageLoader";
 import Machines from "./pages/Machines";
+import Profile from "./pages/Profile";
 import Sensor from "./pages/Sensor";
 import Sensors from "./pages/Sensors";
 import { useUserContext } from "./utils/useUserContext";
@@ -23,7 +24,7 @@ const AppRoutes: React.FC = () => {
             <Switch>
                 <Route path="/machine/:id" component={Sensors} exact />
                 <Route path="/machine/:machineid/sensor/:id" component={Sensor} exact />
-                <Route path="/machine" component={Machines} exact />
+                <Route path="/profile" component={Profile} exact />
                 <Route path="/" render={() => <Redirect to={`/machine`} />} />
             </Switch>
         </>
