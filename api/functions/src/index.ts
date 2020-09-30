@@ -4,6 +4,7 @@ import * as functions from 'firebase-functions';
 import { ConstructGraphQLServer } from './graphql/server';
 import { updateUsers } from './notifications/notificationService';
 import { ConstructFileDownloadServer } from './downloads/server';
+import { ConstructIngestorServer } from './ingestor/server';
 
 const USCentralRegion = functions.SUPPORTED_REGIONS[0];
 exports.graph = functions
@@ -16,3 +17,6 @@ exports.notify = functions.pubsub
 exports.download = functions
   .region(USCentralRegion)
   .https.onRequest(ConstructFileDownloadServer());
+exports.ingestor = functions
+  .region(USCentralRegion)
+  .https.onRequest(ConstructIngestorServer());
