@@ -48,34 +48,30 @@ const Sensors: React.FC = () => {
             <IonContent color="new">
                 {machine_data.data?.machine ? (
                     <>
-                        {sensors ? (
-                            sensors
-                                .slice()
-                                .sort((a, b) => stringCompare(a.healthStatus, b.healthStatus))
-                                .map((sensor) => (
-                                    <div className="responsive-width grid grid-cols-1 m-auto p-3" key={sensor.id}>
-                                        <Link to={`/machine/${id}/sensor/${sensor.id}`}>
-                                            <div className="darken-on-hover">
-                                                <HealthContainer
-                                                    name={sensor.name}
-                                                    value={
-                                                        sensor.sampleChunks.slice(-1)[0]?.samples.slice(-1)[0]?.value
-                                                    }
-                                                    health={sensor.healthStatus}
-                                                />
-                                            </div>
-                                        </Link>
-                                    </div>
-                                ))
-                        ) : (
-                            <Error404 message="There are no sensors for this machine" />
-                        )}
-                        <div className="download text-center">
-                            <IonFab vertical="bottom" horizontal="center" slot="fixed">
-                                <IonFabButton color="light">
-                                    <IonIcon icon={add} />
-                                </IonFabButton>
-                            </IonFab>
+                        <div className="pb-20">
+                            {sensors ? (
+                                sensors
+                                    .slice()
+                                    .sort((a, b) => stringCompare(a.healthStatus, b.healthStatus))
+                                    .map((sensor) => (
+                                        <div className="responsive-width grid grid-cols-1 m-auto p-3" key={sensor.id}>
+                                            <Link to={`/machine/${id}/sensor/${sensor.id}`}>
+                                                <div className="darken-on-hover">
+                                                    <HealthContainer
+                                                        name={sensor.name}
+                                                        value={
+                                                            sensor.sampleChunks.slice(-1)[0]?.samples.slice(-1)[0]
+                                                                ?.value
+                                                        }
+                                                        health={sensor.healthStatus}
+                                                    />
+                                                </div>
+                                            </Link>
+                                        </div>
+                                    ))
+                            ) : (
+                                <Error404 message="There are no sensors for this machine" />
+                            )}
                         </div>
                         <IonFab vertical="bottom" horizontal="center" slot="fixed">
                             <IonFabButton color="light">
