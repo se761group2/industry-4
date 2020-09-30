@@ -14,6 +14,7 @@ export interface createMachine_createMachine_machine {
   id: string;
   name: string;
   healthStatus: Status | null;
+  image: string;
 }
 
 export interface createMachine_createMachine {
@@ -27,4 +28,5 @@ export interface createMachine {
 
 export interface createMachineVariables {
   name: string;
+  image: string;
 }

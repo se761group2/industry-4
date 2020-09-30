@@ -22,6 +22,7 @@ export enum Status {
 export interface MachineUpdateInput {
   name?: string | null;
   healthStatus?: Status | null;
+  image?: string | null;
 }
 
 export interface SensorInput {

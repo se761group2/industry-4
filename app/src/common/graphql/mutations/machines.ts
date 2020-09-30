@@ -1,12 +1,13 @@
 import { gql } from "@apollo/client";
 
 export const CREATE_MACHINE = gql`
-    mutation createMachine($name: String!) {
-        createMachine(name: $name) {
+    mutation createMachine($name: String!, $image: String!) {
+        createMachine(name: $name, image: $image) {
             machine {
                 id
                 name
                 healthStatus
+                image
             }
         }
     }
@@ -19,6 +20,7 @@ export const UPDATE_MACHINE = gql`
                 id
                 name
                 healthStatus
+                image
             }
         }
     }

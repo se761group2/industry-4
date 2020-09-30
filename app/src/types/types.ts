@@ -46,6 +46,7 @@ export type Machine = {
     id: Scalars["ID"];
     name: Scalars["String"];
     healthStatus?: Maybe<Status>;
+    image: Scalars["String"];
     sensors: Array<Sensor>;
 };
 
@@ -111,6 +112,7 @@ export type MutationUpdateSensorArgs = {
 
 export type MutationCreateMachineArgs = {
     name: Scalars["String"];
+    image: Scalars["String"];
 };
 
 export type MutationCreateSensorArgs = {
@@ -126,6 +128,7 @@ export type MutationResponse = {
 export type MachineUpdateInput = {
     name?: Maybe<Scalars["String"]>;
     healthStatus?: Maybe<Status>;
+    image?: Maybe<Scalars["String"]>;
 };
 
 export type MachineUpdatedResponse = MutationResponse & {
