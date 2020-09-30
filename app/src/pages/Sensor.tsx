@@ -1,63 +1,59 @@
-import {
-    IonBackButton,
-    IonButton,
-    IonButtons,
-    IonContent,
-    IonHeader,
-    IonIcon,
-    IonPage,
-    IonTitle,
-    IonToolbar,
-} from "@ionic/react";
-import React, { useEffect, useState } from "react";
+import { IonButton, IonContent, IonPage } from "@ionic/react";
+import React, { useState } from "react";
 import { useParams } from "react-router";
 import HealthContainer from "../components/HealthContainer";
 import NotificationContainer from "../components/NotificationContainer";
 import "./Page.css";
-import { from, useQuery, useMutation } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import { getSensorById } from "../types/getSensorById";
 import Heading from "../components/Heading";
 import LineGraph from "../components/LineGraph";
 import { GET_SENSOR_BY_ID } from "../common/graphql/queries/sensors";
 import { UPDATE_SENSOR } from "../common/graphql/mutations/sensors";
-// import { QuerySensorArgs } from "../types/types";
-// import { Scalars } from "../types/types";
 import { getLinkForSensor } from "../services/download/download";
+import Error404 from "../components/ErrorMessage";
 
 const Sensor: React.FC = () => {
-    // const { machineId } = useParams<{ machineId: Scalars["ID"] }>();
-    // const { id } = useParams<{ id: Scalars["ID"] }>();
     const { machineid } = useParams<{ machineid: string }>();
     const { id } = useParams<{ id: string }>();
-    // const tmp: QuerySensorArgs = { id: id, machineId: machineId };
     const [updateSensor] = useMutation(UPDATE_SENSOR);
-    const sensor_data = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
+    const sensor = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
         variables: { machineId: machineid, id: id },
         fetchPolicy: "network-only",
-    });
+    }).data?.sensor;
 
-    const data = [
-        { name: "1", value: 350 },
-        { name: "2", value: 250 },
-        { name: "3", value: 300 },
-        { name: "4", value: 325 },
-        { name: "5", value: 400 },
-        { name: "6", value: 450 },
-        { name: "7", value: 425 },
-        { name: "8", value: 450 },
-        { name: "9", value: 650 },
-        { name: "10", value: 300 },
-        { name: "11", value: 425 },
-        { name: "12", value: 700 },
-        { name: "13", value: 650 },
-        { name: "14", value: 425 },
-    ];
-    console.log(sensor_data.data?.sensor?.notificationStatus);
+    const getTime = (unix_timestamp: number) => {
+        if (!unix_timestamp) return "unknown";
+        const datetime = new Date(unix_timestamp * 1000);
+        const hours = datetime.getHours();
+        const minutes = "0" + datetime.getMinutes();
+        return hours + ":" + minutes.substr(-2);
+    };
+    const getDate = (unix_timestamp: number) => {
+        if (!unix_timestamp) return "unknown";
+        const datetime = new Date(unix_timestamp * 1000);
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const year = datetime.getFullYear();
+        const month = months[datetime.getMonth()];
+        const date = datetime.getDate();
+        return date + " " + month + " " + year;
+    };
+
+    const samples = sensor?.sampleChunks[0]?.samples.slice(-20);
+    const currentValue = sensor?.sampleChunks.slice(-1)[0]?.samples.slice(-1)[0];
+
+    let data: { name: any; value: number }[];
+    data = [];
+
+    if (samples) {
+        data = samples.map((sample) => {
+            return { name: getTime(sample.timestamp?._seconds), value: sample.value };
+        });
+    }
+
     const [updated, setUpdated] = useState(false);
-    const [unacknowledged, setUnacknowledged] = useState(
-        sensor_data.data?.sensor?.notificationStatus == "Unacknowledged",
-    );
-    const [acknowledged, setAcknowledged] = useState(sensor_data.data?.sensor?.notificationStatus == "Acknowledged");
+    const [unacknowledged, setUnacknowledged] = useState(sensor?.notificationStatus == "Unacknowledged");
+    const [acknowledged, setAcknowledged] = useState(sensor?.notificationStatus == "Acknowledged");
 
     function handleAcknowledgement() {
         updateSensor({ variables: { id: id, machineID: machineid, input: { notificationStatus: "Acknowledged" } } });
@@ -74,40 +70,58 @@ const Sensor: React.FC = () => {
 
     return (
         <IonPage>
-            <Heading title={sensor_data.data?.sensor?.name} />
+            <link href="https://fonts.googleapis.com/css?family=Share Tech Mono" rel="stylesheet"></link>
+            <Heading title={sensor?.name} />
+
+            {((!updated && sensor?.notificationStatus == "Unacknowledged") || unacknowledged) && (
+                <NotificationContainer
+                    type={"Acknowledgement"}
+                    handleAcknowledge={handleAcknowledgement}
+                    handleFixed={handleFixing}
+                />
+            )}
+            {((!updated && sensor?.notificationStatus == "Acknowledged") || acknowledged) && (
+                <NotificationContainer
+                    type={"Fixed"}
+                    handleAcknowledge={handleAcknowledgement}
+                    handleFixed={handleFixing}
+                />
+            )}
 
             <IonContent color="new">
-                <div className="responsive-width m-auto py-5 h-16">
-                    <HealthContainer name={"Sensor name"} value={15} health={sensor_data.data?.sensor?.healthStatus} />
-                </div>
-                {((!updated && sensor_data.data?.sensor?.notificationStatus == "Unacknowledged") || unacknowledged) && (
-                    <NotificationContainer
-                        type={"Acknowledgement"}
-                        handleAcknowledge={handleAcknowledgement}
-                        handleFixed={handleFixing}
-                    />
+                {sensor ? (
+                    <>
+                        <div className="responsive-width m-auto py-5 h-16">
+                            <HealthContainer
+                                name={sensor.name}
+                                value={currentValue?.value}
+                                health={sensor.healthStatus}
+                            />
+                        </div>
+                        {data ? (
+                            <LineGraph
+                                title={`Sensor Values ~ ${getDate(currentValue?.timestamp?._seconds)}`}
+                                redThreshold={sensor?.threshold}
+                                data={data}
+                            />
+                        ) : (
+                            <Error404 message="There is no data for this sensor" />
+                        )}
+                        <div className="download text-center">
+                            <IonButton
+                                shape="round"
+                                color="light"
+                                className="responsive-width text-lg normal-case m-4"
+                                download="sensor data"
+                                href={getLinkForSensor(machineid || "", id || "")}
+                            >
+                                Download
+                            </IonButton>
+                        </div>
+                    </>
+                ) : (
+                    <Error404 message="Couldn't find the sensor you were looking for" />
                 )}
-                {((!updated && sensor_data.data?.sensor?.notificationStatus == "Acknowledged") || acknowledged) && (
-                    <NotificationContainer
-                        type={"Fixed"}
-                        handleAcknowledge={handleAcknowledgement}
-                        handleFixed={handleFixing}
-                    />
-                )}
-                <div className="graph py-5">
-                    <LineGraph title="Sensor Values" redThreshold={600} yellowThreshold={400} data={data} />
-                </div>
-                <div className="download text-center">
-                    <IonButton
-                        shape="round"
-                        color="light"
-                        className="responsive-width text-lg normal-case"
-                        download="sensor data"
-                        href={getLinkForSensor(machineid || "", id || "")}
-                    >
-                        Download
-                    </IonButton>
-                </div>
             </IonContent>
         </IonPage>
     );
