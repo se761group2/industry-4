@@ -30,12 +30,15 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onComplet
     };
 
     const uploadImageToCloudStorage = async (image: File) => {
+        // Get the file extension for compatibility
         const fileExtension = image?.name.split(".").pop();
         if (!fileExtension || !SUPPORTED_IMAGE_FORMATS.includes(fileExtension)) {
             throw new Error(
                 `file extension <${fileExtension}> does not match the supported formats: ${SUPPORTED_IMAGE_FORMATS}`,
             );
         }
+
+        // Store the image in the database
         const key = `images/${uuid()}.${fileExtension}`;
         const imageRef = firebaseApp.storage().ref(key);
         await imageRef.put(image);
@@ -53,9 +56,12 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onComplet
         // Use the default image if the user has not uploaded anything
         let key = "images/defaultImage.jpg";
 
+        // Store the image (if user provided one)
         if (image) {
             key = await uploadImageToCloudStorage(image);
         }
+
+        // Retrieve the image URL and create new machine with it
         getDownloadURl(key).then(async (url) => {
             const result = await createMachineMutation({
                 variables: {
@@ -71,28 +77,6 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onComplet
     };
 
     return (
-        // <IonAlert
-        //     isOpen={open}
-        //     onDidDismiss={() => setOpen(false)}
-        //     header={"Add a machine"}
-        //     inputs={[
-        //         {
-        //             name: "machineName",
-        //             type: "text",
-        //             placeholder: "E.g. Machine #4",
-        //         },
-        //     ]}
-        //     buttons={[
-        //         {
-        //             text: "Cancel",
-        //             role: "cancel",
-        //         },
-        //         {
-        //             text: "Add",
-        //             handler: handleAddMachine,
-        //         },
-        //     ]}
-        // />
         <IonModal isOpen={open} onDidDismiss={() => setOpen(false)}>
             <p>Add a New Machine</p>
             <label>
