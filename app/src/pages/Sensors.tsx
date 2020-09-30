@@ -11,7 +11,7 @@ import {
     IonTitle,
     IonToolbar,
 } from "@ionic/react";
-import React from "react";
+import React, { useState } from "react";
 import { from, useQuery } from "@apollo/client";
 import { getMachineById } from "../types/getMachineById";
 import { getMachines } from "../types/getMachines";
@@ -23,8 +23,12 @@ import { useParams } from "react-router";
 import { GET_MACHINE_BY_ID, GET_MACHINES } from "../common/graphql/queries/machines";
 import Error404 from "../components/ErrorMessage";
 import { add } from "ionicons/icons";
+import { AddSensorModal } from "./modals/AddSensorModal";
 
 const Sensors: React.FC = () => {
+    const machinesQuery = useQuery<getMachines>(GET_MACHINES);
+    const [addMachineOpen, setAddMachineOpen] = useState<boolean>(false);
+
     const { id } = useParams<{ id: string }>();
     const machine_data = useQuery<getMachineById>(GET_MACHINE_BY_ID, {
         variables: { id: id },
@@ -43,6 +47,7 @@ const Sensors: React.FC = () => {
 
     return (
         <IonPage>
+            <AddSensorModal open={addMachineOpen} setOpen={setAddMachineOpen} />
             <Heading title={machine_data.data?.machine?.name} />
 
             <IonContent color="new">
@@ -74,7 +79,7 @@ const Sensors: React.FC = () => {
                             )}
                         </div>
                         <IonFab vertical="bottom" horizontal="center" slot="fixed">
-                            <IonFabButton color="light">
+                            <IonFabButton color="light" onClick={() => setAddMachineOpen(true)}>
                                 <IonIcon icon={add} />
                             </IonFabButton>
                         </IonFab>
