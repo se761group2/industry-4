@@ -46,7 +46,7 @@ export type Machine = {
     id: Scalars["ID"];
     name: Scalars["String"];
     healthStatus?: Maybe<Status>;
-    image: Scalars["String"];
+    image?: Maybe<Scalars["String"]>;
     sensors: Array<Sensor>;
 };
 

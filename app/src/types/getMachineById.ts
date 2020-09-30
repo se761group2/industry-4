@@ -34,7 +34,7 @@ export interface getMachineById_machine {
   __typename: "Machine";
   name: string;
   healthStatus: Status | null;
-  image: string;
+  image: string | null;
   sensors: getMachineById_machine_sensors[];
 }
 

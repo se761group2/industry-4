@@ -14,7 +14,7 @@ export interface getMachines_machines {
   id: string;
   name: string;
   healthStatus: Status | null;
-  image: string;
+  image: string | null;
 }
 
 export interface getMachines {

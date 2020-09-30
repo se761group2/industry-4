@@ -19,7 +19,7 @@ export type Machine = {
   id: Scalars['ID'];
   name: Scalars['String'];
   healthStatus?: Maybe<Status>;
-  image: Scalars['String'];
+  image?: Maybe<Scalars['String']>;
   sensors: Array<Sensor>;
 };
 
@@ -336,7 +336,7 @@ export type MachineResolvers<ContextType = GraphQLContext, ParentType extends Re
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   healthStatus?: Resolver<Maybe<ResolversTypes['Status']>, ParentType, ContextType>;
-  image?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   sensors?: Resolver<Array<ResolversTypes['Sensor']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;

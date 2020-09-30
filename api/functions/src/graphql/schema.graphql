@@ -21,7 +21,7 @@ type Machine {
   id: ID!
   name: String!
   healthStatus: Status
-  image: String!
+  image: String
   sensors: [Sensor!]!
 }
 
