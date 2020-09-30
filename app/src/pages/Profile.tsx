@@ -1,4 +1,5 @@
 import {
+    IonAvatar,
     IonBackButton,
     IonButton,
     IonButtons,
@@ -26,13 +27,26 @@ import { Link } from "react-router-dom";
 import ColourKey from "../components/ColourKey";
 import Error404 from "../components/ErrorMessage";
 import { AddMachineModal } from "./modals/AddMachineModal";
+import { useUserContext } from "../utils/useUserContext";
 
 const Profile: React.FC = () => {
+    const userContext = useUserContext();
+
     return (
         <IonPage>
-            <Heading title="Industry 4.0" showBackButton={false} />
+            <Heading title="Industry 4.0" />
 
-            <IonContent color="new"></IonContent>
+            <IonContent color="new">
+                <div className="responsive-width mt-10 ml-auto mr-auto py-5 h-38 bg-white rounded-lg">
+                    <div className="responsive-width m-auto   items-center flex justify-center flex-col">
+                        <IonAvatar className="w-32 h-32 ">
+                            <img src={userContext.user?.photoURL || ""} />
+                        </IonAvatar>
+                        <p className="text-black mt-3">{userContext.user && userContext.user!.displayName}</p>
+                        <p className="text-black">{userContext.user && userContext.user!.email}</p>
+                    </div>
+                </div>
+            </IonContent>
         </IonPage>
     );
 };
