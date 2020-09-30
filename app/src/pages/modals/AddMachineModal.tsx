@@ -66,6 +66,7 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onComplet
             if (onCompleted) {
                 onCompleted(result);
             }
+            setOpen(false);
         });
     };
 
