@@ -34,7 +34,7 @@ const Profile: React.FC = () => {
 
     return (
         <IonPage>
-            <Heading title="Industry 4.0" />
+            <Heading title="Industry 4.0" showProfile={false} />
 
             <IonContent color="new">
                 <div className="responsive-width mt-10 ml-auto mr-auto py-5 h-38 bg-white rounded-lg">
