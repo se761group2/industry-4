@@ -4,6 +4,15 @@
     margin: auto;
 }
 
+.avatar {
+    width: 5%;
+    height: 5%;
+}
+
+.profile {
+    margin: 10;
+}
+
 .machine-container-1 {
     padding: 10px;
     height: 100%;

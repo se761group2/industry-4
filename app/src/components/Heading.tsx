@@ -1,12 +1,14 @@
 import React, { useContext, useState } from "react";
 import {
     IonAlert,
+    IonAvatar,
     IonBackButton,
     IonButton,
     IonButtons,
     IonContent,
     IonHeader,
     IonIcon,
+    IonImg,
     IonPage,
     IonTitle,
     IonToolbar,
@@ -25,7 +27,8 @@ const Heading: React.FC<HeadingProps> = ({ title, showBackButton = true }) => {
     const userContext = useUserContext();
     const [showAlert, setShowAlert] = useState(false);
     const history = useHistory();
-
+    const user = userContext.user;
+    const profileImage = user ? user.photoURL : "xzcfz";
     return (
         <IonHeader>
             <IonAlert
@@ -65,8 +68,10 @@ const Heading: React.FC<HeadingProps> = ({ title, showBackButton = true }) => {
                         <IonTitle className="text-2xl font-heading">{title ? title : "Industry 4.0"}</IonTitle>
                     </div>
                     <div className="flex flex-row justify-self-end items-center">
-                        <IonIcon slot="start" icon={personCircle} />
-                        <p className="mx-2 hidden md:block">{userContext.user && userContext.user!.email}</p>
+                        <p className="mx-2 hidden md:block mr-7">{userContext.user && userContext.user!.email}</p>
+                        <IonAvatar className="w-8 h-8">
+                            <img src={userContext.user?.photoURL || ""} />
+                        </IonAvatar>
                         <IonButton fill="clear" onClick={() => setShowAlert(true)}>
                             <IonIcon size="small" color="danger" slot="icon-only" icon={logOut} />
                         </IonButton>
