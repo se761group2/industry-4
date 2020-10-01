@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonPage } from "@ionic/react";
+import { IonButton, IonContent, IonPage, IonSpinner } from "@ionic/react";
 import React, { useState } from "react";
 import { useParams } from "react-router";
 import HealthContainer from "../components/HealthContainer";
@@ -17,10 +17,11 @@ const Sensor: React.FC = () => {
     const { machineid } = useParams<{ machineid: string }>();
     const { id } = useParams<{ id: string }>();
     const [updateSensor] = useMutation(UPDATE_SENSOR);
-    const sensor = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
+    const sensorQuery = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
         variables: { machineId: machineid, id: id },
         fetchPolicy: "network-only",
-    }).data?.sensor;
+    });
+    const sensor = sensorQuery.data?.sensor;
 
     const getTime = (unix_timestamp: number) => {
         if (!unix_timestamp) return "unknown";
@@ -73,7 +74,11 @@ const Sensor: React.FC = () => {
             <link href="https://fonts.googleapis.com/css?family=Share Tech Mono" rel="stylesheet"></link>
             <Heading title={sensor?.name} />
             <IonContent color="new">
-                {sensor ? (
+                {sensorQuery.loading ? (
+                    <div className="flex w-full h-full justify-center items-center">
+                        <IonSpinner className="w-16 h-16" color="light" />
+                    </div>
+                ) : sensor ? (
                     <>
                         <div className="responsive-width m-auto py-5 h-16">
                             <HealthContainer

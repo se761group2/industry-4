@@ -8,6 +8,7 @@ import {
     IonHeader,
     IonIcon,
     IonPage,
+    IonSpinner,
     IonTitle,
     IonToolbar,
 } from "@ionic/react";
@@ -41,7 +42,11 @@ const Machines: React.FC = () => {
             <Heading title="Industry 4.0" showBackButton={false} />
 
             <IonContent color="new">
-                {machines ? (
+                {machinesQuery.loading ? (
+                    <div className="flex w-full h-full justify-center items-center">
+                        <IonSpinner className="w-16 h-16" color="light" />
+                    </div>
+                ) : machines ? (
                     <>
                         <div className="responsive-width m-auto p-3">
                             <ColourKey />
