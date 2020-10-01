@@ -16,7 +16,7 @@ export async function storeSingleRMSValue(
   timestampStr: string,
   machineId: string,
   sensorId: string
-): Promise<Error | undefined> {
+) {
   const chunkQuerySnap = await firestore
     .collection(`machines/${machineId}/sensors/${sensorId}/sampleChunks`)
     .orderBy('chunkNumber')
@@ -35,7 +35,7 @@ export async function storeSingleRMSValue(
   if (timestamp === null) {
     const e = Error('Timestamp string is not a valid timestamp');
     e.name = 'Timestamp_Invalid';
-    return e;
+    throw e;
   }
 
   // If there's no last chunk, we need to create the first one
@@ -55,15 +55,10 @@ export async function storeSingleRMSValue(
       chunk.chunkNumber = lastChunk!.chunkNumber + 1;
     }
 
+    // errors thrown here will be caught in server.ts. The code there logs them but doesn't send them to the client
     await firestore
       .collection(`machines/${machineId}/sensors/${sensorId}/sampleChunks`)
-      .add(chunk)
-      .then(() => {
-        console.log('Document successfully written!');
-      })
-      .catch((error) => {
-        console.error('Error writing document: ', error);
-      });
+      .add(chunk);
 
     // otherwise, we can add a value onto the last chunk and push it
   } else {
@@ -72,16 +67,12 @@ export async function storeSingleRMSValue(
       value: rmsValue,
     });
 
-    try {
-      await firestore
-        .collection(`machines/${machineId}/sensors/${sensorId}/sampleChunks`)
-        .doc(lastChunkId!)
-        .set(lastChunk);
-    } catch (error) {
-      return error;
-    }
+    // same story as the previous request for throwing errors
+    await firestore
+      .collection(`machines/${machineId}/sensors/${sensorId}/sampleChunks`)
+      .doc(lastChunkId!)
+      .set(lastChunk);
   }
-  return;
 }
 
 export async function updateSensorNotificationStatus(machineId, sensorId) {

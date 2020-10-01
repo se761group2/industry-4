@@ -13,13 +13,13 @@ export default async function processDataFromBuffer(
   machineId: string,
   sensorId: string,
   buffer: Buffer
-): Promise<Error | undefined> {
+) {
   const rawDataFirstColumn = await readDataFromBuffer(buffer);
 
   const rmsValueFromFile = calculateRMS(rawDataFirstColumn);
   doThresholdDetection(rmsValueFromFile, machineId, sensorId);
 
-  return await storeSingleRMSValue(
+  await storeSingleRMSValue(
     rmsValueFromFile,
     timestampStr,
     machineId,

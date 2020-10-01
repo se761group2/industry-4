@@ -72,6 +72,7 @@ export function ConstructIngestorServer() {
             res.sendStatus(500);
           }
         } else {
+          console.log('Got a rejection for an unknown reason');
           res.sendStatus(500);
         }
       });
