@@ -1,5 +1,5 @@
 import { FetchResult, MutationResult, useMutation } from "@apollo/client";
-import { IonButton, IonModal } from "@ionic/react";
+import { IonAlert, IonButton, IonModal } from "@ionic/react";
 import "../Page.css";
 import React, { useState } from "react";
 import { CREATE_MACHINE } from "../../common/graphql/mutations/machines";
@@ -19,6 +19,7 @@ const SUPPORTED_IMAGE_FORMATS = ["jpg", "jpeg", "png"];
 export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onCompleted }) => {
     const [image, setImage] = useState<File>();
     const [machineName, setMachineName] = useState("");
+    const [error, setError] = useState(false);
     const [createMachineMutation] = useMutation<createMachine>(CREATE_MACHINE, {
         refetchQueries: [{ query: GET_MACHINES }],
     });
@@ -52,6 +53,7 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onComplet
 
     const handleAddMachine = async () => {
         if (!machineName) {
+            setError(true);
             return;
         }
         // Use the default image if the user has not uploaded anything
@@ -110,6 +112,13 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onComplet
                     </IonButton>
                 </div>
             </div>
+            <IonAlert
+                isOpen={error}
+                onDidDismiss={() => setError(false)}
+                header={"Alert"}
+                message={"You must provide a name for the machine"}
+                buttons={["OK"]}
+            />
         </IonModal>
     );
 };
