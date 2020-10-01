@@ -1,5 +1,6 @@
 import { FetchResult, MutationResult, useMutation } from "@apollo/client";
-import { IonAlert, IonButton, IonModal } from "@ionic/react";
+import { IonButton, IonModal } from "@ionic/react";
+import "../Page.css";
 import React, { useState } from "react";
 import { CREATE_MACHINE } from "../../common/graphql/mutations/machines";
 import { GET_MACHINES } from "../../common/graphql/queries/machines";
@@ -77,23 +78,29 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onComplet
     };
 
     return (
-        <IonModal isOpen={open} onDidDismiss={() => setOpen(false)}>
-            <p>Add a New Machine</p>
-            <label>
-                Name:
-                <input
-                    name="machineName"
-                    type="text"
-                    placeholder="E.g. Machine #4"
-                    onChange={(e) => setMachineName(e.target.value)}
-                />
-            </label>
-            <label>
-                Image:
-                <input name="myFile" type="file" onChange={imageUploadHandler} accept="image/*" />
-            </label>
-            <IonButton onClick={() => setOpen(false)}>Cancel</IonButton>
-            <IonButton onClick={() => handleAddMachine()}>Add</IonButton>
+        <IonModal isOpen={open} onDidDismiss={() => setOpen(false)} cssClass="ion-modal">
+            <div className="flex flex-col">
+                <div className="flex flex-col items-center justify-items-center space-y-6">
+                    <p className="text-3xl">Add a New Machine</p>
+                    <label className="flex space-x-3">
+                        <p>Name:</p>
+                        <input
+                            name="machineName"
+                            type="text"
+                            placeholder="E.g. Machine #4"
+                            onChange={(e) => setMachineName(e.target.value)}
+                        />
+                    </label>
+                    <label className="flex space-x-3">
+                        <p>Image:</p>
+                        <input name="myFile" type="file" onChange={imageUploadHandler} accept="image/*" />
+                    </label>
+                </div>
+                <div className="flex flex-row-reverse pr-8 pt-2">
+                    <IonButton onClick={() => handleAddMachine()}>Add</IonButton>
+                    <IonButton onClick={() => setOpen(false)}>Cancel</IonButton>
+                </div>
+            </div>
         </IonModal>
     );
 };

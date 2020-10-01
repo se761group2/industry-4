@@ -45,3 +45,10 @@
 .darken-on-hover:hover {
     filter: brightness(90%);
 }
+
+.ion-modal .modal-wrapper {
+    height: 15%;
+    min-height: 200px;
+    width: 90%;
+    max-width: 600px;
+}
