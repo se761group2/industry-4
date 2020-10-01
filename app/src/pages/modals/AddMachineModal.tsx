@@ -80,25 +80,34 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onComplet
     return (
         <IonModal isOpen={open} onDidDismiss={() => setOpen(false)} cssClass="ion-modal">
             <div className="flex flex-col">
-                <div className="flex flex-col items-center justify-items-center space-y-6">
-                    <p className="text-3xl">Add a New Machine</p>
-                    <label className="flex space-x-3">
+                <div className="flex flex-col items-center space-y-6">
+                    <p className="text-3xl pt-2">Add a New Machine</p>
+                    <label className="flex space-x-3 items-center justify-items-start">
                         <p>Name:</p>
                         <input
                             name="machineName"
                             type="text"
                             placeholder="E.g. Machine #4"
                             onChange={(e) => setMachineName(e.target.value)}
+                            className="rounded border-2 p-2"
                         />
                     </label>
-                    <label className="flex space-x-3">
+                    <label className="flex space-x-3 items-center">
                         <p>Image:</p>
-                        <input name="myFile" type="file" onChange={imageUploadHandler} accept="image/*" />
+                        <input
+                            name="myFile"
+                            type="file"
+                            onChange={imageUploadHandler}
+                            accept="image/*"
+                            className="rounded border-2 p-2"
+                        />
                     </label>
                 </div>
                 <div className="flex flex-row-reverse pr-8 pt-2">
                     <IonButton onClick={() => handleAddMachine()}>Add</IonButton>
-                    <IonButton onClick={() => setOpen(false)}>Cancel</IonButton>
+                    <IonButton color="medium" onClick={() => setOpen(false)}>
+                        Cancel
+                    </IonButton>
                 </div>
             </div>
         </IonModal>
