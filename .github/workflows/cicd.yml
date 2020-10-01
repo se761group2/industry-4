@@ -2,7 +2,7 @@ name: industry4-cicd
 
 on:
   push:
-    branches: [feature/cicd]
+    branches: [master]
   pull_request:
     branches: [master]
 
