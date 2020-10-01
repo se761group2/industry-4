@@ -15,7 +15,7 @@ export const mutationResolvers: MutationResolvers = {
       args.input?.name,
       args.input?.healthStatus
     );
-    
+
     const resp: any = {
       code: 'machine_update/success',
       success: true,
@@ -35,7 +35,7 @@ export const mutationResolvers: MutationResolvers = {
       args.input?.notificationStatus,
       args.input?.threshold,
       args.input?.unit
-    )
+    );
 
     const resp: any = {
       code: 'sensor_update/success',
