@@ -19,9 +19,9 @@ const currentDir = __dirname;
 let directory = '';
 const isWindows = os.platform() === 'win32';
 if (isWindows) {
-  directory = currentDir + '\\..\\..\\inputData\\';
+  directory = currentDir + '\\..\\..\\..\\inputData\\';
 } else {
-  directory = currentDir + '/../../inputData/';
+  directory = currentDir + '/../../../inputData/';
 }
 
 const filePaths = findDataFileNamesInDir(directory);
