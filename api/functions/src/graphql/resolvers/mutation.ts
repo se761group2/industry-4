@@ -13,7 +13,8 @@ export const mutationResolvers: MutationResolvers = {
     const machine = await MachineStore.updateMachine(
       args.id,
       args.input?.name,
-      args.input?.healthStatus
+      args.input?.healthStatus,
+      args.input?.image
     );
     
     const resp: any = {
@@ -48,7 +49,7 @@ export const mutationResolvers: MutationResolvers = {
   },
 
   createMachine: async (parent, args) => {
-    const newMachine = await MachineStore.createMachine(args.name);
+    const newMachine = await MachineStore.createMachine(args.name, args.image);
 
     const resp: any = {
       code: 'machine_create/success',

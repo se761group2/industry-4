@@ -8,8 +8,12 @@ export function ConstructFileDownloadServer() {
   app.options('*');
 
   app.get('/machine/:machineId/sensor/:sensorId', async (req, res) => {
-    if (!req.params.sensorId || !req.params.machineId) {
-      res.status(400).send('Bad Request');
+    if (!req.params.sensorId) {
+      res.status(400).send('No sensorId provided');
+      return;
+    }
+    if (!req.params.machineId) {
+      res.status(400).send('No machineId provided');
       return;
     }
 

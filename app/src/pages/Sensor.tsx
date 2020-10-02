@@ -72,22 +72,6 @@ const Sensor: React.FC = () => {
         <IonPage>
             <link href="https://fonts.googleapis.com/css?family=Share Tech Mono" rel="stylesheet"></link>
             <Heading title={sensor?.name} />
-
-            {((!updated && sensor?.notificationStatus == "Unacknowledged") || unacknowledged) && (
-                <NotificationContainer
-                    type={"Acknowledgement"}
-                    handleAcknowledge={handleAcknowledgement}
-                    handleFixed={handleFixing}
-                />
-            )}
-            {((!updated && sensor?.notificationStatus == "Acknowledged") || acknowledged) && (
-                <NotificationContainer
-                    type={"Fixed"}
-                    handleAcknowledge={handleAcknowledgement}
-                    handleFixed={handleFixing}
-                />
-            )}
-
             <IonContent color="new">
                 {sensor ? (
                     <>
@@ -98,6 +82,20 @@ const Sensor: React.FC = () => {
                                 health={sensor.healthStatus}
                             />
                         </div>
+                        {((!updated && sensor?.notificationStatus == "Unacknowledged") || unacknowledged) && (
+                            <NotificationContainer
+                                type={"Acknowledgement"}
+                                handleAcknowledge={handleAcknowledgement}
+                                handleFixed={handleFixing}
+                            />
+                        )}
+                        {((!updated && sensor?.notificationStatus == "Acknowledged") || acknowledged) && (
+                            <NotificationContainer
+                                type={"Fixed"}
+                                handleAcknowledge={handleAcknowledgement}
+                                handleFixed={handleFixing}
+                            />
+                        )}
                         {data ? (
                             <LineGraph
                                 title={`Sensor Values ~ ${getDate(currentValue?.timestamp?._seconds)}`}

@@ -1,12 +1,14 @@
 import React, { useContext, useState } from "react";
 import {
     IonAlert,
+    IonAvatar,
     IonBackButton,
     IonButton,
     IonButtons,
     IonContent,
     IonHeader,
     IonIcon,
+    IonImg,
     IonPage,
     IonTitle,
     IonToolbar,
@@ -15,13 +17,15 @@ import { arrowBack, ellipsisHorizontal, ellipsisVertical, logOut, personCircle, 
 import { useUserContext } from "../utils/useUserContext";
 import { firebaseAuth } from "../services/firebase";
 import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
 
 interface HeadingProps {
     title: string | null | undefined;
     showBackButton?: boolean;
+    showProfile?: boolean;
 }
 
-const Heading: React.FC<HeadingProps> = ({ title, showBackButton = true }) => {
+const Heading: React.FC<HeadingProps> = ({ title, showBackButton = true, showProfile = true }) => {
     const userContext = useUserContext();
     const [showAlert, setShowAlert] = useState(false);
     const history = useHistory();
@@ -64,13 +68,17 @@ const Heading: React.FC<HeadingProps> = ({ title, showBackButton = true }) => {
                         <link href="https://fonts.googleapis.com/css?family=Share Tech Mono" rel="stylesheet"></link>
                         <IonTitle className="text-2xl font-heading">{title ? title : "Industry 4.0"}</IonTitle>
                     </div>
-                    <div className="flex flex-row justify-self-end items-center">
-                        <IonIcon slot="start" icon={personCircle} />
-                        <p className="mx-2 hidden md:block">{userContext.user && userContext.user!.email}</p>
-                        <IonButton fill="clear" onClick={() => setShowAlert(true)}>
-                            <IonIcon size="small" color="danger" slot="icon-only" icon={logOut} />
-                        </IonButton>
-                    </div>
+                    <Link to={`/profile`}>
+                        <div className={!showProfile ? "hidden" : "flex flex-row justify-self-end items-center"}>
+                            <p className="mx-2 hidden md:block mr-7">{userContext.user && userContext.user!.email}</p>
+                            <IonAvatar className="w-8 h-8">
+                                <img src={userContext.user?.photoURL || ""} />
+                            </IonAvatar>
+                        </div>
+                    </Link>
+                    <IonButton fill="clear" onClick={() => setShowAlert(true)}>
+                        <IonIcon size="small" color="danger" slot="icon-only" icon={logOut} />
+                    </IonButton>
                 </div>
             </IonToolbar>
         </IonHeader>

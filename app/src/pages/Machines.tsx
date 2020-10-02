@@ -53,7 +53,7 @@ const Machines: React.FC = () => {
                                         <MachineContainer
                                             name={machine.name}
                                             health={machine.healthStatus}
-                                            image={"random"}
+                                            image={machine.image || "random"} // random is a placeholder right now, as not all machiens have images
                                         />
                                     </Link>
                                 );
