@@ -25,7 +25,7 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onComplet
 
         const result = await createMachineMutation({
             variables: {
-                name: alertData["machineName"],
+                name: machineName,
             },
         });
 

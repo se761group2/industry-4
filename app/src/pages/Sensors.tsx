@@ -26,7 +26,6 @@ import { add } from "ionicons/icons";
 import { AddSensorModal } from "./modals/AddSensorModal";
 
 const Sensors: React.FC = () => {
-    const machinesQuery = useQuery<getMachines>(GET_MACHINES);
     const [addMachineOpen, setAddMachineOpen] = useState<boolean>(false);
 
     const { id } = useParams<{ id: string }>();
@@ -47,7 +46,7 @@ const Sensors: React.FC = () => {
 
     return (
         <IonPage>
-            <AddSensorModal open={addMachineOpen} setOpen={setAddMachineOpen} />
+            <AddSensorModal open={addMachineOpen} setOpen={setAddMachineOpen} machineId={id} />
             <Heading title={machine_data.data?.machine?.name} />
 
             <IonContent color="new">

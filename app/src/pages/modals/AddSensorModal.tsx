@@ -1,31 +1,35 @@
 import { FetchResult, MutationResult, useMutation } from "@apollo/client";
 import { IonAlert } from "@ionic/react";
 import React, { useState } from "react";
-import { CREATE_MACHINE } from "../../common/graphql/mutations/machines";
-import { GET_MACHINES } from "../../common/graphql/queries/machines";
-import { createMachine } from "../../types/createMachine";
+import { CREATE_SENSOR } from "../../common/graphql/mutations/sensors";
+import { GET_MACHINE_BY_ID } from "../../common/graphql/queries/machines";
+import { createSensor } from "../../types/createSensor";
 
 interface ModalProps {
     open: boolean;
+    machineId: string;
     setOpen: (open: boolean) => void;
     onCompleted?: (res: FetchResult<any, Record<string, any>, Record<string, any>>) => void;
 }
 
-export const AddSensorModal: React.FC<ModalProps> = ({ open, setOpen, onCompleted }) => {
-    const [createMachineMutation] = useMutation<createMachine>(CREATE_MACHINE, {
-        refetchQueries: [{ query: GET_MACHINES }],
+export const AddSensorModal: React.FC<ModalProps> = ({ open, setOpen, machineId, onCompleted }) => {
+    const [createSensorMutation] = useMutation<createSensor>(CREATE_SENSOR, {
+        refetchQueries: [{ query: GET_MACHINE_BY_ID, variables: { id: machineId } }],
     });
 
-    const handleAddMachine = async (alertData) => {
-        const machineName = alertData["machineName"]?.trim();
+    const handleAddSensor = async (alertData) => {
+        const sensorName = alertData["sensorName"]?.trim();
 
-        if (!machineName) {
+        if (!sensorName) {
             return;
         }
 
-        const result = await createMachineMutation({
+        const result = await createSensorMutation({
             variables: {
-                name: alertData["machineName"],
+                input: {
+                    name: sensorName,
+                    machineID: machineId,
+                },
             },
         });
 
@@ -41,7 +45,7 @@ export const AddSensorModal: React.FC<ModalProps> = ({ open, setOpen, onComplete
             header={"Add a sensor"}
             inputs={[
                 {
-                    name: "machineName",
+                    name: "sensorName",
                     type: "text",
                     placeholder: "E.g. Sensor #2",
                 },
@@ -53,7 +57,7 @@ export const AddSensorModal: React.FC<ModalProps> = ({ open, setOpen, onComplete
                 },
                 {
                     text: "Add",
-                    handler: handleAddMachine,
+                    handler: handleAddSensor,
                 },
             ]}
         />
