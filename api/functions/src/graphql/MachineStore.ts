@@ -1,9 +1,10 @@
 import { calendarFormat } from 'moment';
 import { firebaseApp } from '../firebase';
-import { Machine, Sensor, Unit } from '../generated/graphql';
+import { Machine, Sensor, Unit, User } from '../generated/graphql';
 import { addIdToDoc } from './resolvers/utils';
 
 const firestore = firebaseApp.firestore();
+const admin = require('firebase-admin');
 
 // This is a helper class, which helps us call different database functions for both querying and mutating
 
@@ -50,7 +51,7 @@ const createMachine = async (machineName, imageURL): Promise<Machine> => {
   const machineDoc = await firestore.collection('machines').add({
     name: machineName,
     healthStatus: 'Nominal',
-    image: imageURL
+    image: imageURL,
   });
 
   return addIdToDoc(await machineDoc.get()) as Machine;
@@ -122,6 +123,39 @@ const updateSensor = async (
   return addIdToDoc(await sensorDoc.get()) as Sensor;
 };
 
+const getUser = async (username): Promise<any> => {
+  const user = await firestore.doc(`users/${username}`).get();
+
+  const userData = addIdToDoc(user);
+
+  return userData;
+};
+
+const createUser = async (email): Promise<User> => {
+  const userDoc = await firestore.collection('users').add({
+    email: email,
+  });
+
+  return addIdToDoc(await userDoc.get()) as User;
+};
+
+const subscribeToMachine = async (userID, machineId): Promise<User> => {
+  const userDoc = await firestore.doc(`users/${userID}`);
+  await userDoc.update({
+    machinesMaintaining: admin.firestore.FieldValue.arrayUnion(machineId),
+  });
+
+  return addIdToDoc(await userDoc.get()) as User;
+};
+
+const unsubscribeFromMachine = async (userID, machineId): Promise<User> => {
+  const userDoc = await firestore.doc(`users/${userID}`);
+  await userDoc.update({
+    machinesMaintaining: admin.firestore.FieldValue.arrayRemove(machineId),
+  });
+
+  return addIdToDoc(await userDoc.get()) as User;
+};
 export const MachineStore = {
   getMachine,
   getMachines,
@@ -132,4 +166,8 @@ export const MachineStore = {
   updateMachine,
   createSensor,
   updateSensor,
+  getUser,
+  createUser,
+  subscribeToMachine,
+  unsubscribeFromMachine,
 };
