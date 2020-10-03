@@ -81,7 +81,7 @@ const createSensor = async (machineId, sensorName): Promise<Sensor> => {
     .collection('sensors')
     .add({
       name: sensorName,
-      healthStatus: 'Critical',
+      healthStatus: 'Nominal',
       notificationStatus: 'Working',
       threshold: null,
       unit: Unit.Mps2Rms,
