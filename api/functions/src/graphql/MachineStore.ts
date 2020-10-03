@@ -51,6 +51,7 @@ const createMachine = async (machineName, imageURL): Promise<Machine> => {
   const machineDoc = await firestore.collection('machines').add({
     name: machineName,
     healthStatus: 'Nominal',
+    subscribers: [],
     image: imageURL,
   });
 
@@ -152,6 +153,7 @@ const getUserByID = async (id): Promise<any> => {
 const createUser = async (email): Promise<User> => {
   const userDoc = await firestore.collection('users').add({
     email: email,
+    emails: [email],
   });
 
   return addIdToDoc(await userDoc.get()) as User;
