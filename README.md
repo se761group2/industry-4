@@ -20,7 +20,13 @@ This should redirect you to your browser, where you can log in, provided you hav
 
 `$ npm i`
 
+Run npm start from either the root of the project or api/functions - your choice.
+
 `$ npm start`
+
+Once that's going, open up a new cmd prompt / terminal and run submitFiles.ts with ts-node. For example, if I'm inside api/functions:
+
+`ts-node src/ingestor/submitFiles.ts`
 
 ## GraphQL Playground
 

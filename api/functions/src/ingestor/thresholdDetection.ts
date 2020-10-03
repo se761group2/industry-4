@@ -19,7 +19,11 @@ const state: ThresholdDetectionState = {
   rmsValues: [],
 };
 
-export function doThresholdDetection(rmsValue: number, machineId, sensorId) {
+export function doThresholdDetection(
+  rmsValue: number,
+  machineId: string,
+  sensorId: string
+) {
   state.rmsValues.push(rmsValue);
   state.processedFileCount += 1;
 
@@ -92,8 +96,8 @@ function calculateThreshold() {
 function sendNotification(
   thresholdValue: number,
   rmsValue: number,
-  machineId,
-  sensorId
+  machineId: string,
+  sensorId: string
 ) {
   /* TODO add checker for notification frequency (or do it somewhere else) 
        Currently this is done using a state.notified flag which ensures the email is only sent once,

@@ -11,8 +11,8 @@ import {
     IonTitle,
     IonToolbar,
 } from "@ionic/react";
-import React from "react";
 import { from, useMutation, useQuery } from "@apollo/client";
+import React, { useState } from "react";
 import { getMachineById } from "../types/getMachineById";
 import { getMachines } from "../types/getMachines";
 import HealthContainer from "../components/HealthContainer";
@@ -30,8 +30,11 @@ import { unsubscribeFromMachine } from "../types/unsubscribeFromMachine";
 import { useUserContext } from "../utils/useUserContext";
 import { getUserByEmail } from "../types/getUserByEmail";
 import { createUser } from "../types/createUser";
+import { AddSensorModal } from "./modals/AddSensorModal";
 
 const Sensors: React.FC = () => {
+    const [addMachineOpen, setAddMachineOpen] = useState<boolean>(false);
+
     const { id } = useParams<{ id: string }>();
     const machine_data = useQuery<getMachineById>(GET_MACHINE_BY_ID, {
         variables: { id: id },
@@ -109,6 +112,7 @@ const Sensors: React.FC = () => {
 
     return (
         <IonPage>
+            <AddSensorModal open={addMachineOpen} setOpen={setAddMachineOpen} machineId={id} />
             <Heading title={machine_data.data?.machine?.name} />
 
             <IonContent color="new">
@@ -150,7 +154,7 @@ const Sensors: React.FC = () => {
                             )}
                         </div>
                         <IonFab vertical="bottom" horizontal="center" slot="fixed">
-                            <IonFabButton color="light">
+                            <IonFabButton color="light" onClick={() => setAddMachineOpen(true)}>
                                 <IonIcon icon={add} />
                             </IonFabButton>
                         </IonFab>

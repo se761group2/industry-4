@@ -1,5 +1,5 @@
-import admin from 'firebase-admin';
 import { firebaseApp } from '../firebase';
+import admin from 'firebase-admin';
 import Timestamp = admin.firestore.Timestamp;
 
 const firestore = firebaseApp.firestore();
@@ -32,6 +32,11 @@ export async function storeSingleRMSValue(
   }
 
   const timestamp = timestampFromFilename(timestampStr);
+  if (timestamp === null) {
+    const e = Error('Timestamp string is not a valid timestamp');
+    e.name = 'Timestamp_Invalid';
+    throw e;
+  }
 
   // If there's no last chunk, we need to create the first one
   // likewise if the last chunk is full, we need to add another
@@ -50,15 +55,10 @@ export async function storeSingleRMSValue(
       chunk.chunkNumber = lastChunk!.chunkNumber + 1;
     }
 
+    // errors thrown here will be caught in server.ts. The code there logs them but doesn't send them to the client
     await firestore
       .collection(`machines/${machineId}/sensors/${sensorId}/sampleChunks`)
-      .add(chunk)
-      .then(() => {
-        console.log('Document successfully written!');
-      })
-      .catch((error) => {
-        console.error('Error writing document: ', error);
-      });
+      .add(chunk);
 
     // otherwise, we can add a value onto the last chunk and push it
   } else {
@@ -67,16 +67,11 @@ export async function storeSingleRMSValue(
       value: rmsValue,
     });
 
+    // same story as the previous request for throwing errors
     await firestore
       .collection(`machines/${machineId}/sensors/${sensorId}/sampleChunks`)
       .doc(lastChunkId!)
-      .set(lastChunk)
-      .then(() => {
-        console.log('Document successfully written!');
-      })
-      .catch((error) => {
-        console.error('Error writing document: ', error);
-      });
+      .set(lastChunk);
   }
 }
 
@@ -89,18 +84,14 @@ export async function updateSensorNotificationStatus(machineId, sensorId) {
     });
 }
 
-function timestampFromFilename(timestampStr: string): Timestamp {
-  const splitDateString: string[] = timestampStr.split('.');
+function timestampFromFilename(timestampStr: string): Timestamp | null {
+  const date: Date = new Date(timestampStr);
 
-  const date: Date = new Date();
-  date.setFullYear(Number(splitDateString[0]));
-  date.setMonth(Number(splitDateString[1]));
-  date.setDate(Number(splitDateString[2]));
-  date.setHours(Number(splitDateString[3]));
-  date.setMinutes(Number(splitDateString[4]));
-  date.setSeconds(39);
-
-  console.log('timestampStr: ' + timestampStr);
-
-  return Timestamp.fromDate(date);
+  if (isNaN(date.getTime())) {
+    // date is not valid
+    return null;
+  } else {
+    // date is valid
+    return Timestamp.fromDate(date);
+  }
 }
