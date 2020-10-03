@@ -54,7 +54,7 @@ const Sensors: React.FC = () => {
                 ) : machine_data.data?.machine ? (
                     <>
                         <div className="pb-20">
-                            {sensors ? (
+                            {sensors && sensors.length > 0 ? (
                                 sensors
                                     .slice()
                                     .sort((a, b) => stringCompare(a.healthStatus, b.healthStatus))

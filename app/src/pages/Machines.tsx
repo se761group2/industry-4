@@ -46,7 +46,7 @@ const Machines: React.FC = () => {
                     <div className="flex w-full h-full justify-center items-center">
                         <IonSpinner className="w-16 h-16" color="light" />
                     </div>
-                ) : machines ? (
+                ) : machines && machines.length > 0 ? (
                     <>
                         <div className="responsive-width m-auto p-3">
                             <ColourKey />
