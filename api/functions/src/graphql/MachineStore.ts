@@ -4,7 +4,7 @@ import { Machine, Sensor, Unit, User } from '../generated/graphql';
 import { addIdToDoc } from './resolvers/utils';
 
 const firestore = firebaseApp.firestore();
-const admin = require('firebase-admin');
+import admin from 'firebase-admin';
 
 // This is a helper class, which helps us call different database functions for both querying and mutating
 
@@ -82,7 +82,7 @@ const createSensor = async (machineId, sensorName): Promise<Sensor> => {
     .collection('sensors')
     .add({
       name: sensorName,
-      healthStatus: 'Critical',
+      healthStatus: 'Nominal',
       notificationStatus: 'Working',
       threshold: null,
       unit: Unit.Mps2Rms,
@@ -123,8 +123,25 @@ const updateSensor = async (
   return addIdToDoc(await sensorDoc.get()) as Sensor;
 };
 
-const getUser = async (username): Promise<any> => {
-  const user = await firestore.doc(`users/${username}`).get();
+const getUserByEmail = async (email): Promise<any> => {
+  const userQuery = await firestore
+    .collection('users')
+    .where('email', '==', email)
+    .get();
+
+  let userData;
+  if (!userQuery.empty) {
+    const snapshot = userQuery.docs[0];
+    userData = addIdToDoc(snapshot);
+  } else {
+    userData = null;
+  }
+
+  return userData;
+};
+
+const getUserByID = async (id): Promise<any> => {
+  const user = await firestore.doc(`users/${id}`).get();
 
   const userData = addIdToDoc(user);
 
@@ -141,8 +158,11 @@ const createUser = async (email): Promise<User> => {
 
 const subscribeToMachine = async (userID, machineId): Promise<User> => {
   const userDoc = await firestore.doc(`users/${userID}`);
+  const machineReference = await firestore.doc(`machines/${machineId}`);
   await userDoc.update({
-    machinesMaintaining: admin.firestore.FieldValue.arrayUnion(machineId),
+    machinesMaintaining: admin.firestore.FieldValue.arrayUnion(
+      machineReference
+    ),
   });
 
   return addIdToDoc(await userDoc.get()) as User;
@@ -150,8 +170,11 @@ const subscribeToMachine = async (userID, machineId): Promise<User> => {
 
 const unsubscribeFromMachine = async (userID, machineId): Promise<User> => {
   const userDoc = await firestore.doc(`users/${userID}`);
+  const machineReference = await firestore.doc(`machines/${machineId}`);
   await userDoc.update({
-    machinesMaintaining: admin.firestore.FieldValue.arrayRemove(machineId),
+    machinesMaintaining: admin.firestore.FieldValue.arrayRemove(
+      machineReference
+    ),
   });
 
   return addIdToDoc(await userDoc.get()) as User;
@@ -166,7 +189,8 @@ export const MachineStore = {
   updateMachine,
   createSensor,
   updateSensor,
-  getUser,
+  getUserByEmail,
+  getUserByID,
   createUser,
   subscribeToMachine,
   unsubscribeFromMachine,

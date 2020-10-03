@@ -18,6 +18,12 @@
                         "name": "SensorCreationResponse"
                     },
                     {
+                        "name": "UserCreationResponse"
+                    },
+                    {
+                        "name": "MachineSubscriptionResponse"
+                    },
+                    {
                         "name": "UserUpdatedResponse"
                     }
                 ]

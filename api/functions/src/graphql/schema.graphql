@@ -48,14 +48,17 @@ type Sample {
 
 type User {
   id: ID!
-  username: String!
+  username: String
   email: String!
-  phoneNumber: String!
+  phoneNumber: String
+  firstName: String
+  surname: String
   machinesMaintaining: [Machine]
 }
 
 type Query {
   user(id: ID!): User
+  user_email(email: String!): User
   machines: [Machine!]!
   machine(id: ID!): Machine
   sensor(machineId: ID!, id: ID!): Sensor

@@ -12,7 +12,7 @@ import {
     IonToolbar,
 } from "@ionic/react";
 import React, { useState } from "react";
-import { from, useQuery } from "@apollo/client";
+import { from, useMutation, useQuery } from "@apollo/client";
 import { getMachineById } from "../types/getMachineById";
 import { getMachines } from "../types/getMachines";
 import HealthContainer from "../components/HealthContainer";
@@ -24,8 +24,18 @@ import { GET_MACHINE_BY_ID, GET_MACHINES } from "../common/graphql/queries/machi
 import Error404 from "../components/ErrorMessage";
 import { add } from "ionicons/icons";
 import { ChangeNotificationsModal } from "./modals/ChangeNotificationsModal";
+import { subscribeToMachine } from "../types/subscribeToMachine";
+import { CREATE_USER, SUBSCRIBE_TO_MACHINE, UNSUBSCRIBE_FROM_MACHINE } from "../common/graphql/mutations/users";
+import { GET_USER_BY_EMAIL, GET_USER_BY_ID } from "../common/graphql/queries/users";
+import { unsubscribeFromMachine } from "../types/unsubscribeFromMachine";
+import { useUserContext } from "../utils/useUserContext";
+import { getUserByEmail } from "../types/getUserByEmail";
+import { createUser } from "../types/createUser";
+import { AddSensorModal } from "./modals/AddSensorModal";
 
 const Sensors: React.FC = () => {
+    const [addMachineOpen, setAddMachineOpen] = useState<boolean>(false);
+
     const { id } = useParams<{ id: string }>();
     const machine_data = useQuery<getMachineById>(GET_MACHINE_BY_ID, {
         variables: { id: id },
@@ -45,9 +55,68 @@ const Sensors: React.FC = () => {
     const [changeNotificationsOpen, setChangeNotificationsOpen] = useState(false);
     const [userEmails, setUserEmails] = useState(["gmce822@aucklanduni.ac.nz", "email@fake.com"]);
     const [subscribedEmails, setSubscribedEmails] = useState(["gmce822@aucklanduni.ac.nz", "happy@email.com"]);
+    const userContext = useUserContext();
+    const userEmail = userContext.user?.email;
+    const userQuery = useQuery<getUserByEmail>(GET_USER_BY_EMAIL, {
+        variables: { email: userEmail },
+    });
+    let userID = userQuery.data?.user_email?.id;
+    const [createUserMutation] = useMutation<createUser>(CREATE_USER);
+
+    let isSubscribed: boolean | null | undefined = null;
+
+    isSubscribed = userQuery.data?.user_email?.machinesMaintaining?.some(function (machine) {
+        console.log(String(machine?.id));
+        console.log(id);
+        return String(machine?.id) == id;
+    });
+
+    let subButtonMessage: string;
+    const [unsubscribeMutation] = useMutation<unsubscribeFromMachine>(UNSUBSCRIBE_FROM_MACHINE);
+    const [subscribeMutation] = useMutation<subscribeToMachine>(SUBSCRIBE_TO_MACHINE);
+    if (isSubscribed) {
+        subButtonMessage = "Unsubscribe from Machine";
+    } else {
+        subButtonMessage = "Subscribe to Machine";
+    }
+
+    const handleSubscribe = async () => {
+        if (!userID) {
+            const newUser = await createUserMutation({
+                variables: {
+                    email: userEmail,
+                },
+            });
+            userID = newUser.data?.createUser?.user?.id;
+            isSubscribed = false;
+        }
+
+        if (isSubscribed) {
+            const result = await unsubscribeMutation({
+                variables: {
+                    userID: userID,
+                    machineID: id,
+                },
+            });
+
+            isSubscribed = false;
+            subButtonMessage = "Subscribe to Machine";
+        } else {
+            const result = await subscribeMutation({
+                variables: {
+                    userID: userID,
+                    machineID: id,
+                },
+            });
+
+            isSubscribed = true;
+            subButtonMessage = "Unsubscribe from Machine";
+        }
+    };
 
     return (
         <IonPage>
+            <AddSensorModal open={addMachineOpen} setOpen={setAddMachineOpen} machineId={id} />
             <ChangeNotificationsModal
                 open={changeNotificationsOpen}
                 setOpen={setChangeNotificationsOpen}
@@ -58,7 +127,17 @@ const Sensors: React.FC = () => {
             <IonContent color="new">
                 {machine_data.data?.machine ? (
                     <>
-                        <div className="pb-5">
+                        <div className="download text-center">
+                            <IonButton
+                                shape="round"
+                                color="light"
+                                className="responsive-width text-lg normal-case m-4"
+                                onClick={() => handleSubscribe()}
+                            >
+                                {subButtonMessage}
+                            </IonButton>
+                        </div>
+                        <div className="pb-20">
                             {sensors ? (
                                 sensors
                                     .slice()
@@ -84,7 +163,7 @@ const Sensors: React.FC = () => {
                             )}
                         </div>
                         <IonFab vertical="bottom" horizontal="center" slot="fixed">
-                            <IonFabButton color="light">
+                            <IonFabButton color="light" onClick={() => setAddMachineOpen(true)}>
                                 <IonIcon icon={add} />
                             </IonFabButton>
                         </IonFab>
