@@ -8,12 +8,19 @@ import { Link } from "react-router-dom";
 import { AddMachineModal } from "../pages/modals/AddMachineModal";
 
 interface ContainerProps {
+<<<<<<< HEAD
     name: string | undefined;
     health: Status | null | undefined;
     image: string | undefined;
+=======
+    name: string;
+    health: Status | null;
+    image: string;
+    id: string;
+>>>>>>> Pass in machine id to machines component
 }
 
-const MachineContainer: React.FC<ContainerProps> = ({ name, health, image }) => {
+const MachineContainer: React.FC<ContainerProps> = ({ name, health, image, id }) => {
     const bg: string = statusColour(health);
     const [addMachineOpen, setAddMachineOpen] = useState<boolean>(false);
 

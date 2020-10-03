@@ -94,6 +94,7 @@ const Machines: React.FC = () => {
                         <div className="responsive-width m-auto p-3">
                             <ColourKey />
                         </div>
+<<<<<<< HEAD
                         <div className="py-3">
                             <IonSegment
                                 mode="ios"
@@ -109,6 +110,21 @@ const Machines: React.FC = () => {
                                     <IonLabel color="dark">Subscribed Machines</IonLabel>
                                 </IonSegmentButton>
                             </IonSegment>
+=======
+                        <div className="responsive-width grid grid-cols-2 gap-5 m-auto pb-20">
+                            {machines?.map(function (machine) {
+                                return (
+                                    <Link to={`/machine/${machine.id}`} key={machine.id}>
+                                        <MachineContainer
+                                            name={machine.name}
+                                            health={machine.healthStatus}
+                                            image={machine.image || "random"} // random is a placeholder right now, as not all machiens have images
+                                            id={machine.id}
+                                        />
+                                    </Link>
+                                );
+                            })}
+>>>>>>> Pass in machine id to machines component
                         </div>
                         <MachineGrid
                             allMachines={allMachines}
