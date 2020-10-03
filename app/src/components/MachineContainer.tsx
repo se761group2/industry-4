@@ -36,14 +36,16 @@ const MachineContainer: React.FC<ContainerProps> = ({ name, health, image, id })
             <IonFabButton color="light" className="absolute m-5" onClick={() => setAddMachineOpen(true)}>
                 <IonIcon icon={create} />
             </IonFabButton>
-            <div className={`machine-container-1 rounded-lg shadow-xl m-auto bg-${bg}-550`}>
-                <div className={"machine-container-2 rounded flex flex-col justify-between text-center bg-white"}>
-                    <img className="machine-image rounded" src={image} alt="Machine image" />
-                    <div>
-                        <div className="text-black font-bold text-lg mt-3">{name}</div>
+            <Link to={`/machine/${id}`}>
+                <div className={`machine-container-1 rounded-lg shadow-xl m-auto bg-${bg}-550`}>
+                    <div className={"machine-container-2 rounded flex flex-col justify-between text-center bg-white"}>
+                        <img className="machine-image rounded" src={image} alt="Machine image" />
+                        <div>
+                            <div className="text-black font-bold text-lg mt-3">{name}</div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </Link>
         </div>
     );
 };

@@ -123,38 +123,35 @@ export const MachineModal: React.FC<ModalProps> = ({
             setError(true);
             return;
         }
-        // Use the default image if the user has not uploaded anything
-        let key = "images/defaultImage.jpg";
 
-        // Store the image (if user provided one)
-        if (image) {
-            key = await uploadImageToCloudStorage(image);
-        }
+        if (machineUpdateInput) {
+            // Use the default image if the user has not uploaded anything
+            let key = machineUpdateInput.image;
 
-        // Retrieve the image URL and create new machine with it
-        getDownloadURl(key).then(async (url) => {
-            const result = await createMachineMutation({
-                variables: {
-                    name: machineName,
-                    image: url,
-                },
-            });
-            if (!userID) {
-                const newUser = await createUserMutation({
-                    variables: {
-                        email: userEmail,
-                    },
-                });
-                userID = newUser.data?.createUser?.user?.id;
+            // Store the image (if user provided one)
+            if (image) {
+                key = await uploadImageToCloudStorage(image);
             }
-            const result2 = await subscribeMutation({
-                variables: { userID: userID, machineID: result.data?.createMachine?.machine?.id },
-            });
-            if (onCompleted) {
-                onCompleted(result);
+
+            if (key) {
+                // Retrieve the image URL and create new machine with it
+                getDownloadURl(key).then(async (url) => {
+                    const result = await updateMachineMutation({
+                        variables: {
+                            id: id,
+                            input: {
+                                name: "updated",
+                                image: url,
+                            },
+                        },
+                    });
+                    if (onCompleted) {
+                        onCompleted(result);
+                    }
+                });
             }
             setOpen(false);
-        });
+        }
     };
 
     return (
@@ -170,7 +167,6 @@ export const MachineModal: React.FC<ModalProps> = ({
                             placeholder="E.g. Machine #4"
                             onChange={(e) => setMachineName(e.target.value)}
                             className="rounded border-2 p-2"
-                            value={value}
                         />
                     </label>
                     <label className="flex space-x-3 items-center">
