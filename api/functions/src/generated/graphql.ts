@@ -14,12 +14,21 @@ export type Scalars = {
 };
 
 
+export type EmailUpdateResponse = MutationResponse & {
+  __typename?: 'EmailUpdateResponse';
+  code: Scalars['String'];
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  user?: Maybe<User>;
+};
+
 export type Machine = {
   __typename?: 'Machine';
   id: Scalars['ID'];
   name: Scalars['String'];
   healthStatus?: Maybe<Status>;
   image?: Maybe<Scalars['String']>;
+  subscribers?: Maybe<Array<Maybe<Scalars['String']>>>;
   sensors: Array<Sensor>;
 };
 
@@ -50,6 +59,7 @@ export type MachineUpdatedResponse = MutationResponse & {
 export type MachineUpdateInput = {
   name?: Maybe<Scalars['String']>;
   healthStatus?: Maybe<Status>;
+  subscribers?: Maybe<Array<Maybe<Scalars['String']>>>;
   image?: Maybe<Scalars['String']>;
 };
 
@@ -63,6 +73,7 @@ export type Mutation = {
   createUser?: Maybe<UserCreationResponse>;
   subscribeToMachine?: Maybe<MachineSubscriptionResponse>;
   unsubscribeFromMachine?: Maybe<MachineSubscriptionResponse>;
+  updateUserEmails?: Maybe<EmailUpdateResponse>;
 };
 
 
@@ -109,6 +120,12 @@ export type MutationSubscribeToMachineArgs = {
 export type MutationUnsubscribeFromMachineArgs = {
   userID: Scalars['ID'];
   machineID: Scalars['ID'];
+};
+
+
+export type MutationUpdateUserEmailsArgs = {
+  userID: Scalars['ID'];
+  emails?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type MutationResponse = {
@@ -226,6 +243,7 @@ export type User = {
   firstName?: Maybe<Scalars['String']>;
   surname?: Maybe<Scalars['String']>;
   machinesMaintaining?: Maybe<Array<Maybe<Machine>>>;
+  emails?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type UserCreationResponse = MutationResponse & {
@@ -234,7 +252,6 @@ export type UserCreationResponse = MutationResponse & {
   success: Scalars['Boolean'];
   message: Scalars['String'];
   user?: Maybe<User>;
-  id?: Maybe<Scalars['ID']>;
 };
 
 export type UserUpdatedResponse = MutationResponse & {
@@ -336,7 +353,7 @@ export type ResolversTypes = ResolversObject<{
   Sample: ResolverTypeWrapper<Sample>;
   Date: ResolverTypeWrapper<Scalars['Date']>;
   Mutation: ResolverTypeWrapper<{}>;
-  MutationResponse: ResolversTypes['MachineUpdatedResponse'] | ResolversTypes['SensorUpdatedResponse'] | ResolversTypes['MachineCreationResponse'] | ResolversTypes['SensorCreationResponse'] | ResolversTypes['UserCreationResponse'] | ResolversTypes['MachineSubscriptionResponse'] | ResolversTypes['UserUpdatedResponse'];
+  MutationResponse: ResolversTypes['MachineUpdatedResponse'] | ResolversTypes['SensorUpdatedResponse'] | ResolversTypes['MachineCreationResponse'] | ResolversTypes['SensorCreationResponse'] | ResolversTypes['UserCreationResponse'] | ResolversTypes['MachineSubscriptionResponse'] | ResolversTypes['EmailUpdateResponse'] | ResolversTypes['UserUpdatedResponse'];
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   MachineUpdateInput: MachineUpdateInput;
   MachineUpdatedResponse: ResolverTypeWrapper<MachineUpdatedResponse>;
@@ -347,6 +364,7 @@ export type ResolversTypes = ResolversObject<{
   SensorCreationResponse: ResolverTypeWrapper<SensorCreationResponse>;
   UserCreationResponse: ResolverTypeWrapper<UserCreationResponse>;
   MachineSubscriptionResponse: ResolverTypeWrapper<MachineSubscriptionResponse>;
+  EmailUpdateResponse: ResolverTypeWrapper<EmailUpdateResponse>;
   Unit: Unit;
   UserUpdatedResponse: ResolverTypeWrapper<UserUpdatedResponse>;
 }>;
@@ -364,7 +382,7 @@ export type ResolversParentTypes = ResolversObject<{
   Sample: Sample;
   Date: Scalars['Date'];
   Mutation: {};
-  MutationResponse: ResolversParentTypes['MachineUpdatedResponse'] | ResolversParentTypes['SensorUpdatedResponse'] | ResolversParentTypes['MachineCreationResponse'] | ResolversParentTypes['SensorCreationResponse'] | ResolversParentTypes['UserCreationResponse'] | ResolversParentTypes['MachineSubscriptionResponse'] | ResolversParentTypes['UserUpdatedResponse'];
+  MutationResponse: ResolversParentTypes['MachineUpdatedResponse'] | ResolversParentTypes['SensorUpdatedResponse'] | ResolversParentTypes['MachineCreationResponse'] | ResolversParentTypes['SensorCreationResponse'] | ResolversParentTypes['UserCreationResponse'] | ResolversParentTypes['MachineSubscriptionResponse'] | ResolversParentTypes['EmailUpdateResponse'] | ResolversParentTypes['UserUpdatedResponse'];
   Boolean: Scalars['Boolean'];
   MachineUpdateInput: MachineUpdateInput;
   MachineUpdatedResponse: MachineUpdatedResponse;
@@ -375,6 +393,7 @@ export type ResolversParentTypes = ResolversObject<{
   SensorCreationResponse: SensorCreationResponse;
   UserCreationResponse: UserCreationResponse;
   MachineSubscriptionResponse: MachineSubscriptionResponse;
+  EmailUpdateResponse: EmailUpdateResponse;
   UserUpdatedResponse: UserUpdatedResponse;
 }>;
 
@@ -382,11 +401,20 @@ export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
   name: 'Date';
 }
 
+export type EmailUpdateResponseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['EmailUpdateResponse'] = ResolversParentTypes['EmailUpdateResponse']> = ResolversObject<{
+  code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+}>;
+
 export type MachineResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Machine'] = ResolversParentTypes['Machine']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   healthStatus?: Resolver<Maybe<ResolversTypes['Status']>, ParentType, ContextType>;
   image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  subscribers?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   sensors?: Resolver<Array<ResolversTypes['Sensor']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
@@ -424,10 +452,11 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   createUser?: Resolver<Maybe<ResolversTypes['UserCreationResponse']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'email'>>;
   subscribeToMachine?: Resolver<Maybe<ResolversTypes['MachineSubscriptionResponse']>, ParentType, ContextType, RequireFields<MutationSubscribeToMachineArgs, 'userID' | 'machineID'>>;
   unsubscribeFromMachine?: Resolver<Maybe<ResolversTypes['MachineSubscriptionResponse']>, ParentType, ContextType, RequireFields<MutationUnsubscribeFromMachineArgs, 'userID' | 'machineID'>>;
+  updateUserEmails?: Resolver<Maybe<ResolversTypes['EmailUpdateResponse']>, ParentType, ContextType, RequireFields<MutationUpdateUserEmailsArgs, 'userID'>>;
 }>;
 
 export type MutationResponseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{
-  __resolveType: TypeResolveFn<'MachineUpdatedResponse' | 'SensorUpdatedResponse' | 'MachineCreationResponse' | 'SensorCreationResponse' | 'UserCreationResponse' | 'MachineSubscriptionResponse' | 'UserUpdatedResponse', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'MachineUpdatedResponse' | 'SensorUpdatedResponse' | 'MachineCreationResponse' | 'SensorCreationResponse' | 'UserCreationResponse' | 'MachineSubscriptionResponse' | 'EmailUpdateResponse' | 'UserUpdatedResponse', ParentType, ContextType>;
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -489,6 +518,7 @@ export type UserResolvers<ContextType = GraphQLContext, ParentType extends Resol
   firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   surname?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   machinesMaintaining?: Resolver<Maybe<Array<Maybe<ResolversTypes['Machine']>>>, ParentType, ContextType>;
+  emails?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
 
@@ -497,7 +527,6 @@ export type UserCreationResponseResolvers<ContextType = GraphQLContext, ParentTy
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
-  id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
 
@@ -510,6 +539,7 @@ export type UserUpdatedResponseResolvers<ContextType = GraphQLContext, ParentTyp
 
 export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
   Date?: GraphQLScalarType;
+  EmailUpdateResponse?: EmailUpdateResponseResolvers<ContextType>;
   Machine?: MachineResolvers<ContextType>;
   MachineCreationResponse?: MachineCreationResponseResolvers<ContextType>;
   MachineSubscriptionResponse?: MachineSubscriptionResponseResolvers<ContextType>;

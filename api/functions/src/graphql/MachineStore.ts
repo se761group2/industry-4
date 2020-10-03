@@ -61,12 +61,13 @@ const updateMachine = async (
   machineId,
   name: string | null | undefined,
   healthStatus: string | null | undefined,
-  imageURL: string | null | undefined
+  imageURL: string | null | undefined,
+  subscribers: (string | null)[] | null | undefined
 ): Promise<Machine> => {
   const machineDoc = await firestore.doc(`machines/${machineId}`);
 
   // Filter out any null or undefined parameters, so that they are not persisted
-  const toUpdate = Object.entries({ name, healthStatus }).filter(
+  const toUpdate = Object.entries({ name, healthStatus, subscribers }).filter(
     ([_, v]) => v !== null && v !== undefined
   );
 
@@ -179,6 +180,16 @@ const unsubscribeFromMachine = async (userID, machineId): Promise<User> => {
 
   return addIdToDoc(await userDoc.get()) as User;
 };
+
+const updateUserEmails = async (userID, updatedEmails): Promise<User> => {
+  const userDoc = await firestore.doc(`users/${userID}`);
+  await userDoc.update({
+    emails: updatedEmails,
+  });
+
+  return addIdToDoc(await userDoc.get()) as User;
+};
+
 export const MachineStore = {
   getMachine,
   getMachines,
@@ -194,4 +205,5 @@ export const MachineStore = {
   createUser,
   subscribeToMachine,
   unsubscribeFromMachine,
+  updateUserEmails,
 };

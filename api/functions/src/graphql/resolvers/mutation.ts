@@ -14,7 +14,8 @@ export const mutationResolvers: MutationResolvers = {
       args.id,
       args.input?.name,
       args.input?.healthStatus,
-      args.input?.image
+      args.input?.image,
+      args.input?.subscribers
     );
 
     const resp: any = {
@@ -85,6 +86,7 @@ export const mutationResolvers: MutationResolvers = {
       success: true,
       message: 'Sensor Created Successfully.',
       user: newUser,
+      emails: [],
     };
 
     return resp;
@@ -119,6 +121,18 @@ export const mutationResolvers: MutationResolvers = {
       user: user,
     };
 
+    return resp;
+  },
+
+  updateUserEmails: async (parent, args) => {
+    const user = await MachineStore.updateUserEmails(args.userID, args.emails);
+
+    const resp: any = {
+      code: 'user_updateEmails/success',
+      success: true,
+      message: 'Emails successfully updated',
+      user: user,
+    };
     return resp;
   },
 };

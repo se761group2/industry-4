@@ -22,6 +22,7 @@ type Machine {
   name: String!
   healthStatus: Status
   image: String
+  subscribers: [String]
   sensors: [Sensor!]!
 }
 
@@ -54,6 +55,7 @@ type User {
   firstName: String
   surname: String
   machinesMaintaining: [Machine]
+  emails: [String]
 }
 
 type Query {
@@ -118,6 +120,13 @@ type MachineSubscriptionResponse implements MutationResponse {
   user: User
 }
 
+type EmailUpdateResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  user: User
+}
+
 input SensorInput {
   machineID: ID!
   name: String!
@@ -126,6 +135,7 @@ input SensorInput {
 input MachineUpdateInput {
   name: String
   healthStatus: Status
+  subscribers: [String]
   image: String
 }
 
@@ -153,4 +163,5 @@ type Mutation {
     userID: ID!
     machineID: ID!
   ): MachineSubscriptionResponse
+  updateUserEmails(userID: ID!, emails: [String]): EmailUpdateResponse
 }
