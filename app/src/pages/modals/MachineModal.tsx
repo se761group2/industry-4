@@ -94,7 +94,7 @@ export const MachineModal: React.FC<ModalProps> = ({
             return;
         }
         // Use the default image if the user has not uploaded anything
-        let key = machineUpdateInput?.image;
+        let key = "images/defaultImage.jpg";
 
         // Store the image (if user provided one)
         if (image) {
@@ -102,57 +102,55 @@ export const MachineModal: React.FC<ModalProps> = ({
         }
 
         // Retrieve the image URL and create new machine with it
-        if (key) {
-            getDownloadURl(key).then(async (url) => {
-                const result = await updateMachineMutation({
-                    variables: {
-                        id: id,
-                        input: machineUpdateInput,
-                    },
-                });
-                if (onCompleted) {
-                    onCompleted(result);
-                }
-                setOpen(false);
+        getDownloadURl(key).then(async (url) => {
+            const result = await createMachineMutation({
+                variables: {
+                    name: machineName,
+                    image: url,
+                },
             });
-        }
-    };
-
-    const handleUpdateMachine = async () => {
-        if (!machineName) {
-            setError(true);
-            return;
-        }
-
-        if (machineUpdateInput) {
-            // Use the default image if the user has not uploaded anything
-            let key = machineUpdateInput.image;
-
-            // Store the image (if user provided one)
-            if (image) {
-                key = await uploadImageToCloudStorage(image);
-            }
-
-            if (key) {
-                // Retrieve the image URL and create new machine with it
-                getDownloadURl(key).then(async (url) => {
-                    const result = await updateMachineMutation({
-                        variables: {
-                            id: id,
-                            input: {
-                                name: "updated",
-                                image: url,
-                            },
-                        },
-                    });
-                    if (onCompleted) {
-                        onCompleted(result);
-                    }
-                });
+            if (onCompleted) {
+                onCompleted(result);
             }
             setOpen(false);
-        }
+        });
     };
+
+    // const handleUpdateMachine = async () => {
+    //     if (!machineName) {
+    //         setError(true);
+    //         return;
+    //     }
+
+    //     if (machineUpdateInput) {
+    //         // Use the default image if the user has not uploaded anything
+    //         let key = machineUpdateInput.image;
+
+    //         // Store the image (if user provided one)
+    //         if (image) {
+    //             key = await uploadImageToCloudStorage(image);
+    //         }
+
+    //         if (key) {
+    //             // Retrieve the image URL and create new machine with it
+    //             getDownloadURl(key).then(async (url) => {
+    //                 const result = await updateMachineMutation({
+    //                     variables: {
+    //                         id: id,
+    //                         input: {
+    //                             name: "updated",
+    //                             image: url,
+    //                         },
+    //                     },
+    //                 });
+    //                 if (onCompleted) {
+    //                     onCompleted(result);
+    //                 }
+    //             });
+    //         }
+    //         setOpen(false);
+    //     }
+    // };
 
     return (
         <IonModal isOpen={open} onDidDismiss={() => setOpen(false)} cssClass="ion-modal">
@@ -184,7 +182,7 @@ export const MachineModal: React.FC<ModalProps> = ({
                     {action == "add" ? (
                         <IonButton onClick={() => handleAddMachine()}>Add</IonButton>
                     ) : (
-                        <IonButton onClick={() => handleUpdateMachine()}>Update</IonButton>
+                        <IonButton>Update</IonButton>
                     )}
 
                     <IonButton color="medium" onClick={() => setOpen(false)}>
