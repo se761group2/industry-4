@@ -62,8 +62,6 @@ const Sensors: React.FC = () => {
     let isSubscribed: boolean | null | undefined = null;
 
     isSubscribed = userQuery.data?.user_email?.machinesMaintaining?.some(function (machine) {
-        console.log(String(machine?.id));
-        console.log(id);
         return String(machine?.id) == id;
     });
 

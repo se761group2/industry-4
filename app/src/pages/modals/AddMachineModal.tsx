@@ -89,7 +89,6 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, setShow, 
                     image: url,
                 },
             });
-            console.log("user id: " + userID);
             if (!userID) {
                 const newUser = await createUserMutation({
                     variables: {
@@ -97,9 +96,7 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, setShow, 
                     },
                 });
                 userID = newUser.data?.createUser?.user?.id;
-                console.log("user id: " + userID);
             }
-            console.log("user id outside: " + userID);
             const result2 = await subscribeMutation({
                 variables: { userID: userID, machineID: result.data?.createMachine?.machine?.id },
             });
