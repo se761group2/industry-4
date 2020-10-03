@@ -11,7 +11,8 @@ import { GET_USER_BY_EMAIL } from "../../common/graphql/queries/users";
 import { getUserByEmail } from "../../types/getUserByEmail";
 import { useUserContext } from "../../utils/useUserContext";
 import { subscribeToMachine } from "../../types/subscribeToMachine";
-import { SUBSCRIBE_TO_MACHINE } from "../../common/graphql/mutations/users";
+import { CREATE_USER, SUBSCRIBE_TO_MACHINE } from "../../common/graphql/mutations/users";
+import { createUser } from "../../types/createUser";
 
 interface ModalProps {
     open: boolean;
@@ -34,7 +35,8 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onComplet
     const userQuery = useQuery<getUserByEmail>(GET_USER_BY_EMAIL, {
         variables: { email: userEmail },
     });
-    const userID = userQuery.data?.user_email?.id;
+    let userID = userQuery.data?.user_email?.id;
+    const [createUserMutation] = useMutation<createUser>(CREATE_USER);
     const [subscribeMutation] = useMutation<subscribeToMachine>(SUBSCRIBE_TO_MACHINE);
 
     const imageUploadHandler = (event) => {
@@ -85,6 +87,14 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onComplet
                     image: url,
                 },
             });
+            if (!userID) {
+                const newUser = await createUserMutation({
+                    variables: {
+                        email: userEmail,
+                    },
+                });
+                userID = newUser.data?.createUser?.user?.id;
+            }
             const result2 = await subscribeMutation({
                 variables: { userID: userID, machineID: result.data?.createMachine?.machine?.id },
             });
