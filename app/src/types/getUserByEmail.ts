@@ -4,27 +4,27 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: getUserByID
+// GraphQL query operation: getUserByEmail
 // ====================================================
 
-export interface getUserByID_user_machinesMaintaining {
+export interface getUserByEmail_user_email_machinesMaintaining {
   __typename: "Machine";
   id: string;
 }
 
-export interface getUserByID_user {
+export interface getUserByEmail_user_email {
   __typename: "User";
   id: string;
   email: string;
   firstName: string | null;
   surname: string | null;
-  machinesMaintaining: (getUserByID_user_machinesMaintaining | null)[] | null;
+  machinesMaintaining: (getUserByEmail_user_email_machinesMaintaining | null)[] | null;
 }
 
-export interface getUserByID {
-  user: getUserByID_user | null;
+export interface getUserByEmail {
+  user_email: getUserByEmail_user_email | null;
 }
 
-export interface getUserByIDVariables {
-  id: string;
+export interface getUserByEmailVariables {
+  email: string;
 }

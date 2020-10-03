@@ -15,6 +15,7 @@ export type Scalars = {
 export type Query = {
     __typename?: "Query";
     user?: Maybe<User>;
+    user_email?: Maybe<User>;
     machines: Array<Machine>;
     machine?: Maybe<Machine>;
     sensor?: Maybe<Sensor>;
@@ -22,6 +23,10 @@ export type Query = {
 
 export type QueryUserArgs = {
     id: Scalars["ID"];
+};
+
+export type QueryUser_EmailArgs = {
+    email: Scalars["String"];
 };
 
 export type QueryMachineArgs = {
@@ -36,9 +41,12 @@ export type QuerySensorArgs = {
 export type User = {
     __typename?: "User";
     id: Scalars["ID"];
-    username: Scalars["String"];
+    username?: Maybe<Scalars["String"]>;
     email: Scalars["String"];
-    phoneNumber: Scalars["String"];
+    phoneNumber?: Maybe<Scalars["String"]>;
+    firstName?: Maybe<Scalars["String"]>;
+    surname?: Maybe<Scalars["String"]>;
+    machinesMaintaining?: Maybe<Array<Maybe<Machine>>>;
 };
 
 export type Machine = {
@@ -93,6 +101,9 @@ export type Mutation = {
     updateSensor?: Maybe<SensorUpdatedResponse>;
     createMachine?: Maybe<MachineCreationResponse>;
     createSensor?: Maybe<SensorCreationResponse>;
+    createUser?: Maybe<UserCreationResponse>;
+    subscribeToMachine?: Maybe<MachineSubscriptionResponse>;
+    unsubscribeFromMachine?: Maybe<MachineSubscriptionResponse>;
 };
 
 export type MutationUpdateUserArgs = {
@@ -117,6 +128,20 @@ export type MutationCreateMachineArgs = {
 
 export type MutationCreateSensorArgs = {
     input?: Maybe<SensorInput>;
+};
+
+export type MutationCreateUserArgs = {
+    email: Scalars["String"];
+};
+
+export type MutationSubscribeToMachineArgs = {
+    userID: Scalars["ID"];
+    machineID: Scalars["ID"];
+};
+
+export type MutationUnsubscribeFromMachineArgs = {
+    userID: Scalars["ID"];
+    machineID: Scalars["ID"];
 };
 
 export type MutationResponse = {
@@ -174,6 +199,22 @@ export type SensorCreationResponse = MutationResponse & {
     success: Scalars["Boolean"];
     message: Scalars["String"];
     sensor?: Maybe<Sensor>;
+};
+
+export type UserCreationResponse = MutationResponse & {
+    __typename?: "UserCreationResponse";
+    code: Scalars["String"];
+    success: Scalars["Boolean"];
+    message: Scalars["String"];
+    user?: Maybe<User>;
+};
+
+export type MachineSubscriptionResponse = MutationResponse & {
+    __typename?: "MachineSubscriptionResponse";
+    code: Scalars["String"];
+    success: Scalars["Boolean"];
+    message: Scalars["String"];
+    user?: Maybe<User>;
 };
 
 export enum Unit {

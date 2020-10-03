@@ -126,6 +126,7 @@ export enum NotificationStatus {
 export type Query = {
   __typename?: 'Query';
   user?: Maybe<User>;
+  user_email?: Maybe<User>;
   machines: Array<Machine>;
   machine?: Maybe<Machine>;
   sensor?: Maybe<Sensor>;
@@ -133,6 +134,11 @@ export type Query = {
 
 
 export type QueryUserArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryUser_EmailArgs = {
   email: Scalars['String'];
 };
 
@@ -214,9 +220,11 @@ export enum Unit {
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
-  username: Scalars['String'];
+  username?: Maybe<Scalars['String']>;
   email: Scalars['String'];
-  phoneNumber: Scalars['String'];
+  phoneNumber?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  surname?: Maybe<Scalars['String']>;
   machinesMaintaining?: Maybe<Array<Maybe<Machine>>>;
 };
 
@@ -226,6 +234,7 @@ export type UserCreationResponse = MutationResponse & {
   success: Scalars['Boolean'];
   message: Scalars['String'];
   user?: Maybe<User>;
+  id?: Maybe<Scalars['ID']>;
 };
 
 export type UserUpdatedResponse = MutationResponse & {
@@ -315,9 +324,9 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   Query: ResolverTypeWrapper<{}>;
-  String: ResolverTypeWrapper<Scalars['String']>;
-  User: ResolverTypeWrapper<User>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
+  User: ResolverTypeWrapper<User>;
+  String: ResolverTypeWrapper<Scalars['String']>;
   Machine: ResolverTypeWrapper<Machine>;
   Status: Status;
   Sensor: ResolverTypeWrapper<Sensor>;
@@ -345,9 +354,9 @@ export type ResolversTypes = ResolversObject<{
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Query: {};
-  String: Scalars['String'];
-  User: User;
   ID: Scalars['ID'];
+  User: User;
+  String: Scalars['String'];
   Machine: Machine;
   Sensor: Sensor;
   Float: Scalars['Float'];
@@ -425,7 +434,8 @@ export type MutationResponseResolvers<ContextType = GraphQLContext, ParentType e
 }>;
 
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'email'>>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
+  user_email?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUser_EmailArgs, 'email'>>;
   machines?: Resolver<Array<ResolversTypes['Machine']>, ParentType, ContextType>;
   machine?: Resolver<Maybe<ResolversTypes['Machine']>, ParentType, ContextType, RequireFields<QueryMachineArgs, 'id'>>;
   sensor?: Resolver<Maybe<ResolversTypes['Sensor']>, ParentType, ContextType, RequireFields<QuerySensorArgs, 'machineId' | 'id'>>;
@@ -473,9 +483,11 @@ export type SensorUpdatedResponseResolvers<ContextType = GraphQLContext, ParentT
 
 export type UserResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  phoneNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  phoneNumber?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  surname?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   machinesMaintaining?: Resolver<Maybe<Array<Maybe<ResolversTypes['Machine']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
@@ -485,6 +497,7 @@ export type UserCreationResponseResolvers<ContextType = GraphQLContext, ParentTy
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 }>;
 

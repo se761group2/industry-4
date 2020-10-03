@@ -9,9 +9,9 @@ import { Status } from "../types/globalTypes";
 import { statusColour } from "../common/StatusColour";
 
 interface ContainerProps {
-    name: string;
-    health: Status | null;
-    image: string;
+    name: string | undefined;
+    health: Status | null | undefined;
+    image: string | undefined;
 }
 
 const MachineContainer: React.FC<ContainerProps> = ({ name, health, image }) => {

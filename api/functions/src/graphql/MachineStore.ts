@@ -4,7 +4,7 @@ import { Machine, Sensor, Unit, User } from '../generated/graphql';
 import { addIdToDoc } from './resolvers/utils';
 
 const firestore = firebaseApp.firestore();
-const admin = require('firebase-admin');
+import admin from 'firebase-admin';
 
 // This is a helper class, which helps us call different database functions for both querying and mutating
 
@@ -140,6 +140,14 @@ const getUserByEmail = async (email): Promise<any> => {
   return userData;
 };
 
+const getUserByID = async (id): Promise<any> => {
+  const user = await firestore.doc(`users/${id}`).get();
+
+  const userData = addIdToDoc(user);
+
+  return userData;
+};
+
 const createUser = async (email): Promise<User> => {
   const userDoc = await firestore.collection('users').add({
     email: email,
@@ -162,8 +170,11 @@ const subscribeToMachine = async (userID, machineId): Promise<User> => {
 
 const unsubscribeFromMachine = async (userID, machineId): Promise<User> => {
   const userDoc = await firestore.doc(`users/${userID}`);
+  const machineReference = await firestore.doc(`machines/${machineId}`);
   await userDoc.update({
-    machinesMaintaining: admin.firestore.FieldValue.arrayRemove(machineId),
+    machinesMaintaining: admin.firestore.FieldValue.arrayRemove(
+      machineReference
+    ),
   });
 
   return addIdToDoc(await userDoc.get()) as User;
@@ -179,6 +190,7 @@ export const MachineStore = {
   createSensor,
   updateSensor,
   getUserByEmail,
+  getUserByID,
   createUser,
   subscribeToMachine,
   unsubscribeFromMachine,

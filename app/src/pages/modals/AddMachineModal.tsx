@@ -1,4 +1,4 @@
-import { FetchResult, MutationResult, useMutation } from "@apollo/client";
+import { FetchResult, MutationResult, useMutation, useQuery } from "@apollo/client";
 import { IonAlert, IonButton, IonModal } from "@ionic/react";
 import "../Page.css";
 import React, { useState } from "react";
@@ -7,6 +7,11 @@ import { GET_MACHINES } from "../../common/graphql/queries/machines";
 import { createMachine } from "../../types/createMachine";
 import { v4 as uuid } from "uuid";
 import { firebaseApp } from "../../services/firebase";
+import { GET_USER_BY_EMAIL } from "../../common/graphql/queries/users";
+import { getUserByEmail } from "../../types/getUserByEmail";
+import { useUserContext } from "../../utils/useUserContext";
+import { subscribeToMachine } from "../../types/subscribeToMachine";
+import { SUBSCRIBE_TO_MACHINE } from "../../common/graphql/mutations/users";
 
 interface ModalProps {
     open: boolean;
@@ -23,6 +28,14 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onComplet
     const [createMachineMutation] = useMutation<createMachine>(CREATE_MACHINE, {
         refetchQueries: [{ query: GET_MACHINES }],
     });
+
+    const userContext = useUserContext();
+    const userEmail = userContext.user?.email;
+    const userQuery = useQuery<getUserByEmail>(GET_USER_BY_EMAIL, {
+        variables: { email: userEmail },
+    });
+    const userID = userQuery.data?.user_email?.id;
+    const [subscribeMutation] = useMutation<subscribeToMachine>(SUBSCRIBE_TO_MACHINE);
 
     const imageUploadHandler = (event) => {
         const imageFile = event.target.files[0];
@@ -71,6 +84,9 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onComplet
                     name: machineName,
                     image: url,
                 },
+            });
+            const result2 = await subscribeMutation({
+                variables: { userID: userID, machineID: result.data?.createMachine?.machine?.id },
             });
             if (onCompleted) {
                 onCompleted(result);

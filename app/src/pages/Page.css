@@ -53,3 +53,15 @@
     max-width: 600px;
     border-radius: 10px;
 }
+
+.ion-segment {
+    border-radius: 10px;
+    max-width: 600px;
+    width: 90%;
+    margin: auto;
+    background: white;
+}
+
+.ion-segment-button {
+    width: 90%;
+}
