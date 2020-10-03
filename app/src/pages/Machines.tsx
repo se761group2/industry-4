@@ -40,6 +40,7 @@ const Machines: React.FC = () => {
     const machinesQuery = useQuery<getMachines>(GET_MACHINES);
     const [addMachineOpen, setAddMachineOpen] = useState<boolean>(false);
     const [showAll, setShow] = useState(false);
+    const [selectedValue, setSelectedValue] = useState("subscribed");
     const [segmentColour, setSegmentColour] = useState("dark");
     // sort machines by health status
     // (critcal, moderate, nominal) happens to be alphabetical so currently just sorting alphabetically
@@ -65,6 +66,7 @@ const Machines: React.FC = () => {
     });
 
     const changeMachines = async (segment) => {
+        setSelectedValue(String(segment));
         if (String(segment) == "all") {
             setShow(true);
         } else if (String(segment) == "subscribed") {
@@ -93,6 +95,7 @@ const Machines: React.FC = () => {
                                 color="primary"
                                 className="ion-segment"
                                 onIonChange={(e) => changeMachines(e.detail.value)}
+                                value={selectedValue}
                             >
                                 <IonSegmentButton className="ion-segment-button" value={"subscribed"}>
                                     <IonLabel color="dark">Subscribed Machines</IonLabel>
