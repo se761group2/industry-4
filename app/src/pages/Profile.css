@@ -1,10 +1,14 @@
-.ion-modal .modal-wrapper {
+.profile-ion-modal .modal-wrapper {
     height: 70%;
     width: 90%;
     max-width: 350px;
     border-radius: 10px;
 }
 
-.ion-input {
+.profile-ion-input {
     width: 70%;
+}
+
+.profile-ion-button {
+    width: 80%;
 }

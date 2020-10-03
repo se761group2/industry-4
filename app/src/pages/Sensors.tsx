@@ -11,7 +11,7 @@ import {
     IonTitle,
     IonToolbar,
 } from "@ionic/react";
-import React from "react";
+import React, { useState } from "react";
 import { from, useQuery } from "@apollo/client";
 import { getMachineById } from "../types/getMachineById";
 import { getMachines } from "../types/getMachines";
@@ -23,6 +23,7 @@ import { useParams } from "react-router";
 import { GET_MACHINE_BY_ID, GET_MACHINES } from "../common/graphql/queries/machines";
 import Error404 from "../components/ErrorMessage";
 import { add } from "ionicons/icons";
+import { ChangeNotificationsModal } from "./modals/ChangeNotificationsModal";
 
 const Sensors: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -41,14 +42,23 @@ const Sensors: React.FC = () => {
         return 0;
     };
 
+    const [changeNotificationsOpen, setChangeNotificationsOpen] = useState(false);
+    const [userEmails, setUserEmails] = useState(["gmce822@aucklanduni.ac.nz", "email@fake.com"]);
+    const [subscribedEmails, setSubscribedEmails] = useState(["gmce822@aucklanduni.ac.nz", "happy@email.com"]);
+
     return (
         <IonPage>
+            <ChangeNotificationsModal
+                open={changeNotificationsOpen}
+                setOpen={setChangeNotificationsOpen}
+                userEmails={userEmails}
+                subscribedEmails={subscribedEmails}
+            />
             <Heading title={machine_data.data?.machine?.name} />
-
             <IonContent color="new">
                 {machine_data.data?.machine ? (
                     <>
-                        <div className="pb-20">
+                        <div className="pb-5">
                             {sensors ? (
                                 sensors
                                     .slice()
@@ -82,6 +92,11 @@ const Sensors: React.FC = () => {
                 ) : (
                     <Error404 message="This machine does not exist" />
                 )}
+                <div className="flex justify-center pb-20">
+                    <IonButton className="text-center" onClick={() => setChangeNotificationsOpen(true)}>
+                        Change Notification Settings
+                    </IonButton>
+                </div>
             </IonContent>
         </IonPage>
     );

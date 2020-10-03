@@ -15,6 +15,9 @@ import {
     IonList,
     IonInput,
     IonItem,
+    IonGrid,
+    IonCol,
+    IonRow,
 } from "@ionic/react";
 import React, { useState } from "react";
 import { useParams } from "react-router";
@@ -74,19 +77,25 @@ const Profile: React.FC = () => {
                 </div>
                 <div className="m-6">
                     <IonButton
-                        className="responsive-width m-auto flex items-center justify-center"
+                        className="responsive-width m-auto flex items-center justify-center profile-ion-button"
                         onClick={() => setShowModal(true)}
                     >
                         Configure Email Addresses
                     </IonButton>
                 </div>
-                <IonModal onDidDismiss={() => setShowModal(false)} isOpen={showModal} cssClass="ion-modal">
+                <IonModal
+                    backdrop-dismis
+                    backdropDismiss={true}
+                    onDidDismiss={() => setShowModal(false)}
+                    isOpen={showModal}
+                    cssClass="profile-ion-modal"
+                >
                     <IonContent className="p-3 flex justify-center flex-col">
                         <div className="p-3 flex justify-center flex-col">
                             <IonList>
                                 {emails.map((email, index) => (
                                     <IonItem key={index}>
-                                        <IonInput className="ion-input" value={email}></IonInput>
+                                        <IonInput className="profile-ion-input" value={email}></IonInput>
                                         <IonButton className="remove-button pl-3" onClick={() => removeEmail(index)}>
                                             <IonIcon slot="icon-only" icon={trash} />
                                         </IonButton>
@@ -94,7 +103,7 @@ const Profile: React.FC = () => {
                                 ))}
                                 <IonItem>
                                     <IonInput
-                                        className="ion-input"
+                                        className="profile-ion-input"
                                         onIonChange={(e) => changeNewEmail((e.target as HTMLInputElement).value)}
                                         placeholder="Enter a new Email address"
                                         value={newEmail}
@@ -104,10 +113,23 @@ const Profile: React.FC = () => {
                                     </IonButton>
                                 </IonItem>
                             </IonList>
-                            <IonButton className="Justify" onClick={() => setShowModal(false)}>
-                                Close Modal
-                            </IonButton>
                         </div>
+                        <IonGrid>
+                            <IonRow>
+                                <IonCol col-6>
+                                    <div className="flex justify-center">
+                                        <IonButton className="profile-ion-button" onClick={() => setShowModal(false)}>
+                                            Cancel
+                                        </IonButton>
+                                    </div>
+                                </IonCol>
+                                <IonCol col-6>
+                                    <div className="flex justify-center">
+                                        <IonButton className="profile-ion-button">Save</IonButton>
+                                    </div>
+                                </IonCol>
+                            </IonRow>
+                        </IonGrid>
                     </IonContent>
                 </IonModal>
             </IonContent>
