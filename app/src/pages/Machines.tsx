@@ -39,6 +39,7 @@ const Machines: React.FC = () => {
     const machinesQuery = useQuery<getMachines>(GET_MACHINES);
     const [addMachineOpen, setAddMachineOpen] = useState<boolean>(false);
     const [showAll, setShow] = useState(false);
+    const [segmentColour, setSegmentColour] = useState("dark");
     // sort machines by health status
     // (critcal, moderate, nominal) happens to be alphabetical so currently just sorting alphabetically
     let allMachines = machinesQuery.data?.machines;
@@ -63,16 +64,16 @@ const Machines: React.FC = () => {
     });
 
     const changeMachines = async (segment) => {
-        if (String(segment) == "ion-sb-3") {
+        if (String(segment) == "all") {
             setShow(true);
-        } else if (String(segment) == "ion-sb-2") {
+        } else if (String(segment) == "subscribed") {
             setShow(false);
         }
     };
 
     return (
         <IonPage>
-            <AddMachineModal open={addMachineOpen} setOpen={setAddMachineOpen} setShow={setShow} />
+            <AddMachineModal open={addMachineOpen} setOpen={setAddMachineOpen} setShow={setShow} showAll={showAll} />
             <Heading title="Industry 4.0" showBackButton={false} />
 
             <IonContent color="new">
@@ -83,14 +84,15 @@ const Machines: React.FC = () => {
                         </div>
                         <div className="py-3">
                             <IonSegment
+                                mode="ios"
                                 color="primary"
                                 className="ion-segment"
                                 onIonChange={(e) => changeMachines(e.detail.value)}
                             >
-                                <IonSegmentButton className="ion-segment-button">
+                                <IonSegmentButton className="ion-segment-button" value={"subscribed"}>
                                     <IonLabel color="dark">Subscribed Machines</IonLabel>
                                 </IonSegmentButton>
-                                <IonSegmentButton className="ion-segment-button">
+                                <IonSegmentButton className="ion-segment-button" value={"all"}>
                                     <IonLabel color="dark">All Machines</IonLabel>
                                 </IonSegmentButton>
                             </IonSegment>

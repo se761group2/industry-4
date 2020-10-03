@@ -18,12 +18,13 @@ interface ModalProps {
     open: boolean;
     setOpen: (open: boolean) => void;
     setShow: (show: boolean) => void;
+    showAll: boolean;
     onCompleted?: (res: FetchResult<any, Record<string, any>, Record<string, any>>) => void;
 }
 
 const SUPPORTED_IMAGE_FORMATS = ["jpg", "jpeg", "png"];
 
-export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, setShow, onCompleted }) => {
+export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, setShow, showAll, onCompleted }) => {
     const [image, setImage] = useState<File>();
     const [machineName, setMachineName] = useState("");
     const [error, setError] = useState(false);
@@ -106,7 +107,7 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, setShow, 
                 onCompleted(result);
             }
             setOpen(false);
-            setShow(false);
+            setShow(showAll);
         });
     };
 
