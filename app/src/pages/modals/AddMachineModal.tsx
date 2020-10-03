@@ -17,12 +17,13 @@ import { createUser } from "../../types/createUser";
 interface ModalProps {
     open: boolean;
     setOpen: (open: boolean) => void;
+    setShow: (show: boolean) => void;
     onCompleted?: (res: FetchResult<any, Record<string, any>, Record<string, any>>) => void;
 }
 
 const SUPPORTED_IMAGE_FORMATS = ["jpg", "jpeg", "png"];
 
-export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onCompleted }) => {
+export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, setShow, onCompleted }) => {
     const [image, setImage] = useState<File>();
     const [machineName, setMachineName] = useState("");
     const [error, setError] = useState(false);
@@ -87,6 +88,7 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onComplet
                     image: url,
                 },
             });
+            console.log("user id: " + userID);
             if (!userID) {
                 const newUser = await createUserMutation({
                     variables: {
@@ -94,7 +96,9 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onComplet
                     },
                 });
                 userID = newUser.data?.createUser?.user?.id;
+                console.log("user id: " + userID);
             }
+            console.log("user id outside: " + userID);
             const result2 = await subscribeMutation({
                 variables: { userID: userID, machineID: result.data?.createMachine?.machine?.id },
             });
@@ -102,6 +106,7 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onComplet
                 onCompleted(result);
             }
             setOpen(false);
+            setShow(false);
         });
     };
 

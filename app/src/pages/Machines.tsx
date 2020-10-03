@@ -38,6 +38,7 @@ import MachineGrid from "../components/MachineGrid";
 const Machines: React.FC = () => {
     const machinesQuery = useQuery<getMachines>(GET_MACHINES);
     const [addMachineOpen, setAddMachineOpen] = useState<boolean>(false);
+    const [showAll, setShow] = useState(false);
     // sort machines by health status
     // (critcal, moderate, nominal) happens to be alphabetical so currently just sorting alphabetically
     let allMachines = machinesQuery.data?.machines;
@@ -61,8 +62,6 @@ const Machines: React.FC = () => {
         });
     });
 
-    const [showAll, setShow] = useState(false);
-
     const changeMachines = async (segment) => {
         if (String(segment) == "ion-sb-3") {
             setShow(true);
@@ -73,7 +72,7 @@ const Machines: React.FC = () => {
 
     return (
         <IonPage>
-            <AddMachineModal open={addMachineOpen} setOpen={setAddMachineOpen} />
+            <AddMachineModal open={addMachineOpen} setOpen={setAddMachineOpen} setShow={setShow} />
             <Heading title="Industry 4.0" showBackButton={false} />
 
             <IonContent color="new">
