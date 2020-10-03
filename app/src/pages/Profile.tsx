@@ -33,7 +33,6 @@ import { GET_MACHINES } from "../common/graphql/queries/machines";
 import { Link } from "react-router-dom";
 import ColourKey from "../components/ColourKey";
 import Error404 from "../components/ErrorMessage";
-import { AddMachineModal } from "./modals/AddMachineModal";
 import { useUserContext } from "../utils/useUserContext";
 import { UPDATE_USER_EMAILS } from "../common/graphql/mutations/users";
 import { getUserByEmail } from "../types/getUserByEmail";

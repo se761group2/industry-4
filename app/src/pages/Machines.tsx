@@ -29,7 +29,7 @@ import { GET_MACHINES, GET_MACHINE_BY_ID } from "../common/graphql/queries/machi
 import { Link } from "react-router-dom";
 import ColourKey from "../components/ColourKey";
 import Error404 from "../components/ErrorMessage";
-import { AddMachineModal } from "./modals/AddMachineModal";
+import { MachineModal } from "./modals/MachineModal";
 import { useUserContext } from "../utils/useUserContext";
 import { GET_USER_BY_EMAIL } from "../common/graphql/queries/users";
 import { getUserByEmail } from "../types/getUserByEmail";
@@ -81,7 +81,13 @@ const Machines: React.FC = () => {
 
     return (
         <IonPage>
-            <AddMachineModal open={addMachineOpen} setOpen={setAddMachineOpen} setShow={setShow} showAll={showAll} />
+            <MachineModal
+                open={addMachineOpen}
+                setOpen={setAddMachineOpen}
+                setShow={setShow}
+                action="add"
+                showAll={true}
+            />
             <Heading title="Industry 4.0" showBackButton={false} />
 
             <IonContent color="new">
@@ -94,7 +100,6 @@ const Machines: React.FC = () => {
                         <div className="responsive-width m-auto p-3">
                             <ColourKey />
                         </div>
-<<<<<<< HEAD
                         <div className="py-3">
                             <IonSegment
                                 mode="ios"
@@ -110,21 +115,6 @@ const Machines: React.FC = () => {
                                     <IonLabel color="dark">Subscribed Machines</IonLabel>
                                 </IonSegmentButton>
                             </IonSegment>
-=======
-                        <div className="responsive-width grid grid-cols-2 gap-5 m-auto pb-20">
-                            {machines?.map(function (machine) {
-                                return (
-                                    <Link to={`/machine/${machine.id}`} key={machine.id}>
-                                        <MachineContainer
-                                            name={machine.name}
-                                            health={machine.healthStatus}
-                                            image={machine.image || "random"} // random is a placeholder right now, as not all machiens have images
-                                            id={machine.id}
-                                        />
-                                    </Link>
-                                );
-                            })}
->>>>>>> Pass in machine id to machines component
                         </div>
                         <MachineGrid
                             allMachines={allMachines}

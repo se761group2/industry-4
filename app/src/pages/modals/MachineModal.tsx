@@ -2,7 +2,7 @@ import { FetchResult, MutationResult, useMutation, useQuery } from "@apollo/clie
 import { IonAlert, IonButton, IonModal } from "@ionic/react";
 import "../Page.css";
 import React, { useState } from "react";
-import { CREATE_MACHINE } from "../../common/graphql/mutations/machines";
+import { CREATE_MACHINE, UPDATE_MACHINE } from "../../common/graphql/mutations/machines";
 import { GET_MACHINES } from "../../common/graphql/queries/machines";
 import { createMachine } from "../../types/createMachine";
 import { v4 as uuid } from "uuid";
@@ -13,6 +13,8 @@ import { useUserContext } from "../../utils/useUserContext";
 import { subscribeToMachine } from "../../types/subscribeToMachine";
 import { CREATE_USER, SUBSCRIBE_TO_MACHINE } from "../../common/graphql/mutations/users";
 import { createUser } from "../../types/createUser";
+import { updateMachine } from "../../types/updateMachine";
+import { MachineUpdateInput } from "../../types/types";
 
 interface ModalProps {
     open: boolean;
@@ -20,11 +22,22 @@ interface ModalProps {
     setShow: (show: boolean) => void;
     showAll: boolean;
     onCompleted?: (res: FetchResult<any, Record<string, any>, Record<string, any>>) => void;
+    action: string;
+    id?: string;
+    machineUpdateInput?: MachineUpdateInput;
 }
 
 const SUPPORTED_IMAGE_FORMATS = ["jpg", "jpeg", "png"];
 
-export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, setShow, showAll, onCompleted }) => {
+export const MachineModal: React.FC<ModalProps> = ({
+    open,
+    setOpen,
+    onCompleted,
+    action,
+    id,
+    machineUpdateInput,
+    showAll,
+}) => {
     const [image, setImage] = useState<File>();
     const [machineName, setMachineName] = useState("");
     const [error, setError] = useState(false);
@@ -41,6 +54,13 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, setShow, 
     const [createUserMutation] = useMutation<createUser>(CREATE_USER);
     const [subscribeMutation] = useMutation<subscribeToMachine>(SUBSCRIBE_TO_MACHINE);
 
+    const [updateMachineMutation] = useMutation<updateMachine>(UPDATE_MACHINE, {
+        refetchQueries: [{ query: GET_MACHINES }],
+    });
+    let value = "";
+    if (machineUpdateInput?.name) {
+        value = machineUpdateInput.name;
+    }
     const imageUploadHandler = (event) => {
         const imageFile = event.target.files[0];
         if (imageFile) {
@@ -69,6 +89,36 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, setShow, 
     };
 
     const handleAddMachine = async () => {
+        if (!machineName) {
+            setError(true);
+            return;
+        }
+        // Use the default image if the user has not uploaded anything
+        let key = machineUpdateInput?.image;
+
+        // Store the image (if user provided one)
+        if (image) {
+            key = await uploadImageToCloudStorage(image);
+        }
+
+        // Retrieve the image URL and create new machine with it
+        if (key) {
+            getDownloadURl(key).then(async (url) => {
+                const result = await updateMachineMutation({
+                    variables: {
+                        id: id,
+                        input: machineUpdateInput,
+                    },
+                });
+                if (onCompleted) {
+                    onCompleted(result);
+                }
+                setOpen(false);
+            });
+        }
+    };
+
+    const handleUpdateMachine = async () => {
         if (!machineName) {
             setError(true);
             return;
@@ -104,7 +154,6 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, setShow, 
                 onCompleted(result);
             }
             setOpen(false);
-            setShow(showAll);
         });
     };
 
@@ -112,7 +161,7 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, setShow, 
         <IonModal isOpen={open} onDidDismiss={() => setOpen(false)} cssClass="ion-modal">
             <div className="flex flex-col">
                 <div className="flex flex-col items-center space-y-6">
-                    <p className="text-3xl pt-2">Add a New Machine</p>
+                    <p className="text-3xl pt-2">{action == "add" ? "Add a New Machine" : "Update Machine"}</p>
                     <label className="flex space-x-3 items-center justify-items-start">
                         <p>Name:</p>
                         <input
@@ -121,6 +170,7 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, setShow, 
                             placeholder="E.g. Machine #4"
                             onChange={(e) => setMachineName(e.target.value)}
                             className="rounded border-2 p-2"
+                            value={value}
                         />
                     </label>
                     <label className="flex space-x-3 items-center">
@@ -135,7 +185,12 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, setShow, 
                     </label>
                 </div>
                 <div className="flex flex-row-reverse pr-8 pt-2">
-                    <IonButton onClick={() => handleAddMachine()}>Add</IonButton>
+                    {action == "add" ? (
+                        <IonButton onClick={() => handleAddMachine()}>Add</IonButton>
+                    ) : (
+                        <IonButton onClick={() => handleUpdateMachine()}>Update</IonButton>
+                    )}
+
                     <IonButton color="medium" onClick={() => setOpen(false)}>
                         Cancel
                     </IonButton>
