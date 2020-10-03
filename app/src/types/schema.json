@@ -24,6 +24,9 @@
                         "name": "MachineSubscriptionResponse"
                     },
                     {
+                        "name": "EmailUpdateResponse"
+                    },
+                    {
                         "name": "UserUpdatedResponse"
                     }
                 ]

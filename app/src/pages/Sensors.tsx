@@ -53,8 +53,6 @@ const Sensors: React.FC = () => {
     };
 
     const [changeNotificationsOpen, setChangeNotificationsOpen] = useState(false);
-    const [userEmails, setUserEmails] = useState(["gmce822@aucklanduni.ac.nz", "email@fake.com"]);
-    const [subscribedEmails, setSubscribedEmails] = useState(["gmce822@aucklanduni.ac.nz", "happy@email.com"]);
     const userContext = useUserContext();
     const userEmail = userContext.user?.email;
     const userQuery = useQuery<getUserByEmail>(GET_USER_BY_EMAIL, {
@@ -114,15 +112,22 @@ const Sensors: React.FC = () => {
         }
     };
 
+    const [userEmails, setUserEmails] = useState(userQuery.data?.user_email?.emails);
+    const [subscribedEmails, setSubscribedEmails] = useState(machine_data.data?.machine?.subscribers);
+
     return (
         <IonPage>
             <AddSensorModal open={addMachineOpen} setOpen={setAddMachineOpen} machineId={id} />
-            <ChangeNotificationsModal
-                open={changeNotificationsOpen}
-                setOpen={setChangeNotificationsOpen}
-                userEmails={userEmails}
-                subscribedEmails={subscribedEmails}
-            />
+            {userEmails && subscribedEmails && (
+                <ChangeNotificationsModal
+                    open={changeNotificationsOpen}
+                    setOpen={setChangeNotificationsOpen}
+                    userEmails={userEmails}
+                    subscribedEmails={subscribedEmails}
+                    machineID={id}
+                    setSubscribedEmails={setSubscribedEmails}
+                />
+            )}
             <Heading title={machine_data.data?.machine?.name} />
             <IonContent color="new">
                 {machine_data.data?.machine ? (

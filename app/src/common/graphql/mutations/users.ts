@@ -6,6 +6,7 @@ export const CREATE_USER = gql`
             user {
                 id
                 email
+                emails
                 firstName
                 machinesMaintaining {
                     id
@@ -23,6 +24,7 @@ export const SUBSCRIBE_TO_MACHINE = gql`
             user {
                 id
                 email
+                emails
                 firstName
                 machinesMaintaining {
                     id
@@ -40,6 +42,25 @@ export const UNSUBSCRIBE_FROM_MACHINE = gql`
             user {
                 id
                 email
+                emails
+                firstName
+                machinesMaintaining {
+                    id
+                }
+                surname
+                username
+            }
+        }
+    }
+`;
+
+export const UPDATE_USER_EMAILS = gql`
+    mutation updateUserEmails($userID: ID!, $emails: [String]) {
+        updateUserEmails(userID: $userID, emails: $emails) {
+            user {
+                id
+                email
+                emails
                 firstName
                 machinesMaintaining {
                     id

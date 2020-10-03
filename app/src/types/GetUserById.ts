@@ -16,6 +16,7 @@ export interface getUserByID_user {
   __typename: "User";
   id: string;
   email: string;
+  emails: (string | null)[] | null;
   firstName: string | null;
   surname: string | null;
   machinesMaintaining: (getUserByID_user_machinesMaintaining | null)[] | null;

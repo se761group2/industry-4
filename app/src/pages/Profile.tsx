@@ -23,7 +23,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router";
 import MachineContainer from "../components/MachineContainer";
 import "./Profile.css";
-import { from, useQuery } from "@apollo/client";
+import { from, useMutation, useQuery } from "@apollo/client";
 import { add, ellipsisHorizontal, ellipsisVertical, personCircle, search, trash } from "ionicons/icons";
 import Heading from "../components/Heading";
 import { Status } from "../types/globalTypes";
@@ -35,12 +35,22 @@ import ColourKey from "../components/ColourKey";
 import Error404 from "../components/ErrorMessage";
 import { AddMachineModal } from "./modals/AddMachineModal";
 import { useUserContext } from "../utils/useUserContext";
+import { UPDATE_USER_EMAILS } from "../common/graphql/mutations/users";
+import { getUserByEmail } from "../types/getUserByEmail";
+import { GET_USER_BY_EMAIL } from "../common/graphql/queries/users";
 
 const Profile: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
     const userContext = useUserContext();
     const [newEmail, setNewEmail] = useState("");
     const [emails, setEmails] = useState(["gmce822@aucklanduni.ac.nz", "georgeedwinmcerlean@gmail.com"]);
+    const [updateUserEmails] = useMutation(UPDATE_USER_EMAILS);
+    const userEmail = userContext.user?.email;
+    const userQuery = useQuery<getUserByEmail>(GET_USER_BY_EMAIL, {
+        variables: { email: userEmail },
+    });
+
+    const userID = userQuery.data?.user_email?.id;
 
     function changeNewEmail(emailAddress) {
         setNewEmail(emailAddress);
@@ -59,6 +69,11 @@ const Profile: React.FC = () => {
             }),
         );
         console.log(emails);
+    }
+
+    function saveEmailChanges() {
+        updateUserEmails({ variables: { userID: userID, emails: emails } });
+        setShowModal(false);
     }
 
     return (
@@ -125,7 +140,9 @@ const Profile: React.FC = () => {
                                 </IonCol>
                                 <IonCol col-6>
                                     <div className="flex justify-center">
-                                        <IonButton className="profile-ion-button">Save</IonButton>
+                                        <IonButton className="profile-ion-button" onClick={() => saveEmailChanges()}>
+                                            Save
+                                        </IonButton>
                                     </div>
                                 </IonCol>
                             </IonRow>

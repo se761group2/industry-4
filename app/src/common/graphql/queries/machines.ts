@@ -18,6 +18,7 @@ export const GET_MACHINE_BY_ID = gql`
             name
             healthStatus
             image
+            subscribers
             sensors {
                 id
                 name

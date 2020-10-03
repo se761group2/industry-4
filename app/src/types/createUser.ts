@@ -16,6 +16,7 @@ export interface createUser_createUser_user {
   __typename: "User";
   id: string;
   email: string;
+  emails: (string | null)[] | null;
   firstName: string | null;
   machinesMaintaining: (createUser_createUser_user_machinesMaintaining | null)[] | null;
   surname: string | null;
