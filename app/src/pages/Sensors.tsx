@@ -8,6 +8,7 @@ import {
     IonHeader,
     IonIcon,
     IonPage,
+    IonSpinner,
     IonTitle,
     IonToolbar,
 } from "@ionic/react";
@@ -114,7 +115,11 @@ const Sensors: React.FC = () => {
             <Heading title={machine_data.data?.machine?.name} />
 
             <IonContent color="new">
-                {machine_data.data?.machine ? (
+                {machine_data.loading ? (
+                    <div className="flex w-full h-full justify-center items-center">
+                        <IonSpinner className="w-16 h-16" color="light" />
+                    </div>
+                ) : machine_data.data?.machine ? (
                     <>
                         <div className="download text-center">
                             <IonButton
@@ -127,7 +132,7 @@ const Sensors: React.FC = () => {
                             </IonButton>
                         </div>
                         <div className="pb-20">
-                            {sensors ? (
+                            {sensors && sensors.length > 0 ? (
                                 sensors
                                     .slice()
                                     .sort((a, b) => stringCompare(a.healthStatus, b.healthStatus))
