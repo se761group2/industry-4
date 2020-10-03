@@ -8,7 +8,7 @@ const firestore = firebaseApp.firestore();
 // Resolvers to handle the queries when a user attempts to retrieve something from the database
 export const queryResolvers: QueryResolvers = {
   user: async (parent, args) => {
-    const userData = await MachineStore.getUser(args.id);
+    const userData = await MachineStore.getUserByEmail(args.email);
 
     if (!userData) {
       return undefined;

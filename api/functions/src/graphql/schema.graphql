@@ -55,7 +55,7 @@ type User {
 }
 
 type Query {
-  user(id: ID!): User
+  user(email: String!): User
   machines: [Machine!]!
   machine(id: ID!): Machine
   sensor(machineId: ID!, id: ID!): Sensor
