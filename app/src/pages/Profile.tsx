@@ -19,7 +19,7 @@ import {
     IonCol,
     IonRow,
 } from "@ionic/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import MachineContainer from "../components/MachineContainer";
 import "./Profile.css";
@@ -43,14 +43,22 @@ const Profile: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
     const userContext = useUserContext();
     const [newEmail, setNewEmail] = useState("");
-    const [emails, setEmails] = useState(["gmce822@aucklanduni.ac.nz", "georgeedwinmcerlean@gmail.com"]);
     const [updateUserEmails] = useMutation(UPDATE_USER_EMAILS);
     const userEmail = userContext.user?.email;
     const userQuery = useQuery<getUserByEmail>(GET_USER_BY_EMAIL, {
         variables: { email: userEmail },
     });
 
+    const [emails, setEmails] = useState(userQuery.data?.user_email?.emails!);
+
     const userID = userQuery.data?.user_email?.id;
+
+    useEffect(() => {
+        setEmails(userQuery.data?.user_email?.emails!);
+    }, [userQuery]);
+
+    console.log(userQuery.data?.user_email);
+    console.log(emails);
 
     function changeNewEmail(emailAddress) {
         setNewEmail(emailAddress);
@@ -98,57 +106,68 @@ const Profile: React.FC = () => {
                         Configure Email Addresses
                     </IonButton>
                 </div>
-                <IonModal
-                    backdrop-dismis
-                    backdropDismiss={true}
-                    onDidDismiss={() => setShowModal(false)}
-                    isOpen={showModal}
-                    cssClass="profile-ion-modal"
-                >
-                    <IonContent className="p-3 flex justify-center flex-col">
-                        <div className="p-3 flex justify-center flex-col">
-                            <IonList>
-                                {emails.map((email, index) => (
-                                    <IonItem key={index}>
-                                        <IonInput className="profile-ion-input" value={email}></IonInput>
-                                        <IonButton className="remove-button pl-3" onClick={() => removeEmail(index)}>
-                                            <IonIcon slot="icon-only" icon={trash} />
+                {emails && (
+                    <IonModal
+                        backdrop-dismis
+                        backdropDismiss={true}
+                        onDidDismiss={() => setShowModal(false)}
+                        isOpen={showModal}
+                        cssClass="profile-ion-modal"
+                    >
+                        <IonContent className="p-3 flex justify-center flex-col">
+                            <div className="p-3 flex justify-center flex-col">
+                                <IonList>
+                                    {emails.map((email, index) => (
+                                        <IonItem key={index}>
+                                            <IonInput className="profile-ion-input" value={email}></IonInput>
+                                            <IonButton
+                                                className="remove-button pl-3"
+                                                onClick={() => removeEmail(index)}
+                                            >
+                                                <IonIcon slot="icon-only" icon={trash} />
+                                            </IonButton>
+                                        </IonItem>
+                                    ))}
+                                    <IonItem>
+                                        <IonInput
+                                            className="profile-ion-input"
+                                            onIonChange={(e) => changeNewEmail((e.target as HTMLInputElement).value)}
+                                            placeholder="Enter a new Email address"
+                                            value={newEmail}
+                                        ></IonInput>
+                                        <IonButton className="remove-button pl-3" onClick={() => addNewEmail()}>
+                                            <IonIcon slot="icon-only" icon={add} />
                                         </IonButton>
                                     </IonItem>
-                                ))}
-                                <IonItem>
-                                    <IonInput
-                                        className="profile-ion-input"
-                                        onIonChange={(e) => changeNewEmail((e.target as HTMLInputElement).value)}
-                                        placeholder="Enter a new Email address"
-                                        value={newEmail}
-                                    ></IonInput>
-                                    <IonButton className="remove-button pl-3" onClick={() => addNewEmail()}>
-                                        <IonIcon slot="icon-only" icon={add} />
-                                    </IonButton>
-                                </IonItem>
-                            </IonList>
-                        </div>
-                        <IonGrid>
-                            <IonRow>
-                                <IonCol col-6>
-                                    <div className="flex justify-center">
-                                        <IonButton className="profile-ion-button" onClick={() => setShowModal(false)}>
-                                            Cancel
-                                        </IonButton>
-                                    </div>
-                                </IonCol>
-                                <IonCol col-6>
-                                    <div className="flex justify-center">
-                                        <IonButton className="profile-ion-button" onClick={() => saveEmailChanges()}>
-                                            Save
-                                        </IonButton>
-                                    </div>
-                                </IonCol>
-                            </IonRow>
-                        </IonGrid>
-                    </IonContent>
-                </IonModal>
+                                </IonList>
+                            </div>
+                            <IonGrid>
+                                <IonRow>
+                                    <IonCol col-6>
+                                        <div className="flex justify-center">
+                                            <IonButton
+                                                className="profile-ion-button"
+                                                onClick={() => setShowModal(false)}
+                                            >
+                                                Cancel
+                                            </IonButton>
+                                        </div>
+                                    </IonCol>
+                                    <IonCol col-6>
+                                        <div className="flex justify-center">
+                                            <IonButton
+                                                className="profile-ion-button"
+                                                onClick={() => saveEmailChanges()}
+                                            >
+                                                Save
+                                            </IonButton>
+                                        </div>
+                                    </IonCol>
+                                </IonRow>
+                            </IonGrid>
+                        </IonContent>
+                    </IonModal>
+                )}
             </IonContent>
         </IonPage>
     );

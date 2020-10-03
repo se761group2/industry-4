@@ -5,6 +5,7 @@ export const GET_MACHINES = gql`
         machines {
             id
             name
+            subscribers
             healthStatus
             image
         }

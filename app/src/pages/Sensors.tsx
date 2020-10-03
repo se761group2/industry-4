@@ -11,7 +11,7 @@ import {
     IonTitle,
     IonToolbar,
 } from "@ionic/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { from, useMutation, useQuery } from "@apollo/client";
 import { getMachineById } from "../types/getMachineById";
 import { getMachines } from "../types/getMachines";
@@ -111,9 +111,14 @@ const Sensors: React.FC = () => {
             subButtonMessage = "Unsubscribe from Machine";
         }
     };
-
-    const [userEmails, setUserEmails] = useState(userQuery.data?.user_email?.emails);
+    const userEmails = userQuery.data?.user_email?.emails;
     const [subscribedEmails, setSubscribedEmails] = useState(machine_data.data?.machine?.subscribers);
+
+    useEffect(() => {
+        setSubscribedEmails(machine_data.data?.machine?.subscribers);
+    }, [machine_data]);
+
+    console.log(subscribedEmails);
 
     return (
         <IonPage>

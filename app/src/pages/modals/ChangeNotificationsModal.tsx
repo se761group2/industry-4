@@ -62,6 +62,7 @@ export const ChangeNotificationsModal: React.FC<ModalProps> = ({
     function saveSubscribedEmails() {
         updateMachine({ variables: { id: machineID, input: { subscribers: selected } } });
         setSubscribedEmails(selected);
+        setOpen(false);
     }
 
     return (
