@@ -12,8 +12,8 @@ import {
     IonTitle,
     IonToolbar,
 } from "@ionic/react";
+import { from, useMutation, useQuery } from "@apollo/client";
 import React, { useState } from "react";
-import { from, useQuery } from "@apollo/client";
 import { getMachineById } from "../types/getMachineById";
 import { getMachines } from "../types/getMachines";
 import HealthContainer from "../components/HealthContainer";
@@ -24,6 +24,13 @@ import { useParams } from "react-router";
 import { GET_MACHINE_BY_ID, GET_MACHINES } from "../common/graphql/queries/machines";
 import Error404 from "../components/ErrorMessage";
 import { add } from "ionicons/icons";
+import { subscribeToMachine } from "../types/subscribeToMachine";
+import { CREATE_USER, SUBSCRIBE_TO_MACHINE, UNSUBSCRIBE_FROM_MACHINE } from "../common/graphql/mutations/users";
+import { GET_USER_BY_EMAIL, GET_USER_BY_ID } from "../common/graphql/queries/users";
+import { unsubscribeFromMachine } from "../types/unsubscribeFromMachine";
+import { useUserContext } from "../utils/useUserContext";
+import { getUserByEmail } from "../types/getUserByEmail";
+import { createUser } from "../types/createUser";
 import { AddSensorModal } from "./modals/AddSensorModal";
 
 const Sensors: React.FC = () => {
@@ -45,6 +52,65 @@ const Sensors: React.FC = () => {
         return 0;
     };
 
+    const userContext = useUserContext();
+    const userEmail = userContext.user?.email;
+    const userQuery = useQuery<getUserByEmail>(GET_USER_BY_EMAIL, {
+        variables: { email: userEmail },
+    });
+    let userID = userQuery.data?.user_email?.id;
+    const [createUserMutation] = useMutation<createUser>(CREATE_USER);
+
+    // let isSubscribed: boolean | null | undefined = null;
+
+    const [isSubscribed, setSubscribed] = useState(
+        userQuery.data?.user_email?.machinesMaintaining?.some(function (machine) {
+            return String(machine?.id) == id;
+        }),
+    );
+
+    let subButtonMessage: string;
+    const [unsubscribeMutation] = useMutation<unsubscribeFromMachine>(UNSUBSCRIBE_FROM_MACHINE);
+    const [subscribeMutation] = useMutation<subscribeToMachine>(SUBSCRIBE_TO_MACHINE);
+    if (isSubscribed) {
+        subButtonMessage = "Unsubscribe from Machine";
+    } else {
+        subButtonMessage = "Subscribe to Machine";
+    }
+
+    const handleSubscribe = async () => {
+        if (!userID) {
+            const newUser = await createUserMutation({
+                variables: {
+                    email: userEmail,
+                },
+            });
+            userID = newUser.data?.createUser?.user?.id;
+            setSubscribed(false);
+        }
+
+        if (isSubscribed) {
+            const result = await unsubscribeMutation({
+                variables: {
+                    userID: userID,
+                    machineID: id,
+                },
+            });
+
+            setSubscribed(false);
+            subButtonMessage = "Subscribe to Machine";
+        } else {
+            const result = await subscribeMutation({
+                variables: {
+                    userID: userID,
+                    machineID: id,
+                },
+            });
+
+            setSubscribed(true);
+            subButtonMessage = "Unsubscribe from Machine";
+        }
+    };
+
     return (
         <IonPage>
             <AddSensorModal open={addMachineOpen} setOpen={setAddMachineOpen} machineId={id} />
@@ -57,6 +123,16 @@ const Sensors: React.FC = () => {
                     </div>
                 ) : machine_data.data?.machine ? (
                     <>
+                        <div className="download text-center">
+                            <IonButton
+                                shape="round"
+                                color="light"
+                                className="responsive-width text-lg normal-case m-4"
+                                onClick={() => handleSubscribe()}
+                            >
+                                {subButtonMessage}
+                            </IonButton>
+                        </div>
                         <div className="pb-20">
                             {sensors && sensors.length > 0 ? (
                                 sensors

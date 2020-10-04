@@ -1,4 +1,4 @@
-import { FetchResult, MutationResult, useMutation } from "@apollo/client";
+import { FetchResult, MutationResult, useMutation, useQuery } from "@apollo/client";
 import { IonAlert, IonButton, IonModal } from "@ionic/react";
 import "../Page.css";
 import React, { useState } from "react";
@@ -7,22 +7,39 @@ import { GET_MACHINES } from "../../common/graphql/queries/machines";
 import { createMachine } from "../../types/createMachine";
 import { v4 as uuid } from "uuid";
 import { firebaseApp } from "../../services/firebase";
+import { GET_USER_BY_EMAIL } from "../../common/graphql/queries/users";
+import { getUserByEmail } from "../../types/getUserByEmail";
+import { useUserContext } from "../../utils/useUserContext";
+import { subscribeToMachine } from "../../types/subscribeToMachine";
+import { CREATE_USER, SUBSCRIBE_TO_MACHINE } from "../../common/graphql/mutations/users";
+import { createUser } from "../../types/createUser";
 
 interface ModalProps {
     open: boolean;
     setOpen: (open: boolean) => void;
+    setShow: (show: boolean) => void;
+    showAll: boolean;
     onCompleted?: (res: FetchResult<any, Record<string, any>, Record<string, any>>) => void;
 }
 
 const SUPPORTED_IMAGE_FORMATS = ["jpg", "jpeg", "png"];
 
-export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onCompleted }) => {
+export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, setShow, showAll, onCompleted }) => {
     const [image, setImage] = useState<File>();
     const [machineName, setMachineName] = useState("");
     const [error, setError] = useState(false);
     const [createMachineMutation] = useMutation<createMachine>(CREATE_MACHINE, {
         refetchQueries: [{ query: GET_MACHINES }],
     });
+
+    const userContext = useUserContext();
+    const userEmail = userContext.user?.email;
+    const userQuery = useQuery<getUserByEmail>(GET_USER_BY_EMAIL, {
+        variables: { email: userEmail },
+    });
+    let userID = userQuery.data?.user_email?.id;
+    const [createUserMutation] = useMutation<createUser>(CREATE_USER);
+    const [subscribeMutation] = useMutation<subscribeToMachine>(SUBSCRIBE_TO_MACHINE);
 
     const imageUploadHandler = (event) => {
         const imageFile = event.target.files[0];
@@ -72,10 +89,22 @@ export const AddMachineModal: React.FC<ModalProps> = ({ open, setOpen, onComplet
                     image: url,
                 },
             });
+            if (!userID) {
+                const newUser = await createUserMutation({
+                    variables: {
+                        email: userEmail,
+                    },
+                });
+                userID = newUser.data?.createUser?.user?.id;
+            }
+            const result2 = await subscribeMutation({
+                variables: { userID: userID, machineID: result.data?.createMachine?.machine?.id },
+            });
             if (onCompleted) {
                 onCompleted(result);
             }
             setOpen(false);
+            setShow(showAll);
         });
     };
 

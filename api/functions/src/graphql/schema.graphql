@@ -48,16 +48,20 @@ type Sample {
 
 type User {
   id: ID!
-  username: String!
+  username: String
   email: String!
-  phoneNumber: String!
+  phoneNumber: String
+  firstName: String
+  surname: String
+  machinesMaintaining: [Machine]
 }
 
 type Query {
   user(id: ID!): User
+  user_email(email: String!): User
   machines: [Machine!]!
   machine(id: ID!): Machine
-  sensor(machineId: ID! id: ID!): Sensor
+  sensor(machineId: ID!, id: ID!): Sensor
 }
 
 interface MutationResponse {
@@ -100,8 +104,22 @@ type SensorUpdatedResponse implements MutationResponse {
   sensor: Sensor
 }
 
+type UserCreationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  user: User
+}
+
+type MachineSubscriptionResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  user: User
+}
+
 input SensorInput {
-  machineID: ID! 
+  machineID: ID!
   name: String!
 }
 
@@ -121,8 +139,18 @@ input SensorUpdateInput {
 
 type Mutation {
   updateUser(id: ID!): MutationResponse
-  updateMachine(id: ID! input: MachineUpdateInput): MachineUpdatedResponse
-  updateSensor(id: ID! machineID: ID! input: SensorUpdateInput): SensorUpdatedResponse
+  updateMachine(id: ID!, input: MachineUpdateInput): MachineUpdatedResponse
+  updateSensor(
+    id: ID!
+    machineID: ID!
+    input: SensorUpdateInput
+  ): SensorUpdatedResponse
   createMachine(name: String!, image: String!): MachineCreationResponse
   createSensor(input: SensorInput): SensorCreationResponse
+  createUser(email: String!): UserCreationResponse
+  subscribeToMachine(userID: ID!, machineID: ID!): MachineSubscriptionResponse
+  unsubscribeFromMachine(
+    userID: ID!
+    machineID: ID!
+  ): MachineSubscriptionResponse
 }

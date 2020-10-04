@@ -76,4 +76,49 @@ export const mutationResolvers: MutationResolvers = {
 
     return resp;
   },
+
+  createUser: async (parent, args) => {
+    const newUser = await MachineStore.createUser(args.email);
+
+    const resp: any = {
+      code: 'user_create/success',
+      success: true,
+      message: 'Sensor Created Successfully.',
+      user: newUser,
+    };
+
+    return resp;
+  },
+
+  subscribeToMachine: async (parent, args) => {
+    const user = await MachineStore.subscribeToMachine(
+      args.userID,
+      args.machineID
+    );
+
+    const resp: any = {
+      code: 'user_subscribe/success',
+      success: true,
+      message: 'Machine Subscribed Successfully.',
+      user: user,
+    };
+
+    return resp;
+  },
+
+  unsubscribeFromMachine: async (parent, args) => {
+    const user = await MachineStore.unsubscribeFromMachine(
+      args.userID,
+      args.machineID
+    );
+
+    const resp: any = {
+      code: 'user_unsubscribe/success',
+      success: true,
+      message: 'Machine Unsubscribed Successfully.',
+      user: user,
+    };
+
+    return resp;
+  },
 };
