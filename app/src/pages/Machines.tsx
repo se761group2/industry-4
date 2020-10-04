@@ -39,8 +39,8 @@ import MachineGrid from "../components/MachineGrid";
 const Machines: React.FC = () => {
     const machinesQuery = useQuery<getMachines>(GET_MACHINES);
     const [addMachineOpen, setAddMachineOpen] = useState<boolean>(false);
-    const [showAll, setShow] = useState(false);
-    const [selectedValue, setSelectedValue] = useState("subscribed");
+    const [showAll, setShow] = useState(true);
+    const [selectedValue, setSelectedValue] = useState("all");
 
     // sort machines by health status
     // (critical, moderate, nominal) happens to be alphabetical so currently just sorting alphabetically
@@ -54,11 +54,20 @@ const Machines: React.FC = () => {
     });
 
     // const [subscribedMachineRefs, setSubscribedMachineRefs] = useState(userQuery.data?.user_email?.machinesMaintaining);
-    let subscribedMachineRefs = userQuery.data?.user_email?.machinesMaintaining;
-
-    // let subscribedMachines: (getMachines_machines | null | undefined)[] = [];
+    const subscribedMachineRefs = userQuery.data?.user_email?.machinesMaintaining;
+    const subscribedMachines: (getMachines_machines | null | undefined)[] = [];
+    // populating subscribed machines array with the real data from the actual machines
+    // since the reference obtained via the user only contains the ID data of the relevant machine
+    allMachines?.forEach(function (machine) {
+        subscribedMachineRefs?.findIndex(function (subMachine) {
+            if (subMachine && String(machine?.id) == String(subMachine?.id)) {
+                subscribedMachines.push(machine);
+            }
+        });
+    });
 
     const changeMachinesShown = (segment) => {
+        userQuery.refetch();
         setSelectedValue(String(segment));
         if (String(segment) == "all") {
             setShow(true);
@@ -67,21 +76,8 @@ const Machines: React.FC = () => {
         }
     };
 
-    const populateSubscribedMachines = () => {
-        // populating subscribed machines array with the real data from the actual machines
-        // since the reference obtained via the user only contains the ID data of the relevant machine
-        userQuery.refetch();
-        subscribedMachineRefs = userQuery.data?.user_email?.machinesMaintaining;
-        const populatingArray: any[] = [];
-        allMachines?.forEach(function (machine) {
-            subscribedMachineRefs?.findIndex(function (subMachine) {
-                if (subMachine && String(machine?.id) == String(subMachine?.id)) {
-                    populatingArray.push(machine);
-                }
-            });
-        });
-        return populatingArray;
-    };
+    // userQuery.refetch();
+    // subscribedMachineRefs = userQuery.data?.user_email?.machinesMaintaining;
 
     return (
         <IonPage>
@@ -106,17 +102,17 @@ const Machines: React.FC = () => {
                                 onIonChange={(e) => changeMachinesShown(e.detail.value)}
                                 value={selectedValue}
                             >
-                                <IonSegmentButton className="ion-segment-button" value={"subscribed"}>
-                                    <IonLabel color="dark">Subscribed Machines</IonLabel>
-                                </IonSegmentButton>
                                 <IonSegmentButton className="ion-segment-button" value={"all"}>
                                     <IonLabel color="dark">All Machines</IonLabel>
+                                </IonSegmentButton>
+                                <IonSegmentButton className="ion-segment-button" value={"subscribed"}>
+                                    <IonLabel color="dark">Subscribed Machines</IonLabel>
                                 </IonSegmentButton>
                             </IonSegment>
                         </div>
                         <MachineGrid
                             allMachines={allMachines}
-                            subscribedMachines={populateSubscribedMachines()}
+                            subscribedMachines={subscribedMachines}
                             showAll={showAll}
                         />
                     </div>
