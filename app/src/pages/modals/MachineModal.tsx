@@ -118,39 +118,37 @@ export const MachineModal: React.FC<ModalProps> = ({
     };
 
     const handleUpdateMachine = async () => {
-        if (!machineName) {
-            setError(true);
-            return;
-        }
-
         if (machineUpdateInput) {
             // Use the default image if the user has not uploaded anything
-            let key = machineUpdateInput.image;
+            let key;
 
             // Store the image (if user provided one)
             if (image) {
+                console.log("image getss here ");
                 key = await uploadImageToCloudStorage(image);
             }
 
-            if (key) {
-                // Retrieve the image URL and create new machine with it
-                getDownloadURl(key).then(async (url) => {
-                    console.log("image ", url);
-
-                    const result = await updateMachineMutation({
-                        variables: {
-                            id: id,
-                            input: {
-                                name: machineName,
-                                image: url,
-                            },
+            // Retrieve the image URL and create new machine with it
+            getDownloadURl(key).then(async (url) => {
+                console.log("image ", url);
+                console.log("name ", machineName);
+                if (!image) {
+                    url = "";
+                }
+                const result = await updateMachineMutation({
+                    variables: {
+                        id: id,
+                        input: {
+                            name: machineName,
+                            image: url,
                         },
-                    });
-                    if (onCompleted) {
-                        onCompleted(result);
-                    }
+                    },
                 });
-            }
+                if (onCompleted) {
+                    onCompleted(result);
+                }
+            });
+
             setOpen(false);
         }
     };
