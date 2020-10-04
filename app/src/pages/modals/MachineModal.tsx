@@ -103,6 +103,7 @@ export const MachineModal: React.FC<ModalProps> = ({
 
         // Retrieve the image URL and create new machine with it
         getDownloadURl(key).then(async (url) => {
+            console.log("url ", url);
             const result = await createMachineMutation({
                 variables: {
                     name: machineName,
@@ -116,47 +117,51 @@ export const MachineModal: React.FC<ModalProps> = ({
         });
     };
 
-    // const handleUpdateMachine = async () => {
-    //     if (!machineName) {
-    //         setError(true);
-    //         return;
-    //     }
+    const handleUpdateMachine = async () => {
+        if (!machineName) {
+            setError(true);
+            return;
+        }
 
-    //     if (machineUpdateInput) {
-    //         // Use the default image if the user has not uploaded anything
-    //         let key = machineUpdateInput.image;
+        if (machineUpdateInput) {
+            // Use the default image if the user has not uploaded anything
+            let key = machineUpdateInput.image;
 
-    //         // Store the image (if user provided one)
-    //         if (image) {
-    //             key = await uploadImageToCloudStorage(image);
-    //         }
+            // Store the image (if user provided one)
+            if (image) {
+                key = await uploadImageToCloudStorage(image);
+            }
 
-    //         if (key) {
-    //             // Retrieve the image URL and create new machine with it
-    //             getDownloadURl(key).then(async (url) => {
-    //                 const result = await updateMachineMutation({
-    //                     variables: {
-    //                         id: id,
-    //                         input: {
-    //                             name: "updated",
-    //                             image: url,
-    //                         },
-    //                     },
-    //                 });
-    //                 if (onCompleted) {
-    //                     onCompleted(result);
-    //                 }
-    //             });
-    //         }
-    //         setOpen(false);
-    //     }
-    // };
+            if (key) {
+                // Retrieve the image URL and create new machine with it
+                getDownloadURl(key).then(async (url) => {
+                    console.log("image ", url);
+
+                    const result = await updateMachineMutation({
+                        variables: {
+                            id: id,
+                            input: {
+                                name: machineName,
+                                image: url,
+                            },
+                        },
+                    });
+                    if (onCompleted) {
+                        onCompleted(result);
+                    }
+                });
+            }
+            setOpen(false);
+        }
+    };
 
     return (
         <IonModal isOpen={open} onDidDismiss={() => setOpen(false)} cssClass="ion-modal">
             <div className="flex flex-col">
                 <div className="flex flex-col items-center space-y-6">
-                    <p className="text-3xl pt-2">{action == "add" ? "Add a New Machine" : "Update Machine"}</p>
+                    <p className="text-3xl pt-2">
+                        {action == "add" ? "Add a New Machine" : "Update Machine: " + machineUpdateInput?.name}
+                    </p>
                     <label className="flex space-x-3 items-center justify-items-start">
                         <p>Name:</p>
                         <input
@@ -182,7 +187,7 @@ export const MachineModal: React.FC<ModalProps> = ({
                     {action == "add" ? (
                         <IonButton onClick={() => handleAddMachine()}>Add</IonButton>
                     ) : (
-                        <IonButton>Update</IonButton>
+                        <IonButton onClick={() => handleUpdateMachine()}>Update</IonButton>
                     )}
 
                     <IonButton color="medium" onClick={() => setOpen(false)}>
