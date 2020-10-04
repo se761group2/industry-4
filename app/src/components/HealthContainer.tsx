@@ -17,7 +17,6 @@ interface ContainerProps {
 const HealthContainer: React.FC<ContainerProps> = ({ name, value, health, machineId, id }) => {
     const [updateSensorOpen, setUpdateSensorOpen] = useState<boolean>(false);
     const bg: string = statusColour(health);
-    console.log("logging in health container ", machineId);
     return (
         <div className="responsive-width grid grid-cols-1 m-auto p-3">
             <SensorModal
