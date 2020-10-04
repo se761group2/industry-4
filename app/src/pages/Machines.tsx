@@ -41,9 +41,9 @@ const Machines: React.FC = () => {
     const [addMachineOpen, setAddMachineOpen] = useState<boolean>(false);
     const [showAll, setShow] = useState(false);
     const [selectedValue, setSelectedValue] = useState("subscribed");
-    const [segmentColour, setSegmentColour] = useState("dark");
+
     // sort machines by health status
-    // (critcal, moderate, nominal) happens to be alphabetical so currently just sorting alphabetically
+    // (critical, moderate, nominal) happens to be alphabetical so currently just sorting alphabetically
     let allMachines = machinesQuery.data?.machines;
     allMachines = allMachines?.slice().sort((a, b) => (a.healthStatus! > b.healthStatus! ? 1 : -1));
 
@@ -53,25 +53,34 @@ const Machines: React.FC = () => {
         variables: { email: userEmail },
     });
 
-    // populating subscribed machines array with the real data from the actual machines
-    // since the reference obtained via the user only contains the ID data of the relevant machine
-    const subscribedMachineRefs = userQuery.data?.user_email?.machinesMaintaining;
-    const subscribedMachines: (getMachines_machines | null | undefined)[] = [];
-    allMachines?.forEach(function (machine) {
-        subscribedMachineRefs?.findIndex(function (subMachine) {
-            if (subMachine && String(machine?.id) == String(subMachine?.id)) {
-                subscribedMachines.push(machine);
-            }
-        });
-    });
+    // const [subscribedMachineRefs, setSubscribedMachineRefs] = useState(userQuery.data?.user_email?.machinesMaintaining);
+    let subscribedMachineRefs = userQuery.data?.user_email?.machinesMaintaining;
 
-    const changeMachines = async (segment) => {
+    // let subscribedMachines: (getMachines_machines | null | undefined)[] = [];
+
+    const changeMachinesShown = (segment) => {
         setSelectedValue(String(segment));
         if (String(segment) == "all") {
             setShow(true);
         } else if (String(segment) == "subscribed") {
             setShow(false);
         }
+    };
+
+    const populateSubscribedMachines = () => {
+        // populating subscribed machines array with the real data from the actual machines
+        // since the reference obtained via the user only contains the ID data of the relevant machine
+        userQuery.refetch();
+        subscribedMachineRefs = userQuery.data?.user_email?.machinesMaintaining;
+        const populatingArray: any[] = [];
+        allMachines?.forEach(function (machine) {
+            subscribedMachineRefs?.findIndex(function (subMachine) {
+                if (subMachine && String(machine?.id) == String(subMachine?.id)) {
+                    populatingArray.push(machine);
+                }
+            });
+        });
+        return populatingArray;
     };
 
     return (
@@ -94,7 +103,7 @@ const Machines: React.FC = () => {
                                 mode="ios"
                                 color="primary"
                                 className="ion-segment"
-                                onIonChange={(e) => changeMachines(e.detail.value)}
+                                onIonChange={(e) => changeMachinesShown(e.detail.value)}
                                 value={selectedValue}
                             >
                                 <IonSegmentButton className="ion-segment-button" value={"subscribed"}>
@@ -107,7 +116,7 @@ const Machines: React.FC = () => {
                         </div>
                         <MachineGrid
                             allMachines={allMachines}
-                            subscribedMachines={subscribedMachines}
+                            subscribedMachines={populateSubscribedMachines()}
                             showAll={showAll}
                         />
                     </div>

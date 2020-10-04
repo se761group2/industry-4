@@ -20,7 +20,7 @@ const MachineGrid: React.FC<GridProps> = ({ allMachines, subscribedMachines, sho
     }
     return (
         <div>
-            {subscribedMachines.length || showAll ? (
+            {subscribedMachines.length > 0 || showAll ? (
                 <div className="responsive-width grid grid-cols-2 gap-5 m-auto pb-20">
                     {machines?.map(function (machine) {
                         return (

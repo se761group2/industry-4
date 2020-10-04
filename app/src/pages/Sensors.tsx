@@ -60,11 +60,13 @@ const Sensors: React.FC = () => {
     let userID = userQuery.data?.user_email?.id;
     const [createUserMutation] = useMutation<createUser>(CREATE_USER);
 
-    let isSubscribed: boolean | null | undefined = null;
+    // let isSubscribed: boolean | null | undefined = null;
 
-    isSubscribed = userQuery.data?.user_email?.machinesMaintaining?.some(function (machine) {
-        return String(machine?.id) == id;
-    });
+    const [isSubscribed, setSubscribed] = useState(
+        userQuery.data?.user_email?.machinesMaintaining?.some(function (machine) {
+            return String(machine?.id) == id;
+        }),
+    );
 
     let subButtonMessage: string;
     const [unsubscribeMutation] = useMutation<unsubscribeFromMachine>(UNSUBSCRIBE_FROM_MACHINE);
@@ -83,7 +85,7 @@ const Sensors: React.FC = () => {
                 },
             });
             userID = newUser.data?.createUser?.user?.id;
-            isSubscribed = false;
+            setSubscribed(false);
         }
 
         if (isSubscribed) {
@@ -94,7 +96,7 @@ const Sensors: React.FC = () => {
                 },
             });
 
-            isSubscribed = false;
+            setSubscribed(false);
             subButtonMessage = "Subscribe to Machine";
         } else {
             const result = await subscribeMutation({
@@ -104,7 +106,7 @@ const Sensors: React.FC = () => {
                 },
             });
 
-            isSubscribed = true;
+            setSubscribed(true);
             subButtonMessage = "Unsubscribe from Machine";
         }
     };
