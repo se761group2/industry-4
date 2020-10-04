@@ -1,19 +1,25 @@
 import { FetchResult, MutationResult, useMutation } from "@apollo/client";
 import { IonAlert } from "@ionic/react";
 import React, { useState } from "react";
-import { CREATE_SENSOR } from "../../common/graphql/mutations/sensors";
+import { CREATE_SENSOR, UPDATE_SENSOR } from "../../common/graphql/mutations/sensors";
 import { GET_MACHINE_BY_ID } from "../../common/graphql/queries/machines";
 import { createSensor } from "../../types/createSensor";
+import { updateSensor } from "../../types/updateSensor";
 
 interface ModalProps {
     open: boolean;
     machineId: string;
     setOpen: (open: boolean) => void;
     onCompleted?: (res: FetchResult<any, Record<string, any>, Record<string, any>>) => void;
+    action: string;
 }
 
-export const AddSensorModal: React.FC<ModalProps> = ({ open, setOpen, machineId, onCompleted }) => {
+export const SensorModal: React.FC<ModalProps> = ({ open, setOpen, machineId, onCompleted, action }) => {
     const [createSensorMutation] = useMutation<createSensor>(CREATE_SENSOR, {
+        refetchQueries: [{ query: GET_MACHINE_BY_ID, variables: { id: machineId } }],
+    });
+
+    const [updateSensorMutation] = useMutation<updateSensor>(UPDATE_SENSOR, {
         refetchQueries: [{ query: GET_MACHINE_BY_ID, variables: { id: machineId } }],
     });
 

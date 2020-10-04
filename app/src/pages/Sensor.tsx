@@ -85,6 +85,8 @@ const Sensor: React.FC = () => {
                                 name={sensor.name}
                                 value={currentValue?.value}
                                 health={sensor.healthStatus}
+                                machineId={machineid}
+                                id={id}
                             />
                         </div>
                         {((!updated && sensor?.notificationStatus == "Unacknowledged") || unacknowledged) && (
