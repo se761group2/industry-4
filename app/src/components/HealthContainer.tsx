@@ -17,9 +17,17 @@ interface ContainerProps {
 const HealthContainer: React.FC<ContainerProps> = ({ name, value, health, machineId, id }) => {
     const [updateSensorOpen, setUpdateSensorOpen] = useState<boolean>(false);
     const bg: string = statusColour(health);
+    console.log("logging in health container ", machineId);
     return (
         <div className="responsive-width grid grid-cols-1 m-auto p-3">
-            <SensorModal open={updateSensorOpen} setOpen={setUpdateSensorOpen} machineId={id} action="add" />
+            <SensorModal
+                open={updateSensorOpen}
+                setOpen={setUpdateSensorOpen}
+                machineId={machineId}
+                action="update"
+                name={name}
+                id={id}
+            />
             <button className="absolute ml-2 mt-1 mb-2 shadow-none" onClick={() => setUpdateSensorOpen(true)}>
                 <IonIcon color="dark" icon={create} className="absolute h-8 w-8 shadow-none" />
             </button>

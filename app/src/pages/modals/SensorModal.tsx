@@ -12,9 +12,11 @@ interface ModalProps {
     setOpen: (open: boolean) => void;
     onCompleted?: (res: FetchResult<any, Record<string, any>, Record<string, any>>) => void;
     action: string;
+    name?: string;
+    id?: string;
 }
 
-export const SensorModal: React.FC<ModalProps> = ({ open, setOpen, machineId, onCompleted, action }) => {
+export const SensorModal: React.FC<ModalProps> = ({ open, setOpen, machineId, onCompleted, action, name, id }) => {
     const [createSensorMutation] = useMutation<createSensor>(CREATE_SENSOR, {
         refetchQueries: [{ query: GET_MACHINE_BY_ID, variables: { id: machineId } }],
     });
@@ -38,6 +40,29 @@ export const SensorModal: React.FC<ModalProps> = ({ open, setOpen, machineId, on
                 },
             },
         });
+        console.log("Result ", result);
+
+        if (onCompleted) {
+            onCompleted(result);
+        }
+    };
+
+    const handleUpdateSensor = async (alertData) => {
+        const sensorName = alertData["sensorName"]?.trim();
+
+        if (!sensorName) {
+            return;
+        }
+        console.log("ids ", id, " machine id ", machineId);
+        const result = await updateSensorMutation({
+            variables: {
+                id: id,
+                machineID: machineId,
+                input: {
+                    name: sensorName,
+                },
+            },
+        });
 
         if (onCompleted) {
             onCompleted(result);
@@ -48,7 +73,7 @@ export const SensorModal: React.FC<ModalProps> = ({ open, setOpen, machineId, on
         <IonAlert
             isOpen={open}
             onDidDismiss={() => setOpen(false)}
-            header={"Add a sensor"}
+            header={action == "add" ? "Add a sensor" : "Update sensor: " + name}
             inputs={[
                 {
                     name: "sensorName",
@@ -56,16 +81,29 @@ export const SensorModal: React.FC<ModalProps> = ({ open, setOpen, machineId, on
                     placeholder: "E.g. Sensor #2",
                 },
             ]}
-            buttons={[
-                {
-                    text: "Cancel",
-                    role: "cancel",
-                },
-                {
-                    text: "Add",
-                    handler: handleAddSensor,
-                },
-            ]}
+            buttons={
+                action == "add"
+                    ? [
+                          {
+                              text: "Cancel",
+                              role: "cancel",
+                          },
+                          {
+                              text: "Add",
+                              handler: handleAddSensor,
+                          },
+                      ]
+                    : [
+                          {
+                              text: "Cancel",
+                              role: "cancel",
+                          },
+                          {
+                              text: "Update",
+                              handler: handleUpdateSensor,
+                          },
+                      ]
+            }
         />
     );
 };

@@ -101,18 +101,16 @@ const createSensor = async (machineId, sensorName): Promise<Sensor> => {
 };
 
 const updateSensor = async (
-  machineId,
-  sensorId,
+  machineID,
+  id,
   name: string | null | undefined,
   healthStatus: string | null | undefined,
   notificationStatus: string | null | undefined,
   threshold: number | null | undefined,
   unit: string | null | undefined
 ): Promise<Sensor> => {
-  const sensorDoc = await firestore.doc(
-    `machines/${machineId}/sensors/${sensorId}`
-  );
-
+  const sensorDoc = await firestore.doc(`machines/${machineID}/sensors/${id}`);
+  console.log('gets heres');
   // Filter out any null or undefined parameters, so that they are not persisted
   const toUpdate = Object.entries({
     name,
