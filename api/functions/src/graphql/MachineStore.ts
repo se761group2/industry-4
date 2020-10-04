@@ -1,6 +1,12 @@
 import { calendarFormat } from 'moment';
 import { firebaseApp } from '../firebase';
-import { Machine, Sensor, Unit, User } from '../generated/graphql';
+import {
+  Machine,
+  NotificationStatus,
+  Sensor,
+  Unit,
+  User,
+} from '../generated/graphql';
 import { addIdToDoc } from './resolvers/utils';
 
 const firestore = firebaseApp.firestore();
@@ -51,6 +57,7 @@ const createMachine = async (machineName, imageURL): Promise<Machine> => {
   const machineDoc = await firestore.collection('machines').add({
     name: machineName,
     healthStatus: 'Nominal',
+    notificationStatus: 'Working',
     subscribers: [],
     image: imageURL,
   });
@@ -62,15 +69,19 @@ const updateMachine = async (
   machineId,
   name: string | null | undefined,
   healthStatus: string | null | undefined,
+  notificationStatus: NotificationStatus | null | undefined,
   imageURL: string | null | undefined,
   subscribers: (string | null)[] | null | undefined
 ): Promise<Machine> => {
   const machineDoc = await firestore.doc(`machines/${machineId}`);
 
   // Filter out any null or undefined parameters, so that they are not persisted
-  const toUpdate = Object.entries({ name, healthStatus, subscribers }).filter(
-    ([_, v]) => v !== null && v !== undefined
-  );
+  const toUpdate = Object.entries({
+    name,
+    healthStatus,
+    subscribers,
+    notificationStatus,
+  }).filter(([_, v]) => v !== null && v !== undefined);
 
   await machineDoc.update(Object.fromEntries(toUpdate));
 
@@ -85,7 +96,6 @@ const createSensor = async (machineId, sensorName): Promise<Sensor> => {
     .add({
       name: sensorName,
       healthStatus: 'Nominal',
-      notificationStatus: 'Working',
       threshold: null,
       unit: Unit.Mps2Rms,
     });
@@ -103,7 +113,6 @@ const updateSensor = async (
   sensorId,
   name: string | null | undefined,
   healthStatus: string | null | undefined,
-  notificationStatus: string | null | undefined,
   threshold: number | null | undefined,
   unit: string | null | undefined
 ): Promise<Sensor> => {
@@ -115,7 +124,6 @@ const updateSensor = async (
   const toUpdate = Object.entries({
     name,
     healthStatus,
-    notificationStatus,
     threshold,
     unit,
   }).filter(([_, v]) => v !== null && v !== undefined);
