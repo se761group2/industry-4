@@ -28,7 +28,7 @@ const MachineGrid: React.FC<GridProps> = ({ allMachines, subscribedMachines, sho
                                 <MachineContainer
                                     name={machine?.name}
                                     health={machine?.healthStatus}
-                                    image={machine?.image || "random"} // random is a placeholder right now, as not all machines have images
+                                    image={machine?.image || "default"}
                                 />
                             </Link>
                         );

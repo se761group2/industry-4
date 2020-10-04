@@ -18,8 +18,9 @@ const MachineContainer: React.FC<ContainerProps> = ({ name, health, image }) => 
     const bg: string = statusColour(health);
 
     const images: string[] = [img1, img2, img3, img4, img5];
-    if (image == "random") {
-        image = images[Math.floor(Math.random() * images.length)];
+    if (image == "default") {
+        image = img4;
+        // image = images[Math.floor(Math.random() * images.length)];
     }
 
     return (
