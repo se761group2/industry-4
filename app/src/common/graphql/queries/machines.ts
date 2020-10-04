@@ -6,6 +6,7 @@ export const GET_MACHINES = gql`
             id
             name
             healthStatus
+            image
         }
     }
 `;
@@ -15,6 +16,7 @@ export const GET_MACHINE_BY_ID = gql`
         machine(id: $id) {
             name
             healthStatus
+            image
             sensors {
                 id
                 name

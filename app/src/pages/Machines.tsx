@@ -8,6 +8,7 @@ import {
     IonHeader,
     IonIcon,
     IonPage,
+    IonSpinner,
     IonTitle,
     IonToolbar,
 } from "@ionic/react";
@@ -41,7 +42,11 @@ const Machines: React.FC = () => {
             <Heading title="Industry 4.0" showBackButton={false} />
 
             <IonContent color="new">
-                {machines ? (
+                {machinesQuery.loading ? (
+                    <div className="flex w-full h-full justify-center items-center">
+                        <IonSpinner className="w-16 h-16" color="light" />
+                    </div>
+                ) : machines && machines.length > 0 ? (
                     <>
                         <div className="responsive-width m-auto p-3">
                             <ColourKey />
@@ -53,7 +58,7 @@ const Machines: React.FC = () => {
                                         <MachineContainer
                                             name={machine.name}
                                             health={machine.healthStatus}
-                                            image={"random"}
+                                            image={machine.image || "random"} // random is a placeholder right now, as not all machiens have images
                                         />
                                     </Link>
                                 );

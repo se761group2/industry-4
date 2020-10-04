@@ -46,10 +46,11 @@ const getSampleChunks = async (machineId, sensorId): Promise<any> => {
   ).docs.map(addIdToDoc);
 };
 
-const createMachine = async (machineName): Promise<Machine> => {
+const createMachine = async (machineName, imageURL): Promise<Machine> => {
   const machineDoc = await firestore.collection('machines').add({
     name: machineName,
     healthStatus: 'Nominal',
+    image: imageURL
   });
 
   return addIdToDoc(await machineDoc.get()) as Machine;
@@ -58,7 +59,8 @@ const createMachine = async (machineName): Promise<Machine> => {
 const updateMachine = async (
   machineId,
   name: string | null | undefined,
-  healthStatus: string | null | undefined
+  healthStatus: string | null | undefined,
+  imageURL: string | null | undefined
 ): Promise<Machine> => {
   const machineDoc = await firestore.doc(`machines/${machineId}`);
 
@@ -79,7 +81,7 @@ const createSensor = async (machineId, sensorName): Promise<Sensor> => {
     .collection('sensors')
     .add({
       name: sensorName,
-      healthStatus: 'Critical',
+      healthStatus: 'Nominal',
       notificationStatus: 'Working',
       threshold: null,
       unit: Unit.Mps2Rms,
