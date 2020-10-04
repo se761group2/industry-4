@@ -65,7 +65,6 @@ const updateMachine = async (
   image: string | null | undefined
 ): Promise<Machine> => {
   const machineDoc = await firestore.doc(`machines/${machineId}`);
-  console.log('image url', image);
   // Filter out any null or undefined parameters, so that they are not persisted
   const toUpdate = Object.entries({
     name,
@@ -110,7 +109,6 @@ const updateSensor = async (
   unit: string | null | undefined
 ): Promise<Sensor> => {
   const sensorDoc = await firestore.doc(`machines/${machineID}/sensors/${id}`);
-  console.log('gets heres');
   // Filter out any null or undefined parameters, so that they are not persisted
   const toUpdate = Object.entries({
     name,

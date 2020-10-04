@@ -103,7 +103,6 @@ export const MachineModal: React.FC<ModalProps> = ({
 
         // Retrieve the image URL and create new machine with it
         getDownloadURl(key).then(async (url) => {
-            console.log("url ", url);
             const result = await createMachineMutation({
                 variables: {
                     name: machineName,
@@ -124,14 +123,11 @@ export const MachineModal: React.FC<ModalProps> = ({
 
             // Store the image (if user provided one)
             if (image) {
-                console.log("image getss here ");
                 key = await uploadImageToCloudStorage(image);
             }
 
             // Retrieve the image URL and create new machine with it
             getDownloadURl(key).then(async (url) => {
-                console.log("image ", url);
-                console.log("name ", machineName);
                 if (!image) {
                     url = "";
                 }

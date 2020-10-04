@@ -40,7 +40,6 @@ export const SensorModal: React.FC<ModalProps> = ({ open, setOpen, machineId, on
                 },
             },
         });
-        console.log("Result ", result);
 
         if (onCompleted) {
             onCompleted(result);
@@ -53,7 +52,6 @@ export const SensorModal: React.FC<ModalProps> = ({ open, setOpen, machineId, on
         if (!sensorName) {
             return;
         }
-        console.log("ids ", id, " machine id ", machineId);
         const result = await updateSensorMutation({
             variables: {
                 id: id,
