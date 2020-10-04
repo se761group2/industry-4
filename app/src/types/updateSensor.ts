@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { SensorUpdateInput, Status, NotificationStatus } from "./globalTypes";
+import { SensorUpdateInput, Status } from "./globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: updateSensor
@@ -24,7 +24,6 @@ export interface updateSensor_updateSensor_sensor {
   __typename: "Sensor";
   name: string;
   healthStatus: Status | null;
-  notificationStatus: NotificationStatus | null;
   unit: string;
   threshold: number | null;
   sampleChunks: updateSensor_updateSensor_sensor_sampleChunks[];

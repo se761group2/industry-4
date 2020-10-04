@@ -5,7 +5,6 @@ export const CREATE_SENSOR = gql`
         createSensor(input: $input) {
             sensor {
                 name
-                notificationStatus
                 healthStatus
                 unit
                 threshold
@@ -20,7 +19,6 @@ export const UPDATE_SENSOR = gql`
             sensor {
                 name
                 healthStatus
-                notificationStatus
                 unit
                 threshold
                 sampleChunks {

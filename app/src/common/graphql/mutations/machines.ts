@@ -6,6 +6,7 @@ export const CREATE_MACHINE = gql`
             machine {
                 id
                 name
+                notificationStatus
                 healthStatus
                 image
             }
@@ -19,6 +20,7 @@ export const UPDATE_MACHINE = gql`
             machine {
                 id
                 name
+                notificationStatus
                 healthStatus
                 subscribers
                 image

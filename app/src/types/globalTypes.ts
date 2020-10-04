@@ -22,6 +22,7 @@ export enum Status {
 export interface MachineUpdateInput {
   name?: string | null;
   healthStatus?: Status | null;
+  notificationStatus?: NotificationStatus | null;
   subscribers?: (string | null)[] | null;
   image?: string | null;
 }
@@ -34,7 +35,6 @@ export interface SensorInput {
 export interface SensorUpdateInput {
   name?: string | null;
   healthStatus?: Status | null;
-  notificationStatus?: NotificationStatus | null;
   threshold?: number | null;
   unit?: string | null;
 }
