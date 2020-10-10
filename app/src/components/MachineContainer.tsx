@@ -33,7 +33,11 @@ const MachineContainer: React.FC<ContainerProps> = ({ name, health, image, id })
                 id={id}
                 machineUpdateInput={machineUpdateInput}
             />
-            <IonFabButton color="light" className="absolute m-5 w-12 h-12" onClick={() => setAddMachineOpen(true)}>
+            <IonFabButton
+                color="light"
+                className="absolute m-5 w-12 h-12 darken-on-hover"
+                onClick={() => setAddMachineOpen(true)}
+            >
                 <IonIcon icon={create} />
             </IonFabButton>
             <Link to={`/machine/${id}`}>

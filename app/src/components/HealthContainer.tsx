@@ -27,8 +27,11 @@ const HealthContainer: React.FC<ContainerProps> = ({ name, value, health, machin
                 name={name}
                 id={id}
             />
-            <button className="absolute ml-2 mt-1 mb-2 shadow-none" onClick={() => setUpdateSensorOpen(true)}>
-                <IonIcon color="dark" icon={create} className="absolute h-8 w-8 shadow-none" />
+            <button
+                className={`absolute ml-2 mt-1 mb-2 bg-${bg}-550 darken-on-hover`}
+                onClick={() => setUpdateSensorOpen(true)}
+            >
+                <IonIcon color="dark" icon={create} className="h-8 w-8 shadow-none  " />
             </button>
             <Link to={`/machine/${machineId}/sensor/${id}`}>
                 <div className={`health-container-1 rounded-lg shadow-xl font-bold text-lg m-auto bg-${bg}-550`}>
