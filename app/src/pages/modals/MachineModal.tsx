@@ -57,10 +57,7 @@ export const MachineModal: React.FC<ModalProps> = ({
     const [updateMachineMutation] = useMutation<updateMachine>(UPDATE_MACHINE, {
         refetchQueries: [{ query: GET_MACHINES }],
     });
-    let value = "";
-    if (machineUpdateInput?.name) {
-        value = machineUpdateInput.name;
-    }
+
     const imageUploadHandler = (event) => {
         const imageFile = event.target.files[0];
         if (imageFile) {
@@ -93,6 +90,7 @@ export const MachineModal: React.FC<ModalProps> = ({
             setError(true);
             return;
         }
+
         // Use the default image if the user has not uploaded anything
         let key = "images/defaultImage.jpg";
 
@@ -120,18 +118,18 @@ export const MachineModal: React.FC<ModalProps> = ({
         if (machineUpdateInput) {
             // Use the default image if the user has not uploaded anything
             let key;
-
             // Store the image (if user provided one)
             if (image) {
                 key = await uploadImageToCloudStorage(image);
             }
 
-            // Retrieve the image URL and create new machine with it
-            getDownloadURl(key).then(async (url) => {
-                if (!image) {
-                    url = "";
-                }
-                const result = await updateMachineMutation({
+            if (machineName == "") {
+                setMachineName(machineUpdateInput.name ? machineUpdateInput.name : "");
+            }
+            let result;
+            if (!key) {
+                const url = machineUpdateInput.image ? machineUpdateInput.image : "";
+                result = await updateMachineMutation({
                     variables: {
                         id: id,
                         input: {
@@ -140,11 +138,24 @@ export const MachineModal: React.FC<ModalProps> = ({
                         },
                     },
                 });
-                if (onCompleted) {
-                    onCompleted(result);
-                }
-            });
-
+            } else {
+                // Retrieve the image URL and create new machine with it
+                getDownloadURl(key).then(async (url) => {
+                    console.log("url " + url);
+                    result = await updateMachineMutation({
+                        variables: {
+                            id: id,
+                            input: {
+                                name: machineName,
+                                image: url,
+                            },
+                        },
+                    });
+                });
+            }
+            if (onCompleted) {
+                onCompleted(result);
+            }
             setOpen(false);
         }
     };
@@ -153,9 +164,7 @@ export const MachineModal: React.FC<ModalProps> = ({
         <IonModal isOpen={open} onDidDismiss={() => setOpen(false)} cssClass="ion-modal">
             <div className="flex flex-col">
                 <div className="flex flex-col items-center space-y-6">
-                    <p className="text-3xl pt-2">
-                        {action == "add" ? "Add a New Machine" : "Update Machine: " + machineUpdateInput?.name}
-                    </p>
+                    <p className="text-3xl pt-2">{action == "add" ? "Add a New Machine" : "Update Machine"}</p>
                     <label className="flex space-x-3 items-center justify-items-start">
                         <p>Name:</p>
                         <input
@@ -164,6 +173,7 @@ export const MachineModal: React.FC<ModalProps> = ({
                             placeholder="E.g. Machine #4"
                             onChange={(e) => setMachineName(e.target.value)}
                             className="rounded border-2 p-2"
+                            defaultValue={machineName}
                         />
                     </label>
                     <label className="flex space-x-3 items-center">
