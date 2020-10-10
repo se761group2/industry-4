@@ -51,6 +51,7 @@ const createMachine = async (machineName, imageURL): Promise<Machine> => {
   const machineDoc = await firestore.collection('machines').add({
     name: machineName,
     healthStatus: 'Nominal',
+    subscribers: [],
     image: imageURL,
   });
 
@@ -61,8 +62,8 @@ const updateMachine = async (
   machineId,
   name: string | null | undefined,
   healthStatus: string | null | undefined,
-  subscribers: (string | null)[] | null | undefined,
-  image: string | null | undefined
+  image: string | null | undefined,
+  subscribers: (string | null)[] | null | undefined
 ): Promise<Machine> => {
   const machineDoc = await firestore.doc(`machines/${machineId}`);
   // Filter out any null or undefined parameters, so that they are not persisted
