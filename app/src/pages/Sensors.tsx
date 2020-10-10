@@ -36,7 +36,7 @@ import { SensorModal } from "./modals/SensorModal";
 
 const Sensors: React.FC = () => {
     const [addMachineOpen, setAddMachineOpen] = useState<boolean>(false);
-
+    const [disabled, setDisabled] = useState(false);
     const { id } = useParams<{ id: string }>();
     const machine_data = useQuery<getMachineById>(GET_MACHINE_BY_ID, {
         variables: { id: id },
@@ -80,6 +80,12 @@ const Sensors: React.FC = () => {
     }
 
     const handleSubscribe = async () => {
+        // Used to stop button spamming
+        if (disabled) {
+            return;
+        }
+        setDisabled(true);
+
         if (!userID) {
             const newUser = await createUserMutation({
                 variables: {
@@ -96,6 +102,8 @@ const Sensors: React.FC = () => {
                     userID: userID,
                     machineID: id,
                 },
+            }).then(() => {
+                setDisabled(false);
             });
 
             setSubscribed(false);
@@ -106,6 +114,8 @@ const Sensors: React.FC = () => {
                     userID: userID,
                     machineID: id,
                 },
+            }).then(() => {
+                setDisabled(false);
             });
 
             setSubscribed(true);
