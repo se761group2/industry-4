@@ -5,6 +5,7 @@ export const GET_MACHINES = gql`
         machines {
             id
             name
+            subscribers
             healthStatus
             image
         }
@@ -18,6 +19,7 @@ export const GET_MACHINE_BY_ID = gql`
             name
             healthStatus
             image
+            subscribers
             sensors {
                 id
                 name

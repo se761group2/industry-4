@@ -20,6 +20,7 @@ export const UPDATE_MACHINE = gql`
                 id
                 name
                 healthStatus
+                subscribers
                 image
             }
         }

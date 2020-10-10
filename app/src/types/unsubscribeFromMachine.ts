@@ -16,6 +16,7 @@ export interface unsubscribeFromMachine_unsubscribeFromMachine_user {
   __typename: "User";
   id: string;
   email: string;
+  emails: (string | null)[] | null;
   firstName: string | null;
   machinesMaintaining: (unsubscribeFromMachine_unsubscribeFromMachine_user_machinesMaintaining | null)[] | null;
   surname: string | null;

@@ -36,6 +36,7 @@ export interface getMachineById_machine {
   name: string;
   healthStatus: Status | null;
   image: string | null;
+  subscribers: (string | null)[] | null;
   sensors: getMachineById_machine_sensors[];
 }
 

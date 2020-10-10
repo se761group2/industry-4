@@ -12,8 +12,8 @@ import {
     IonTitle,
     IonToolbar,
 } from "@ionic/react";
+import React, { useEffect, useState } from "react";
 import { from, useMutation, useQuery } from "@apollo/client";
-import React, { useState } from "react";
 import { getMachineById } from "../types/getMachineById";
 import { getMachines } from "../types/getMachines";
 import HealthContainer from "../components/HealthContainer";
@@ -24,6 +24,7 @@ import { useParams } from "react-router";
 import { GET_MACHINE_BY_ID, GET_MACHINES } from "../common/graphql/queries/machines";
 import Error404 from "../components/ErrorMessage";
 import { add } from "ionicons/icons";
+import { ChangeNotificationsModal } from "./modals/ChangeNotificationsModal";
 import { subscribeToMachine } from "../types/subscribeToMachine";
 import { CREATE_USER, SUBSCRIBE_TO_MACHINE, UNSUBSCRIBE_FROM_MACHINE } from "../common/graphql/mutations/users";
 import { GET_USER_BY_EMAIL, GET_USER_BY_ID } from "../common/graphql/queries/users";
@@ -52,6 +53,7 @@ const Sensors: React.FC = () => {
         return 0;
     };
 
+    const [changeNotificationsOpen, setChangeNotificationsOpen] = useState(false);
     const userContext = useUserContext();
     const userEmail = userContext.user?.email;
     const userQuery = useQuery<getUserByEmail>(GET_USER_BY_EMAIL, {
@@ -110,12 +112,29 @@ const Sensors: React.FC = () => {
             subButtonMessage = "Unsubscribe from Machine";
         }
     };
+    const userEmails = userQuery.data?.user_email?.emails;
+    const [subscribedEmails, setSubscribedEmails] = useState(machine_data.data?.machine?.subscribers);
+
+    useEffect(() => {
+        setSubscribedEmails(machine_data.data?.machine?.subscribers);
+    }, [machine_data]);
+
+    console.log(subscribedEmails);
 
     return (
         <IonPage>
             <AddSensorModal open={addMachineOpen} setOpen={setAddMachineOpen} machineId={id} />
+            {userEmails && subscribedEmails && (
+                <ChangeNotificationsModal
+                    open={changeNotificationsOpen}
+                    setOpen={setChangeNotificationsOpen}
+                    userEmails={userEmails}
+                    subscribedEmails={subscribedEmails}
+                    machineID={id}
+                    setSubscribedEmails={setSubscribedEmails}
+                />
+            )}
             <Heading title={machine_data.data?.machine?.name} />
-
             <IonContent color="new">
                 {machine_data.loading ? (
                     <div className="flex w-full h-full justify-center items-center">
@@ -167,6 +186,11 @@ const Sensors: React.FC = () => {
                 ) : (
                     <Error404 message="This machine does not exist" />
                 )}
+                <div className="flex justify-center pb-20">
+                    <IonButton className="text-center" onClick={() => setChangeNotificationsOpen(true)}>
+                        Change Notification Settings
+                    </IonButton>
+                </div>
             </IonContent>
         </IonPage>
     );

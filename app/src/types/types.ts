@@ -47,6 +47,7 @@ export type User = {
     firstName?: Maybe<Scalars["String"]>;
     surname?: Maybe<Scalars["String"]>;
     machinesMaintaining?: Maybe<Array<Maybe<Machine>>>;
+    emails?: Maybe<Array<Maybe<Scalars["String"]>>>;
 };
 
 export type Machine = {
@@ -55,6 +56,7 @@ export type Machine = {
     name: Scalars["String"];
     healthStatus?: Maybe<Status>;
     image?: Maybe<Scalars["String"]>;
+    subscribers?: Maybe<Array<Maybe<Scalars["String"]>>>;
     sensors: Array<Sensor>;
 };
 
@@ -104,6 +106,7 @@ export type Mutation = {
     createUser?: Maybe<UserCreationResponse>;
     subscribeToMachine?: Maybe<MachineSubscriptionResponse>;
     unsubscribeFromMachine?: Maybe<MachineSubscriptionResponse>;
+    updateUserEmails?: Maybe<EmailUpdateResponse>;
 };
 
 export type MutationUpdateUserArgs = {
@@ -144,6 +147,11 @@ export type MutationUnsubscribeFromMachineArgs = {
     machineID: Scalars["ID"];
 };
 
+export type MutationUpdateUserEmailsArgs = {
+    userID: Scalars["ID"];
+    emails?: Maybe<Array<Maybe<Scalars["String"]>>>;
+};
+
 export type MutationResponse = {
     code: Scalars["String"];
     success: Scalars["Boolean"];
@@ -153,6 +161,7 @@ export type MutationResponse = {
 export type MachineUpdateInput = {
     name?: Maybe<Scalars["String"]>;
     healthStatus?: Maybe<Status>;
+    subscribers?: Maybe<Array<Maybe<Scalars["String"]>>>;
     image?: Maybe<Scalars["String"]>;
 };
 
@@ -211,6 +220,14 @@ export type UserCreationResponse = MutationResponse & {
 
 export type MachineSubscriptionResponse = MutationResponse & {
     __typename?: "MachineSubscriptionResponse";
+    code: Scalars["String"];
+    success: Scalars["Boolean"];
+    message: Scalars["String"];
+    user?: Maybe<User>;
+};
+
+export type EmailUpdateResponse = MutationResponse & {
+    __typename?: "EmailUpdateResponse";
     code: Scalars["String"];
     success: Scalars["Boolean"];
     message: Scalars["String"];

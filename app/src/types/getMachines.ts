@@ -13,6 +13,7 @@ export interface getMachines_machines {
   __typename: "Machine";
   id: string;
   name: string;
+  subscribers: (string | null)[] | null;
   healthStatus: Status | null;
   image: string | null;
 }

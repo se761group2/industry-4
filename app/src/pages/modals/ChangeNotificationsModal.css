@@ -1,0 +1,15 @@
+.notification-ion-modal .modal-wrapper {
+    height: 70%;
+    width: 90%;
+    max-width: 350px;
+    border-radius: 10px;
+}
+
+.notification-ion-item {
+    --padding-start: 0px;
+}
+
+.notification-ion-button {
+    width: 80%;
+}
+

@@ -14,6 +14,7 @@ export interface updateMachine_updateMachine_machine {
   id: string;
   name: string;
   healthStatus: Status | null;
+  subscribers: (string | null)[] | null;
   image: string | null;
 }
 

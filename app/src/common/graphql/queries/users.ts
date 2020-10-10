@@ -5,6 +5,7 @@ export const GET_USER_BY_EMAIL = gql`
         user_email(email: $email) {
             id
             email
+            emails
             firstName
             surname
             machinesMaintaining {
@@ -19,6 +20,7 @@ export const GET_USER_BY_ID = gql`
         user(id: $id) {
             id
             email
+            emails
             firstName
             surname
             machinesMaintaining {
