@@ -40,7 +40,8 @@ export const MachineModal: React.FC<ModalProps> = ({
 }) => {
     const [image, setImage] = useState<File>();
     const [machineName, setMachineName] = useState("");
-    const [error, setError] = useState(false);
+    const [addError, setAddError] = useState(false);
+    const [updateError, setUpdateError] = useState(false);
     const [createMachineMutation] = useMutation<createMachine>(CREATE_MACHINE, {
         refetchQueries: [{ query: GET_MACHINES }],
     });
@@ -65,6 +66,8 @@ export const MachineModal: React.FC<ModalProps> = ({
         }
     };
 
+    const defaultValue = machineUpdateInput?.name ? machineUpdateInput.name : "";
+
     const uploadImageToCloudStorage = async (image: File) => {
         // Get the file extension for compatibility
         const fileExtension = image?.name.split(".").pop();
@@ -87,7 +90,7 @@ export const MachineModal: React.FC<ModalProps> = ({
 
     const handleAddMachine = async () => {
         if (!machineName) {
-            setError(true);
+            setAddError(true);
             return;
         }
 
@@ -115,6 +118,10 @@ export const MachineModal: React.FC<ModalProps> = ({
     };
 
     const handleUpdateMachine = async () => {
+        if (!image && !machineName) {
+            setUpdateError(true);
+            return;
+        }
         if (machineUpdateInput) {
             // Use the default image if the user has not uploaded anything
             let key;
@@ -123,18 +130,13 @@ export const MachineModal: React.FC<ModalProps> = ({
                 key = await uploadImageToCloudStorage(image);
             }
 
-            if (machineName == "") {
-                setMachineName(machineUpdateInput.name ? machineUpdateInput.name : "");
-            }
             let result;
             if (!key) {
-                const url = machineUpdateInput.image ? machineUpdateInput.image : "";
                 result = await updateMachineMutation({
                     variables: {
                         id: id,
                         input: {
                             name: machineName,
-                            image: url,
                         },
                     },
                 });
@@ -142,15 +144,26 @@ export const MachineModal: React.FC<ModalProps> = ({
                 // Retrieve the image URL and create new machine with it
                 getDownloadURl(key).then(async (url) => {
                     console.log("url " + url);
-                    result = await updateMachineMutation({
-                        variables: {
-                            id: id,
-                            input: {
-                                name: machineName,
-                                image: url,
+                    if (!machineName) {
+                        result = await updateMachineMutation({
+                            variables: {
+                                id: id,
+                                input: {
+                                    image: url,
+                                },
                             },
-                        },
-                    });
+                        });
+                    } else {
+                        result = await updateMachineMutation({
+                            variables: {
+                                id: id,
+                                input: {
+                                    name: machineName,
+                                    image: url,
+                                },
+                            },
+                        });
+                    }
                 });
             }
             if (onCompleted) {
@@ -173,7 +186,7 @@ export const MachineModal: React.FC<ModalProps> = ({
                             placeholder="E.g. Machine #4"
                             onChange={(e) => setMachineName(e.target.value)}
                             className="rounded border-2 p-2"
-                            defaultValue={machineName}
+                            defaultValue={defaultValue}
                         />
                     </label>
                     <label className="flex space-x-3 items-center">
@@ -200,10 +213,17 @@ export const MachineModal: React.FC<ModalProps> = ({
                 </div>
             </div>
             <IonAlert
-                isOpen={error}
-                onDidDismiss={() => setError(false)}
+                isOpen={addError}
+                onDidDismiss={() => setAddError(false)}
                 header={"Alert"}
                 message={"You must provide a name for the machine"}
+                buttons={["OK"]}
+            />
+            <IonAlert
+                isOpen={updateError}
+                onDidDismiss={() => setUpdateError(false)}
+                header={"Alert"}
+                message={"You must update a name or an image for the machine"}
                 buttons={["OK"]}
             />
         </IonModal>
