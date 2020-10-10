@@ -155,7 +155,6 @@ export const MachineModal: React.FC<ModalProps> = ({
             } else {
                 // Retrieve the image URL and create new machine with it
                 getDownloadURl(key).then(async (url) => {
-                    console.log("url " + url);
                     if (!machineName) {
                         result = await updateMachineMutation({
                             variables: {
