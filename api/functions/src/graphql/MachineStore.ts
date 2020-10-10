@@ -62,15 +62,17 @@ const updateMachine = async (
   machineId,
   name: string | null | undefined,
   healthStatus: string | null | undefined,
-  imageURL: string | null | undefined,
+  image: string | null | undefined,
   subscribers: (string | null)[] | null | undefined
 ): Promise<Machine> => {
   const machineDoc = await firestore.doc(`machines/${machineId}`);
-
   // Filter out any null or undefined parameters, so that they are not persisted
-  const toUpdate = Object.entries({ name, healthStatus, subscribers }).filter(
-    ([_, v]) => v !== null && v !== undefined
-  );
+  const toUpdate = Object.entries({
+    name,
+    healthStatus,
+    image,
+    subscribers,
+  }).filter(([_, v]) => v !== null && v !== undefined);
 
   await machineDoc.update(Object.fromEntries(toUpdate));
 
@@ -99,18 +101,15 @@ const createSensor = async (machineId, sensorName): Promise<Sensor> => {
 };
 
 const updateSensor = async (
-  machineId,
-  sensorId,
+  machineID,
+  id,
   name: string | null | undefined,
   healthStatus: string | null | undefined,
   notificationStatus: string | null | undefined,
   threshold: number | null | undefined,
   unit: string | null | undefined
 ): Promise<Sensor> => {
-  const sensorDoc = await firestore.doc(
-    `machines/${machineId}/sensors/${sensorId}`
-  );
-
+  const sensorDoc = await firestore.doc(`machines/${machineID}/sensors/${id}`);
   // Filter out any null or undefined parameters, so that they are not persisted
   const toUpdate = Object.entries({
     name,

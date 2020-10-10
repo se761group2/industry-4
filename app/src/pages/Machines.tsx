@@ -29,7 +29,7 @@ import { GET_MACHINES, GET_MACHINE_BY_ID } from "../common/graphql/queries/machi
 import { Link } from "react-router-dom";
 import ColourKey from "../components/ColourKey";
 import Error404 from "../components/ErrorMessage";
-import { AddMachineModal } from "./modals/AddMachineModal";
+import { MachineModal } from "./modals/MachineModal";
 import { useUserContext } from "../utils/useUserContext";
 import { GET_USER_BY_EMAIL } from "../common/graphql/queries/users";
 import { getUserByEmail } from "../types/getUserByEmail";
@@ -81,7 +81,13 @@ const Machines: React.FC = () => {
 
     return (
         <IonPage>
-            <AddMachineModal open={addMachineOpen} setOpen={setAddMachineOpen} setShow={setShow} showAll={showAll} />
+            <MachineModal
+                open={addMachineOpen}
+                setOpen={setAddMachineOpen}
+                setShow={setShow}
+                action="add"
+                showAll={true}
+            />
             <Heading title="Industry 4.0" showBackButton={false} />
 
             <IonContent color="new">

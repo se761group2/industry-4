@@ -24,13 +24,13 @@ const MachineGrid: React.FC<GridProps> = ({ allMachines, subscribedMachines, sho
                 <div className="responsive-width grid grid-cols-2 gap-5 m-auto pb-20">
                     {machines?.map(function (machine) {
                         return (
-                            <Link to={`/machine/${machine?.id}`} key={machine?.id}>
-                                <MachineContainer
-                                    name={machine?.name}
-                                    health={machine?.healthStatus}
-                                    image={machine?.image}
-                                />
-                            </Link>
+                            <MachineContainer
+                                key={machine.id}
+                                name={machine.name}
+                                health={machine.healthStatus}
+                                image={machine.image}
+                                id={machine.id}
+                            />
                         );
                     })}
                 </div>
