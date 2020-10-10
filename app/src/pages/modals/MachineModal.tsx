@@ -32,6 +32,7 @@ const SUPPORTED_IMAGE_FORMATS = ["jpg", "jpeg", "png"];
 export const MachineModal: React.FC<ModalProps> = ({
     open,
     setOpen,
+    setShow,
     onCompleted,
     action,
     id,
@@ -93,7 +94,6 @@ export const MachineModal: React.FC<ModalProps> = ({
             setAddError(true);
             return;
         }
-
         // Use the default image if the user has not uploaded anything
         let key = "images/defaultImage.jpg";
 
@@ -110,10 +110,22 @@ export const MachineModal: React.FC<ModalProps> = ({
                     image: url,
                 },
             });
+            if (!userID) {
+                const newUser = await createUserMutation({
+                    variables: {
+                        email: userEmail,
+                    },
+                });
+                userID = newUser.data?.createUser?.user?.id;
+            }
+            const result2 = await subscribeMutation({
+                variables: { userID: userID, machineID: result.data?.createMachine?.machine?.id },
+            });
             if (onCompleted) {
                 onCompleted(result);
             }
             setOpen(false);
+            setShow(showAll);
         });
     };
 

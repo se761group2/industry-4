@@ -17,6 +17,7 @@ interface ContainerProps {
 const MachineContainer: React.FC<ContainerProps> = ({ name, health, image, id }) => {
     const bg: string = statusColour(health);
     const [addMachineOpen, setAddMachineOpen] = useState<boolean>(false);
+    const [showAll, setShow] = useState(true);
 
     const machineUpdateInput = {
         name: name,
@@ -29,9 +30,11 @@ const MachineContainer: React.FC<ContainerProps> = ({ name, health, image, id })
             <MachineModal
                 open={addMachineOpen}
                 setOpen={setAddMachineOpen}
+                setShow={setShow}
                 action="update"
                 id={id}
                 machineUpdateInput={machineUpdateInput}
+                showAll={true}
             />
             <IonFabButton
                 color="light"
