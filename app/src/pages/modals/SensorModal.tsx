@@ -17,6 +17,8 @@ interface ModalProps {
 }
 
 export const SensorModal: React.FC<ModalProps> = ({ open, setOpen, machineId, onCompleted, action, name, id }) => {
+    const [disabled, setDisabled] = useState(false);
+
     const [createSensorMutation] = useMutation<createSensor>(CREATE_SENSOR, {
         refetchQueries: [{ query: GET_MACHINE_BY_ID, variables: { id: machineId } }],
     });
@@ -32,6 +34,10 @@ export const SensorModal: React.FC<ModalProps> = ({ open, setOpen, machineId, on
             return;
         }
 
+        if (disabled) {
+            return;
+        }
+        setDisabled(true);
         const result = await createSensorMutation({
             variables: {
                 input: {
@@ -39,11 +45,9 @@ export const SensorModal: React.FC<ModalProps> = ({ open, setOpen, machineId, on
                     machineID: machineId,
                 },
             },
+        }).then(() => {
+            setDisabled(false);
         });
-
-        if (onCompleted) {
-            onCompleted(result);
-        }
     };
 
     const handleUpdateSensor = async (alertData) => {
