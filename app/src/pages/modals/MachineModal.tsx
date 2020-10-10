@@ -40,6 +40,7 @@ export const MachineModal: React.FC<ModalProps> = ({
     showAll,
 }) => {
     const [image, setImage] = useState<File>();
+    const [disabled, setDisabled] = useState(false);
     const [machineName, setMachineName] = useState("");
     const [addError, setAddError] = useState(false);
     const [updateError, setUpdateError] = useState(false);
@@ -94,6 +95,11 @@ export const MachineModal: React.FC<ModalProps> = ({
             setAddError(true);
             return;
         }
+
+        if (disabled) {
+            return;
+        }
+        setDisabled(true);
         // Use the default image if the user has not uploaded anything
         let key = "images/defaultImage.jpg";
 
@@ -120,7 +126,10 @@ export const MachineModal: React.FC<ModalProps> = ({
             }
             const result2 = await subscribeMutation({
                 variables: { userID: userID, machineID: result.data?.createMachine?.machine?.id },
+            }).then(() => {
+                setDisabled(false);
             });
+
             if (onCompleted) {
                 onCompleted(result);
             }
