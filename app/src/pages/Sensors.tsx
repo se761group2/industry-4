@@ -23,7 +23,6 @@ import { Link } from "react-router-dom";
 import { useParams } from "react-router";
 import { GET_MACHINE_BY_ID, GET_MACHINES } from "../common/graphql/queries/machines";
 import Error404 from "../components/ErrorMessage";
-import { add } from "ionicons/icons";
 import { ChangeNotificationsModal } from "./modals/ChangeNotificationsModal";
 import { subscribeToMachine } from "../types/subscribeToMachine";
 import { CREATE_USER, SUBSCRIBE_TO_MACHINE, UNSUBSCRIBE_FROM_MACHINE } from "../common/graphql/mutations/users";
@@ -32,9 +31,10 @@ import { unsubscribeFromMachine } from "../types/unsubscribeFromMachine";
 import { useUserContext } from "../utils/useUserContext";
 import { getUserByEmail } from "../types/getUserByEmail";
 import { createUser } from "../types/createUser";
-import { AddSensorModal } from "./modals/AddSensorModal";
 import { UPDATE_MACHINE } from "../common/graphql/mutations/machines";
 import NotificationContainer from "../components/NotificationContainer";
+import { add, create } from "ionicons/icons";
+import { SensorModal } from "./modals/SensorModal";
 
 const Sensors: React.FC = () => {
     const [addMachineOpen, setAddMachineOpen] = useState<boolean>(false);
@@ -65,13 +65,13 @@ const Sensors: React.FC = () => {
     let userID = userQuery.data?.user_email?.id;
     const [createUserMutation] = useMutation<createUser>(CREATE_USER);
 
-    let isSubscribed: boolean | null | undefined = null;
+    // let isSubscribed: boolean | null | undefined = null;
 
-    isSubscribed = userQuery.data?.user_email?.machinesMaintaining?.some(function (machine) {
-        console.log(String(machine?.id));
-        console.log(id);
-        return String(machine?.id) == id;
-    });
+    const [isSubscribed, setSubscribed] = useState(
+        userQuery.data?.user_email?.machinesMaintaining?.some(function (machine) {
+            return String(machine?.id) == id;
+        }),
+    );
 
     let subButtonMessage: string;
     const [unsubscribeMutation] = useMutation<unsubscribeFromMachine>(UNSUBSCRIBE_FROM_MACHINE);
@@ -90,7 +90,7 @@ const Sensors: React.FC = () => {
                 },
             });
             userID = newUser.data?.createUser?.user?.id;
-            isSubscribed = false;
+            setSubscribed(false);
         }
 
         if (isSubscribed) {
@@ -101,7 +101,7 @@ const Sensors: React.FC = () => {
                 },
             });
 
-            isSubscribed = false;
+            setSubscribed(false);
             subButtonMessage = "Subscribe to Machine";
         } else {
             const result = await subscribeMutation({
@@ -111,7 +111,7 @@ const Sensors: React.FC = () => {
                 },
             });
 
-            isSubscribed = true;
+            setSubscribed(true);
             subButtonMessage = "Unsubscribe from Machine";
         }
     };
@@ -149,7 +149,7 @@ const Sensors: React.FC = () => {
 
     return (
         <IonPage>
-            <AddSensorModal open={addMachineOpen} setOpen={setAddMachineOpen} machineId={id} />
+            <SensorModal open={addMachineOpen} setOpen={setAddMachineOpen} machineId={id} action="add" />
             {userEmails && subscribedEmails && (
                 <ChangeNotificationsModal
                     open={changeNotificationsOpen}
@@ -198,20 +198,14 @@ const Sensors: React.FC = () => {
                                     .slice()
                                     .sort((a, b) => stringCompare(a.healthStatus, b.healthStatus))
                                     .map((sensor) => (
-                                        <div className="responsive-width grid grid-cols-1 m-auto p-3" key={sensor.id}>
-                                            <Link to={`/machine/${id}/sensor/${sensor.id}`}>
-                                                <div className="darken-on-hover">
-                                                    <HealthContainer
-                                                        name={sensor.name}
-                                                        value={
-                                                            sensor.sampleChunks.slice(-1)[0]?.samples.slice(-1)[0]
-                                                                ?.value
-                                                        }
-                                                        health={sensor.healthStatus}
-                                                    />
-                                                </div>
-                                            </Link>
-                                        </div>
+                                        <HealthContainer
+                                            name={sensor.name}
+                                            value={sensor.sampleChunks.slice(-1)[0]?.samples.slice(-1)[0]?.value}
+                                            health={sensor.healthStatus}
+                                            machineId={id}
+                                            id={sensor.id}
+                                            key={sensor.id}
+                                        />
                                     ))
                             ) : (
                                 <Error404 message="There are no sensors for this machine" />

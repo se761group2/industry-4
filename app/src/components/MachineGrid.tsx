@@ -20,17 +20,17 @@ const MachineGrid: React.FC<GridProps> = ({ allMachines, subscribedMachines, sho
     }
     return (
         <div>
-            {subscribedMachines.length || showAll ? (
+            {subscribedMachines.length > 0 || showAll ? (
                 <div className="responsive-width grid grid-cols-2 gap-5 m-auto pb-20">
                     {machines?.map(function (machine) {
                         return (
-                            <Link to={`/machine/${machine?.id}`} key={machine?.id}>
-                                <MachineContainer
-                                    name={machine?.name}
-                                    health={machine?.healthStatus}
-                                    image={machine?.image || "random"} // random is a placeholder right now, as not all machines have images
-                                />
-                            </Link>
+                            <MachineContainer
+                                key={machine.id}
+                                name={machine.name}
+                                health={machine.healthStatus}
+                                image={machine.image}
+                                id={machine.id}
+                            />
                         );
                     })}
                 </div>

@@ -86,6 +86,7 @@ export const mutationResolvers: MutationResolvers = {
       success: true,
       message: 'Sensor Created Successfully.',
       user: newUser,
+      emails: [],
     };
 
     return resp;
