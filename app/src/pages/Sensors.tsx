@@ -117,8 +117,6 @@ const Sensors: React.FC = () => {
     const userEmails = userQuery.data?.user_email?.emails;
     const [subscribedEmails, setSubscribedEmails] = useState(machine_data.data?.machine?.subscribers);
 
-    console.log(machine_data.data?.machine?.subscribers);
-
     useEffect(() => {
         setSubscribedEmails(machine_data.data?.machine?.subscribers);
     }, [machine_data]);
