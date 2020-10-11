@@ -1,5 +1,4 @@
 import { notifyUsers } from '../notifications/notificationService';
-import { updateSensorNotificationStatus } from './storeTofirebase';
 import { updateMachineNotificationStatus } from './storeTofirebase';
 import { firebaseApp } from '../firebase';
 
