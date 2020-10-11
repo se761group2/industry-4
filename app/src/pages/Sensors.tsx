@@ -15,7 +15,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { from, useMutation, useQuery } from "@apollo/client";
 import { getMachineById } from "../types/getMachineById";
-import { getMachines } from "../types/getMachines";
 import HealthContainer from "../components/HealthContainer";
 import "./Page.css";
 import Heading from "../components/Heading";
@@ -117,6 +116,8 @@ const Sensors: React.FC = () => {
     };
     const userEmails = userQuery.data?.user_email?.emails;
     const [subscribedEmails, setSubscribedEmails] = useState(machine_data.data?.machine?.subscribers);
+
+    console.log(machine_data.data?.machine?.subscribers);
 
     useEffect(() => {
         setSubscribedEmails(machine_data.data?.machine?.subscribers);
