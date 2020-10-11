@@ -16,7 +16,6 @@ import Error404 from "../components/ErrorMessage";
 const Sensor: React.FC = () => {
     const { machineid } = useParams<{ machineid: string }>();
     const { id } = useParams<{ id: string }>();
-    const [updateSensor] = useMutation(UPDATE_SENSOR);
     const sensorQuery = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
         variables: { machineId: machineid, id: id },
         fetchPolicy: "network-only",
@@ -52,23 +51,6 @@ const Sensor: React.FC = () => {
         });
     }
 
-    const [updated, setUpdated] = useState(false);
-    const [unacknowledged, setUnacknowledged] = useState(sensor?.notificationStatus == "Unacknowledged");
-    const [acknowledged, setAcknowledged] = useState(sensor?.notificationStatus == "Acknowledged");
-
-    function handleAcknowledgement() {
-        updateSensor({ variables: { id: id, machineID: machineid, input: { notificationStatus: "Acknowledged" } } });
-        setUnacknowledged(false);
-        setAcknowledged(true);
-        setUpdated(true);
-    }
-
-    function handleFixing() {
-        updateSensor({ variables: { id: id, machineID: machineid, input: { notificationStatus: "Working" } } });
-        setAcknowledged(false);
-        setUpdated(true);
-    }
-
     return (
         <IonPage>
             <link href="https://fonts.googleapis.com/css?family=Share Tech Mono" rel="stylesheet"></link>
@@ -89,20 +71,6 @@ const Sensor: React.FC = () => {
                                 id={id}
                             />
                         </div>
-                        {((!updated && sensor?.notificationStatus == "Unacknowledged") || unacknowledged) && (
-                            <NotificationContainer
-                                type={"Acknowledgement"}
-                                handleAcknowledge={handleAcknowledgement}
-                                handleFixed={handleFixing}
-                            />
-                        )}
-                        {((!updated && sensor?.notificationStatus == "Acknowledged") || acknowledged) && (
-                            <NotificationContainer
-                                type={"Fixed"}
-                                handleAcknowledge={handleAcknowledgement}
-                                handleFixed={handleFixing}
-                            />
-                        )}
                         {data ? (
                             <LineGraph
                                 title={`Sensor Values ~ ${getDate(currentValue?.timestamp?._seconds)}`}

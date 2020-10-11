@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MachineUpdateInput, Status } from "./globalTypes";
+import { MachineUpdateInput, NotificationStatus, Status } from "./globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: updateMachine
@@ -13,6 +13,7 @@ export interface updateMachine_updateMachine_machine {
   __typename: "Machine";
   id: string;
   name: string;
+  notificationStatus: NotificationStatus | null;
   healthStatus: Status | null;
   subscribers: (string | null)[] | null;
   image: string | null;

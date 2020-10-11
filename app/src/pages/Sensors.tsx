@@ -15,7 +15,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { from, useMutation, useQuery } from "@apollo/client";
 import { getMachineById } from "../types/getMachineById";
-import { getMachines } from "../types/getMachines";
 import HealthContainer from "../components/HealthContainer";
 import "./Page.css";
 import Heading from "../components/Heading";
@@ -31,6 +30,8 @@ import { unsubscribeFromMachine } from "../types/unsubscribeFromMachine";
 import { useUserContext } from "../utils/useUserContext";
 import { getUserByEmail } from "../types/getUserByEmail";
 import { createUser } from "../types/createUser";
+import { UPDATE_MACHINE } from "../common/graphql/mutations/machines";
+import NotificationContainer from "../components/NotificationContainer";
 import { add, create } from "ionicons/icons";
 import { SensorModal } from "./modals/SensorModal";
 
@@ -38,6 +39,7 @@ const Sensors: React.FC = () => {
     const [addMachineOpen, setAddMachineOpen] = useState<boolean>(false);
     const [disabled, setDisabled] = useState(false);
     const { id } = useParams<{ id: string }>();
+    const [updateMachine] = useMutation(UPDATE_MACHINE);
     const machine_data = useQuery<getMachineById>(GET_MACHINE_BY_ID, {
         variables: { id: id },
     });
@@ -129,6 +131,29 @@ const Sensors: React.FC = () => {
         setSubscribedEmails(machine_data.data?.machine?.subscribers);
     }, [machine_data]);
 
+    console.log(machine_data.data?.machine?.notificationStatus);
+
+    const [unacknowledged, setUnacknowledged] = useState(
+        machine_data.data?.machine?.notificationStatus == "Unacknowledged",
+    );
+    const [acknowledged, setAcknowledged] = useState(machine_data.data?.machine?.notificationStatus == "Acknowledged");
+
+    useEffect(() => {
+        setUnacknowledged(machine_data.data?.machine?.notificationStatus == "Unacknowledged");
+        setAcknowledged(machine_data.data?.machine?.notificationStatus == "Acknowledged");
+    }, [machine_data]);
+
+    function handleAcknowledgement() {
+        console.log(updateMachine({ variables: { id: id, input: { notificationStatus: "Acknowledged" } } }));
+        setUnacknowledged(false);
+        setAcknowledged(true);
+    }
+
+    function handleFixing() {
+        updateMachine({ variables: { id: id, input: { notificationStatus: "Working" } } });
+        setAcknowledged(false);
+    }
+
     console.log(subscribedEmails);
 
     return (
@@ -162,6 +187,20 @@ const Sensors: React.FC = () => {
                                 {subButtonMessage}
                             </IonButton>
                         </div>
+                        {unacknowledged && (
+                            <NotificationContainer
+                                type={"Acknowledgement"}
+                                handleAcknowledge={handleAcknowledgement}
+                                handleFixed={handleFixing}
+                            />
+                        )}
+                        {acknowledged && (
+                            <NotificationContainer
+                                type={"Fixed"}
+                                handleAcknowledge={handleAcknowledgement}
+                                handleFixed={handleFixing}
+                            />
+                        )}
                         <div className="pb-20">
                             {sensors && sensors.length > 0 ? (
                                 sensors

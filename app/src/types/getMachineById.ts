@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { Status } from "./globalTypes";
+import { Status, NotificationStatus } from "./globalTypes";
 
 // ====================================================
 // GraphQL query operation: getMachineById
@@ -35,6 +35,7 @@ export interface getMachineById_machine {
   id: string;
   name: string;
   healthStatus: Status | null;
+  notificationStatus: NotificationStatus | null;
   image: string | null;
   subscribers: (string | null)[] | null;
   sensors: getMachineById_machine_sensors[];

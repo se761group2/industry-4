@@ -75,13 +75,10 @@ export async function storeSingleRMSValue(
   }
 }
 
-export async function updateSensorNotificationStatus(machineId, sensorId) {
-  await firestore
-    .collection(`machines/${machineId}/sensors`)
-    .doc(sensorId)
-    .update({
-      notificationStatus: 'Unacknowledged',
-    });
+export async function updateMachineNotificationStatus(machineId) {
+  await firestore.collection(`machines`).doc(machineId).update({
+    notificationStatus: 'Unacknowledged',
+  });
 }
 
 function timestampFromFilename(timestampStr: string): Timestamp | null {

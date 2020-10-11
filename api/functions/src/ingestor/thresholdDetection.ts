@@ -1,5 +1,5 @@
 import { notifyUsers } from '../notifications/notificationService';
-import { updateSensorNotificationStatus } from './storeTofirebase';
+import { updateMachineNotificationStatus } from './storeTofirebase';
 
 interface ThresholdDetectionState {
   thresholdValue: number;
@@ -46,7 +46,7 @@ export function doThresholdDetection(
       if (state.badReadingCounter >= 10) {
         // TODO: Update this section to set the corresponding sensor notificationStatus value to unacknowledged
         if (!state.notified) {
-          updateSensorNotificationStatus(machineId, sensorId);
+          updateMachineNotificationStatus(machineId);
         }
         sendNotification(state.thresholdValue, rmsValue, machineId, sensorId);
       }

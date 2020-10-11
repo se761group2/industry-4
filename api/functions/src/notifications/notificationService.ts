@@ -9,76 +9,98 @@ if (process.env.NODE_ENV == 'development') {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
 }
 
-export function notifyUsers(threshold, recordedValue, sensorId, machineId) {
-  const senderEmail = 'industry4errornotification@gmail.com';
-  // This will be updated to send to the group of people who are tracking this machine
-  const receiverEmail = 'fake@email.com';
-  const msg = {
-    to: receiverEmail,
-    from: senderEmail,
-    subject: 'Error detected with Machine ' + machineId,
-    html:
-      'Sensor ' +
-      sensorId +
-      ' on machine ' +
-      machineId +
-      ' has crossed its threshold.<br/>' +
-      'Threshold: ' +
-      threshold +
-      '<br/>' +
-      'Recorded Value: ' +
-      recordedValue +
-      '<br/>' +
-      // This will be updated to link the the application when we have it deployed
-      '<a>Click here to view the error</a>',
-  };
+export async function notifyUsers(
+  threshold,
+  recordedValue,
+  sensorId,
+  machineId
+) {
+  const sensorRef = firestore
+    .collection(`machines/${machineId}/sensors`)
+    .doc(sensorId);
+  const sensor = await sensorRef.get();
 
-  // sgMail.send(msg);
+  const machineRef = firestore.collection(`machines`).doc(machineId);
+  const machineDoc = await machineRef.get();
+  const machine = machineDoc.data();
+
+  const senderEmail = 'industry4errornotification@gmail.com';
+  const subject = 'Error detected with Machine ' + machine!.name;
+  const html =
+    'Sensor ' +
+    sensorId +
+    ' on machine ' +
+    machineId +
+    ' has crossed its threshold.<br/>' +
+    'Threshold: ' +
+    threshold +
+    '<br/>' +
+    'Recorded Value: ' +
+    recordedValue +
+    '<br/>' +
+    // This will be updated to link the the application when we have it deployed
+    '<a>Click here to view the error</a>';
+
+  if (machine != undefined && machine != null) {
+    machine.subscribers.forEach((email) => {
+      const receiverEmail = email;
+      const msg = {
+        to: receiverEmail,
+        from: senderEmail,
+        subject: subject,
+        html: html,
+      };
+
+      // sgMail.send(msg);
+    });
+  }
 }
 
 export async function updateUsers() {
-  // Need to go into the db and get all sensors with problems to do this will need to update the schema,
-  // To do that talk to Marc
-  const machineId = 'AD1AECvCTuMi29JF0WTC';
-  const faultySensors = [] as any;
-  const sensorsRef = firestore.collection(`machines/${machineId}/sensors`);
-  const sensors = await sensorsRef.get();
-  if (sensors == null || sensors == undefined) {
+  const notifyDictionary = {};
+  const machinesRef = firestore.collection(`machines`);
+  const machines = await machinesRef.get();
+  if (machines == null || machines == undefined) {
     console.log('There was an issue retrieving the machine data');
   } else {
-    sensors.forEach((sensor) => {
-      if (sensor.data().notificationStatus == 'Unacknowledged') {
-        faultySensors.push({
-          sensorName: sensor.data().name,
+    machines.forEach((machine) => {
+      if (machine.data().notificationStatus == 'Unacknowledged') {
+        machine.data().subscribers.forEach((email) => {
+          if (email in notifyDictionary) {
+            notifyDictionary[email] = [
+              ...notifyDictionary[email],
+              machine.data().name,
+            ];
+          } else {
+            notifyDictionary[email] = [machine.data().name];
+          }
         });
       }
     });
   }
 
-  if (faultySensors.length != 0) {
-    let emailMsg = 'Issues have been detected with the following sensors:<br/>';
+  const senderEmail = 'industry4errornotification@gmail.com';
 
-    faultySensors.forEach((sensor) => {
+  for (const email in notifyDictionary) {
+    if (Object.prototype.hasOwnProperty.call(notifyDictionary, email)) {
+      const receiverEmail = email;
+      let emailMsg =
+        'Issues have been detected with the following machines:<br/>';
+      notifyDictionary[email].forEach((machine) => {
+        emailMsg += 'Machine ' + machine + '<br/>';
+      });
       emailMsg +=
-        'Sensor ' + sensor.sensorName + ', Machine ' + machineId + '<br/>';
-    });
+        'Please acknowledge and resolve these issues within the industry 4.0 application';
+      emailMsg += '<a>Click here to visit the application</a>';
 
-    emailMsg +=
-      'Please acknowledge and resolve these issues within the industry 4.0 application';
-    // This will be updated to link the the application when we have it deployed
-    emailMsg += '<a>Click here to visit the application</a>';
+      const msg = {
+        to: receiverEmail,
+        from: senderEmail,
+        subject: 'You have machine(s) with unacknowledged issues',
+        html: emailMsg,
+      };
 
-    // Notify users which of their sensors are failing
-    const senderEmail = 'industry4errornotification@gmail.com';
-    // This will be updated to send to the group of people who are tracking this machine
-    const receiverEmail = 'fake@email.com';
-    const msg = {
-      to: receiverEmail,
-      from: senderEmail,
-      subject: 'You have machine(s) with unacknowledged issues',
-      html: emailMsg,
-    };
-
-    // sgMail.send(msg);
+      // sgMail.send(msg);
+    }
   }
 }
