@@ -9,12 +9,16 @@ if (process.env.NODE_ENV == 'development') {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
 }
 
+// Use this to instantly receive an email
+// notifyUsers(1, 1.1, 'KJPGkuNVivC5scheOIz0', '2hKLutzjE0ufQen8xTm3'); 
+
 export async function notifyUsers(
   threshold,
   recordedValue,
   sensorId,
   machineId
 ) {
+  console.log('notifyUsers function is being called');
   const sensorRef = firestore
     .collection(`machines/${machineId}/sensors`)
     .doc(sensorId);
@@ -29,9 +33,9 @@ export async function notifyUsers(
     const subject = 'Error detected with Machine ' + machine!.name;
     const html =
       'Sensor ' +
-      sensorId +
+      sensor.data()!.name +
       ' on machine ' +
-      machineId +
+      machine!.name +
       ' has crossed its threshold.<br/>' +
       'Threshold: ' +
       threshold +
