@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonPage, IonSpinner } from "@ionic/react";
+import { IonAlert, IonButton, IonContent, IonPage, IonSpinner } from "@ionic/react";
 import React, { useState } from "react";
 import { useParams } from "react-router";
 import HealthContainer from "../components/HealthContainer";
@@ -11,9 +11,11 @@ import LineGraph from "../components/LineGraph";
 import { GET_SENSOR_BY_ID } from "../common/graphql/queries/sensors";
 import { UPDATE_SENSOR } from "../common/graphql/mutations/sensors";
 import { getLinkForSensor } from "../services/download/download";
+import { DownloadModal } from "./modals/DownloadModal";
 import Error404 from "../components/ErrorMessage";
 
 const Sensor: React.FC = () => {
+    const [open, setOpen] = useState(false);
     const { machineid } = useParams<{ machineid: string }>();
     const { id } = useParams<{ id: string }>();
     const sensorQuery = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
@@ -53,6 +55,7 @@ const Sensor: React.FC = () => {
 
     return (
         <IonPage>
+            <DownloadModal open={open} setOpen={setOpen} />
             <link href="https://fonts.googleapis.com/css?family=Share Tech Mono" rel="stylesheet"></link>
             <Heading title={sensor?.name} />
             <IonContent color="new">
@@ -85,8 +88,7 @@ const Sensor: React.FC = () => {
                                 shape="round"
                                 color="light"
                                 className="responsive-width text-lg normal-case m-4"
-                                download="sensor data"
-                                href={getLinkForSensor(machineid || "", id || "")}
+                                onClick={() => setOpen(true)}
                             >
                                 Download
                             </IonButton>

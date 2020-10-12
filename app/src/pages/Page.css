@@ -54,6 +54,14 @@
     border-radius: 10px;
 }
 
+.ion-download-modal .modal-wrapper {
+    height: 30%;
+    min-height: 475px;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 10px;
+}
+
 .ion-segment {
     border-radius: 10px;
     max-width: 600px;
