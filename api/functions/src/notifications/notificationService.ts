@@ -24,35 +24,37 @@ export async function notifyUsers(
   const machineDoc = await machineRef.get();
   const machine = machineDoc.data();
 
-  const senderEmail = 'industry4errornotification@gmail.com';
-  const subject = 'Error detected with Machine ' + machine!.name;
-  const html =
-    'Sensor ' +
-    sensorId +
-    ' on machine ' +
-    machineId +
-    ' has crossed its threshold.<br/>' +
-    'Threshold: ' +
-    threshold +
-    '<br/>' +
-    'Recorded Value: ' +
-    recordedValue +
-    '<br/>' +
-    // This will be updated to link the the application when we have it deployed
-    '<a>Click here to view the error</a>';
+  if (machine!.notificationStatus == 'Unacknowledged') {
+    const senderEmail = 'industry4errornotification@gmail.com';
+    const subject = 'Error detected with Machine ' + machine!.name;
+    const html =
+      'Sensor ' +
+      sensorId +
+      ' on machine ' +
+      machineId +
+      ' has crossed its threshold.<br/>' +
+      'Threshold: ' +
+      threshold +
+      '<br/>' +
+      'Recorded Value: ' +
+      recordedValue +
+      '<br/>' +
+      // This will be updated to link the the application when we have it deployed
+      '<a>Click here to view the error</a>';
 
-  if (machine != undefined && machine != null) {
-    machine.subscribers.forEach((email) => {
-      const receiverEmail = email;
-      const msg = {
-        to: receiverEmail,
-        from: senderEmail,
-        subject: subject,
-        html: html,
-      };
+    if (machine != undefined && machine != null) {
+      machine.subscribers.forEach((email) => {
+        const receiverEmail = email;
+        const msg = {
+          to: receiverEmail,
+          from: senderEmail,
+          subject: subject,
+          html: html,
+        };
 
-      // sgMail.send(msg);
-    });
+        sgMail.send(msg);
+      });
+    }
   }
 }
 
@@ -100,7 +102,7 @@ export async function updateUsers() {
         html: emailMsg,
       };
 
-      // sgMail.send(msg);
+      sgMail.send(msg);
     }
   }
 }
