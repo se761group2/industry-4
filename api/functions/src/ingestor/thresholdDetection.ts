@@ -53,7 +53,7 @@ export async function pushState(
     });
 }
 
-export function doThresholdDetection(
+export async function doThresholdDetection(
   rmsValue: number,
   machineId: string,
   sensorId: string
@@ -81,10 +81,8 @@ export function doThresholdDetection(
 
       if (state.badReadingCounter >= 10) {
         // TODO: Update this section to set the corresponding sensor notificationStatus value to unacknowledged
-        if (!state.notified) {
-          updateMachineNotificationStatus(machineId);
-        }
-        sendNotification(state.thresholdValue, rmsValue, machineId, sensorId);
+        await updateMachineNotificationStatus(machineId);
+        notifyUsers(state.thresholdValue, rmsValue, machineId, sensorId);
       }
     } else {
       state.goodReadingCounter++;
@@ -128,23 +126,4 @@ function calculateThreshold() {
   const standardDeviation = Math.sqrt(squaredDifferencesMean);
 
   return rmsMean + 6 * standardDeviation;
-}
-
-function sendNotification(
-  thresholdValue: number,
-  rmsValue: number,
-  machineId: string,
-  sensorId: string
-) {
-  /* TODO add checker for notification frequency (or do it somewhere else) 
-       Currently this is done using a state.notified flag which ensures the email is only sent once,
-       (for demo purposes)
-    */
-  // Update the db to reflect this issue.
-  if (!state.notified) {
-    // Hardcoded values for the sensor and machine ID were used, these will be changed
-    // The values used for the IDs are not reflective of realistic IDs within the system.
-    notifyUsers(thresholdValue, rmsValue, machineId, sensorId);
-    state.notified = true;
-  }
 }
