@@ -1,8 +1,6 @@
-import { IonRouterOutlet, IonSpinner } from "@ionic/react";
-import React, { useContext, useState } from "react";
+import React from "react";
 import { Redirect, Route, Switch } from "react-router";
 import { LoginPage } from "./pages/auth/LoginPage";
-import { UserContext } from "./pages/auth/UserProvider";
 import { FullPageLoader } from "./pages/FullPageLoader";
 import Machines from "./pages/Machines";
 import Profile from "./pages/Profile";

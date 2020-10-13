@@ -7,8 +7,6 @@ import {
     IonItem,
     IonLabel,
     IonCheckbox,
-    IonHeader,
-    IonTitle,
     IonListHeader,
     IonGrid,
     IonCol,
@@ -96,14 +94,14 @@ export const ChangeNotificationsModal: React.FC<ModalProps> = ({
                     <IonRow>
                         <IonCol col-6>
                             <div className="flex justify-center">
-                                <IonButton className="notification-ion-button" onClick={() => setOpen(false)}>
+                                <IonButton className="w-4/5" onClick={() => setOpen(false)}>
                                     Cancel
                                 </IonButton>
                             </div>
                         </IonCol>
                         <IonCol col-6>
                             <div className="flex justify-center">
-                                <IonButton className="notification-ion-button" onClick={() => saveSubscribedEmails()}>
+                                <IonButton className="w-4/5" onClick={() => saveSubscribedEmails()}>
                                     Save
                                 </IonButton>
                             </div>

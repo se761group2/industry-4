@@ -1,19 +1,6 @@
-import React, { useContext, useState } from "react";
-import {
-    IonAlert,
-    IonAvatar,
-    IonBackButton,
-    IonButton,
-    IonButtons,
-    IonContent,
-    IonHeader,
-    IonIcon,
-    IonImg,
-    IonPage,
-    IonTitle,
-    IonToolbar,
-} from "@ionic/react";
-import { arrowBack, ellipsisHorizontal, ellipsisVertical, logOut, personCircle, search } from "ionicons/icons";
+import React, { useState } from "react";
+import { IonAlert, IonAvatar, IonButton, IonHeader, IonIcon, IonTitle, IonToolbar } from "@ionic/react";
+import { arrowBack, logOut } from "ionicons/icons";
 import { useUserContext } from "../utils/useUserContext";
 import { firebaseAuth } from "../services/firebase";
 import { useHistory } from "react-router";

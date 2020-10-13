@@ -1,4 +1,4 @@
-import { FetchResult, MutationResult, useMutation } from "@apollo/client";
+import { FetchResult, useMutation } from "@apollo/client";
 import { IonAlert } from "@ionic/react";
 import React, { useState } from "react";
 import { CREATE_SENSOR, UPDATE_SENSOR } from "../../common/graphql/mutations/sensors";
