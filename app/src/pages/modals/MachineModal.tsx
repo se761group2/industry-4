@@ -1,4 +1,4 @@
-import { FetchResult, MutationResult, useMutation, useQuery } from "@apollo/client";
+import { FetchResult, useMutation, useQuery } from "@apollo/client";
 import { IonAlert, IonButton, IonModal } from "@ionic/react";
 import "../Page.css";
 import React, { useState } from "react";
@@ -10,8 +10,7 @@ import { firebaseApp } from "../../services/firebase";
 import { GET_USER_BY_EMAIL } from "../../common/graphql/queries/users";
 import { getUserByEmail } from "../../types/getUserByEmail";
 import { useUserContext } from "../../utils/useUserContext";
-import { subscribeToMachine } from "../../types/subscribeToMachine";
-import { CREATE_USER, SUBSCRIBE_TO_MACHINE } from "../../common/graphql/mutations/users";
+import { CREATE_USER } from "../../common/graphql/mutations/users";
 import { createUser } from "../../types/createUser";
 import { updateMachine } from "../../types/updateMachine";
 import { MachineUpdateInput } from "../../types/types";
@@ -55,7 +54,6 @@ export const MachineModal: React.FC<ModalProps> = ({
     });
     let userID = userQuery.data?.user_email?.id;
     const [createUserMutation] = useMutation<createUser>(CREATE_USER);
-    const [subscribeMutation] = useMutation<subscribeToMachine>(SUBSCRIBE_TO_MACHINE);
 
     const [updateMachineMutation] = useMutation<updateMachine>(UPDATE_MACHINE, {
         refetchQueries: [{ query: GET_MACHINES }],
@@ -124,11 +122,6 @@ export const MachineModal: React.FC<ModalProps> = ({
                 });
                 userID = newUser.data?.createUser?.user?.id;
             }
-            const result2 = await subscribeMutation({
-                variables: { userID: userID, machineID: result.data?.createMachine?.machine?.id },
-            }).then(() => {
-                setDisabled(false);
-            });
 
             if (onCompleted) {
                 onCompleted(result);

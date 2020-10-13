@@ -21,7 +21,6 @@ export async function notifyUsers(
   const sensorRef = firestore
     .collection(`machines/${machineId}/sensors`)
     .doc(sensorId);
-  const sensor = await sensorRef.get();
 
   const machineRef = firestore.collection(`machines`).doc(machineId);
   const machineDoc = await machineRef.get();

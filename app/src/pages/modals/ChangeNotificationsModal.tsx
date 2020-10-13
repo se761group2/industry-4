@@ -74,11 +74,11 @@ export const ChangeNotificationsModal: React.FC<ModalProps> = ({
                                             <IonLabel>{email}</IonLabel>
                                             {isChecked(email) ? (
                                                 <IonCheckbox
-                                                    onIonChange={(e) => boxChecked(email)}
+                                                    onIonChange={(_e) => boxChecked(email)}
                                                     checked
                                                 ></IonCheckbox>
                                             ) : (
-                                                <IonCheckbox onIonChange={(e) => boxChecked(email)}></IonCheckbox>
+                                                <IonCheckbox onIonChange={(_e) => boxChecked(email)}></IonCheckbox>
                                             )}
                                         </IonItem>
                                     ),

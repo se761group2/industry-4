@@ -40,9 +40,6 @@ const Profile: React.FC = () => {
         setEmails(userQuery.data?.user_email?.emails!);
     }, [userQuery]);
 
-    console.log(userQuery.data?.user_email);
-    console.log(emails);
-
     function changeNewEmail(emailAddress) {
         setNewEmail(emailAddress);
     }
@@ -59,7 +56,6 @@ const Profile: React.FC = () => {
                 return email != removedEmail;
             }),
         );
-        console.log(emails);
     }
 
     function saveEmailChanges() {

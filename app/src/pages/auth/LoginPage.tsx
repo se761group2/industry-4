@@ -8,7 +8,6 @@ const uiConfig: firebaseui.auth.Config = {
     callbacks: {
         signInSuccessWithAuthResult: (authResult) => {
             console.log(authResult);
-
             return true;
         },
     },
@@ -17,7 +16,6 @@ const uiConfig: firebaseui.auth.Config = {
 };
 
 export const LoginPage: React.FC<any> = () => {
-    console.log("Rendering page");
     return (
         <IonPage>
             <IonContent color="new">
