@@ -1,12 +1,8 @@
 {
-  "name": "Sidemenu Starter",
-  "baseref": "master",
-  "tarignore": [
-    "node_modules",
-    "package-lock.json",
-    "www"
-  ],
-  "scripts": {
-    "test": "npm run build"
-  }
+    "name": "Sidemenu Starter",
+    "baseref": "master",
+    "tarignore": ["node_modules", "package-lock.json", "www"],
+    "scripts": {
+        "test": "npm run build"
+    }
 }
