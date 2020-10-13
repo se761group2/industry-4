@@ -1,15 +1,13 @@
 import { IonButton, IonContent, IonPage, IonSpinner } from "@ionic/react";
-import React, { useState } from "react";
+import React from "react";
 import { useParams } from "react-router";
 import HealthContainer from "../components/HealthContainer";
-import NotificationContainer from "../components/NotificationContainer";
 import "./Page.css";
-import { useQuery, useMutation } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { getSensorById } from "../types/getSensorById";
 import Heading from "../components/Heading";
 import LineGraph from "../components/LineGraph";
 import { GET_SENSOR_BY_ID } from "../common/graphql/queries/sensors";
-import { UPDATE_SENSOR } from "../common/graphql/mutations/sensors";
 import { getLinkForSensor } from "../services/download/download";
 import Error404 from "../components/ErrorMessage";
 
