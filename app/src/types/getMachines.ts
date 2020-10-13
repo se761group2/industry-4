@@ -9,6 +9,13 @@ import { NotificationStatus, Status } from "./globalTypes";
 // GraphQL query operation: getMachines
 // ====================================================
 
+export interface getMachines_machines_sensors {
+  __typename: "Sensor";
+  id: string;
+  name: string;
+  healthStatus: Status | null;
+}
+
 export interface getMachines_machines {
   __typename: "Machine";
   id: string;
@@ -17,6 +24,7 @@ export interface getMachines_machines {
   notificationStatus: NotificationStatus | null;
   healthStatus: Status | null;
   image: string | null;
+  sensors: getMachines_machines_sensors[];
 }
 
 export interface getMachines {
