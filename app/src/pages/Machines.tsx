@@ -81,8 +81,6 @@ const Machines: React.FC = () => {
         }
     };
 
-    // userQuery.refetch();
-    // subscribedMachineRefs = userQuery.data?.user_email?.machinesMaintaining;
     checkMachineStatus();
     return (
         <IonPage>

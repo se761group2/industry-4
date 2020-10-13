@@ -50,8 +50,6 @@ const Sensors: React.FC = () => {
     let userID = userQuery.data?.user_email?.id;
     const [createUserMutation] = useMutation<createUser>(CREATE_USER);
 
-    // let isSubscribed: boolean | null | undefined = null;
-
     const [isSubscribed, setSubscribed] = useState(
         userQuery.data?.user_email?.machinesMaintaining?.some(function (machine) {
             return String(machine?.id) == id;
