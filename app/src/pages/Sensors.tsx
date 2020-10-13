@@ -117,8 +117,6 @@ const Sensors: React.FC = () => {
         setSubscribedEmails(machine_data.data?.machine?.subscribers);
     }, [machine_data]);
 
-    console.log(machine_data.data?.machine?.notificationStatus);
-
     const [unacknowledged, setUnacknowledged] = useState(
         machine_data.data?.machine?.notificationStatus == "Unacknowledged",
     );
@@ -130,7 +128,6 @@ const Sensors: React.FC = () => {
     }, [machine_data]);
 
     function handleAcknowledgement() {
-        console.log(updateMachine({ variables: { id: id, input: { notificationStatus: "Acknowledged" } } }));
         setUnacknowledged(false);
         setAcknowledged(true);
     }
@@ -139,8 +136,6 @@ const Sensors: React.FC = () => {
         updateMachine({ variables: { id: id, input: { notificationStatus: "Working" } } });
         setAcknowledged(false);
     }
-
-    console.log(subscribedEmails);
 
     return (
         <IonPage>

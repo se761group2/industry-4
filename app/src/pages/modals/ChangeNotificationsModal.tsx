@@ -54,7 +54,6 @@ export const ChangeNotificationsModal: React.FC<ModalProps> = ({
         } else {
             setSelected([...selected, checkedEmail]);
         }
-        console.log(selected);
     }
 
     function saveSubscribedEmails() {
