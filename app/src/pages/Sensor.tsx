@@ -60,15 +60,13 @@ const Sensor: React.FC = () => {
                     </div>
                 ) : sensor ? (
                     <>
-                        <div className="responsive-width m-auto py-5 h-16">
-                            <HealthContainer
-                                name={sensor.name}
-                                value={currentValue?.value}
-                                health={sensor.healthStatus}
-                                machineId={machineid}
-                                id={id}
-                            />
-                        </div>
+                        <HealthContainer
+                            name={sensor.name}
+                            value={currentValue?.value}
+                            health={sensor.healthStatus}
+                            machineId={machineid}
+                            id={id}
+                        />
                         {data ? (
                             <LineGraph
                                 title={`Sensor Values ~ ${getDate(currentValue?.timestamp?._seconds)}`}
@@ -78,7 +76,7 @@ const Sensor: React.FC = () => {
                         ) : (
                             <Error404 message="There is no data for this sensor" />
                         )}
-                        <div className="download text-center">
+                        <div className="text-center">
                             <IonButton
                                 shape="round"
                                 color="light"

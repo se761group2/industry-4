@@ -4,7 +4,9 @@ Machine health monitoring app for SOFTENG 761 project 5
 
 ## Setting up
 
-You will need the `secrets.json` file from one of our team. You can also request access to our firebase from our team.
+Make a copy of `api/functions/env.sample` and call it `.env`. Make sure the .env file links to a correct GOOGLE_APPLICATION_CREDENTIALS.json file. This file is not present on the repo so make sure to get the credentials for your project.
+
+You will also need the `secrets.json` file from one of our team. Additionally, you can request access to our firebase from our team.
 
 Open command line in the root directory
 
