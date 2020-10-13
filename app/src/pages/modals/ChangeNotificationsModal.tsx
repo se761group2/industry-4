@@ -37,11 +37,7 @@ export const ChangeNotificationsModal: React.FC<ModalProps> = ({
     const [updateMachine] = useMutation(UPDATE_MACHINE);
 
     function isChecked(email: string): boolean {
-        if (selected.includes(email)) {
-            return true;
-        } else {
-            return false;
-        }
+        return selected.includes(email);
     }
 
     function boxChecked(checkedEmail: string) {
