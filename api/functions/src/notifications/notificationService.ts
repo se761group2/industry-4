@@ -10,7 +10,7 @@ if (process.env.NODE_ENV == 'development') {
 }
 
 // Use this to instantly receive an email
-// notifyUsers(1, 1.1, 'KJPGkuNVivC5scheOIz0', '2hKLutzjE0ufQen8xTm3'); 
+// notifyUsers(1, 1.1, 'KJPGkuNVivC5scheOIz0', '2hKLutzjE0ufQen8xTm3');
 
 export async function notifyUsers(
   threshold,
