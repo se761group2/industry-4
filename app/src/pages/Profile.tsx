@@ -40,9 +40,6 @@ const Profile: React.FC = () => {
         setEmails(userQuery.data?.user_email?.emails!);
     }, [userQuery]);
 
-    console.log(userQuery.data?.user_email);
-    console.log(emails);
-
     function changeNewEmail(emailAddress) {
         setNewEmail(emailAddress);
     }
@@ -59,7 +56,6 @@ const Profile: React.FC = () => {
                 return email != removedEmail;
             }),
         );
-        console.log(emails);
     }
 
     function saveEmailChanges() {
@@ -83,7 +79,7 @@ const Profile: React.FC = () => {
                 </div>
                 <div className="m-6">
                     <IonButton
-                        className="responsive-width m-auto flex items-center justify-center profile-ion-button"
+                        className="responsive-width m-auto flex items-center justify-center w-full"
                         onClick={() => setShowModal(true)}
                     >
                         Configure Email Addresses
@@ -102,7 +98,7 @@ const Profile: React.FC = () => {
                                 <IonList>
                                     {emails.map((email, index) => (
                                         <IonItem key={index}>
-                                            <IonInput className="profile-ion-input" value={email}></IonInput>
+                                            <IonInput className="w-2/3" value={email}></IonInput>
                                             <IonButton
                                                 className="remove-button pl-3"
                                                 onClick={() => removeEmail(index)}
@@ -113,7 +109,7 @@ const Profile: React.FC = () => {
                                     ))}
                                     <IonItem>
                                         <IonInput
-                                            className="profile-ion-input"
+                                            className="w-2/3"
                                             onIonChange={(e) => changeNewEmail((e.target as HTMLInputElement).value)}
                                             placeholder="Enter a new Email address"
                                             value={newEmail}
@@ -128,20 +124,14 @@ const Profile: React.FC = () => {
                                 <IonRow>
                                     <IonCol col-6>
                                         <div className="flex justify-center">
-                                            <IonButton
-                                                className="profile-ion-button"
-                                                onClick={() => setShowModal(false)}
-                                            >
+                                            <IonButton className="w-4/5" onClick={() => setShowModal(false)}>
                                                 Cancel
                                             </IonButton>
                                         </div>
                                     </IonCol>
                                     <IonCol col-6>
                                         <div className="flex justify-center">
-                                            <IonButton
-                                                className="profile-ion-button"
-                                                onClick={() => saveEmailChanges()}
-                                            >
+                                            <IonButton className="w-4/5" onClick={() => saveEmailChanges()}>
                                                 Save
                                             </IonButton>
                                         </div>

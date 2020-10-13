@@ -1,7 +1,7 @@
 {
-  "name": "industry4",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "react"
+    "name": "industry4",
+    "integrations": {
+        "capacitor": {}
+    },
+    "type": "react"
 }

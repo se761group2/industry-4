@@ -1,40 +1,28 @@
 import {
-    IonBackButton,
-    IonButton,
-    IonButtons,
     IonContent,
     IonFab,
     IonFabButton,
-    IonHeader,
     IonIcon,
     IonLabel,
     IonPage,
     IonSegment,
     IonSegmentButton,
     IonSpinner,
-    IonTitle,
-    IonToolbar,
 } from "@ionic/react";
 import React, { useState } from "react";
-import { useParams } from "react-router";
-import MachineContainer from "../components/MachineContainer";
 import "./Page.css";
-import { from, useQuery, useMutation } from "@apollo/client";
-import { add, ellipsisHorizontal, ellipsisVertical, personCircle, search } from "ionicons/icons";
+import { useQuery, useMutation } from "@apollo/client";
+import { add } from "ionicons/icons";
 import Heading from "../components/Heading";
-import { Status } from "../types/globalTypes";
-import { getMachineById, getMachineById_machine } from "../types/getMachineById";
 import { getMachines, getMachines_machines } from "../types/getMachines";
-import { GET_MACHINES, GET_MACHINE_BY_ID } from "../common/graphql/queries/machines";
+import { GET_MACHINES } from "../common/graphql/queries/machines";
 import { UPDATE_MACHINE } from "../common/graphql/mutations/machines";
-import { Link } from "react-router-dom";
 import ColourKey from "../components/ColourKey";
 import Error404 from "../components/ErrorMessage";
 import { MachineModal } from "./modals/MachineModal";
 import { useUserContext } from "../utils/useUserContext";
 import { GET_USER_BY_EMAIL } from "../common/graphql/queries/users";
 import { getUserByEmail } from "../types/getUserByEmail";
-import { render } from "react-dom";
 import MachineGrid from "../components/MachineGrid";
 
 const Machines: React.FC = () => {
@@ -93,8 +81,6 @@ const Machines: React.FC = () => {
         }
     };
 
-    // userQuery.refetch();
-    // subscribedMachineRefs = userQuery.data?.user_email?.machinesMaintaining;
     checkMachineStatus();
     return (
         <IonPage>

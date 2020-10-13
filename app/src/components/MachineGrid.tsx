@@ -1,6 +1,4 @@
-import { render } from "react-dom";
 import React from "react";
-import { Link } from "react-router-dom";
 import { getMachines_machines } from "../types/getMachines";
 import MachineContainer from "./MachineContainer";
 import Error404 from "./ErrorMessage";

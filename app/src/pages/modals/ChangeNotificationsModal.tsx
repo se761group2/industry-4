@@ -7,8 +7,6 @@ import {
     IonItem,
     IonLabel,
     IonCheckbox,
-    IonHeader,
-    IonTitle,
     IonListHeader,
     IonGrid,
     IonCol,
@@ -39,11 +37,7 @@ export const ChangeNotificationsModal: React.FC<ModalProps> = ({
     const [updateMachine] = useMutation(UPDATE_MACHINE);
 
     function isChecked(email: string): boolean {
-        if (selected.includes(email)) {
-            return true;
-        } else {
-            return false;
-        }
+        return selected.includes(email);
     }
 
     function boxChecked(checkedEmail: string) {
@@ -56,7 +50,6 @@ export const ChangeNotificationsModal: React.FC<ModalProps> = ({
         } else {
             setSelected([...selected, checkedEmail]);
         }
-        console.log(selected);
     }
 
     function saveSubscribedEmails() {
@@ -81,11 +74,11 @@ export const ChangeNotificationsModal: React.FC<ModalProps> = ({
                                             <IonLabel>{email}</IonLabel>
                                             {isChecked(email) ? (
                                                 <IonCheckbox
-                                                    onIonChange={(e) => boxChecked(email)}
+                                                    onIonChange={(_e) => boxChecked(email)}
                                                     checked
                                                 ></IonCheckbox>
                                             ) : (
-                                                <IonCheckbox onIonChange={(e) => boxChecked(email)}></IonCheckbox>
+                                                <IonCheckbox onIonChange={(_e) => boxChecked(email)}></IonCheckbox>
                                             )}
                                         </IonItem>
                                     ),
@@ -96,14 +89,14 @@ export const ChangeNotificationsModal: React.FC<ModalProps> = ({
                     <IonRow>
                         <IonCol col-6>
                             <div className="flex justify-center">
-                                <IonButton className="notification-ion-button" onClick={() => setOpen(false)}>
+                                <IonButton className="w-4/5" onClick={() => setOpen(false)}>
                                     Cancel
                                 </IonButton>
                             </div>
                         </IonCol>
                         <IonCol col-6>
                             <div className="flex justify-center">
-                                <IonButton className="notification-ion-button" onClick={() => saveSubscribedEmails()}>
+                                <IonButton className="w-4/5" onClick={() => saveSubscribedEmails()}>
                                     Save
                                 </IonButton>
                             </div>

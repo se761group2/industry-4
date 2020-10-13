@@ -12,7 +12,7 @@ const ColourKey: React.FC = () => {
                 return (
                     <div key={colour} className="flex flex-col text-center">
                         <div className="m-auto">
-                            <div className={`square bg-${colour}-550`} />
+                            <div className={`rounded h-4 w-4 bg-${colour}-550`} />
                         </div>
                         {status}
                     </div>

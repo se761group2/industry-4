@@ -1,38 +1,24 @@
-import {
-    IonBackButton,
-    IonButton,
-    IonButtons,
-    IonContent,
-    IonFab,
-    IonFabButton,
-    IonHeader,
-    IonIcon,
-    IonPage,
-    IonSpinner,
-    IonTitle,
-    IonToolbar,
-} from "@ionic/react";
+import { IonButton, IonContent, IonFab, IonFabButton, IonIcon, IonPage, IonSpinner } from "@ionic/react";
 import React, { useEffect, useState } from "react";
-import { from, useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { getMachineById } from "../types/getMachineById";
 import HealthContainer from "../components/HealthContainer";
 import "./Page.css";
 import Heading from "../components/Heading";
-import { Link } from "react-router-dom";
 import { useParams } from "react-router";
-import { GET_MACHINE_BY_ID, GET_MACHINES } from "../common/graphql/queries/machines";
+import { GET_MACHINE_BY_ID } from "../common/graphql/queries/machines";
 import Error404 from "../components/ErrorMessage";
 import { ChangeNotificationsModal } from "./modals/ChangeNotificationsModal";
 import { subscribeToMachine } from "../types/subscribeToMachine";
 import { CREATE_USER, SUBSCRIBE_TO_MACHINE, UNSUBSCRIBE_FROM_MACHINE } from "../common/graphql/mutations/users";
-import { GET_USER_BY_EMAIL, GET_USER_BY_ID } from "../common/graphql/queries/users";
+import { GET_USER_BY_EMAIL } from "../common/graphql/queries/users";
 import { unsubscribeFromMachine } from "../types/unsubscribeFromMachine";
 import { useUserContext } from "../utils/useUserContext";
 import { getUserByEmail } from "../types/getUserByEmail";
 import { createUser } from "../types/createUser";
 import { UPDATE_MACHINE } from "../common/graphql/mutations/machines";
 import NotificationContainer from "../components/NotificationContainer";
-import { add, create } from "ionicons/icons";
+import { add } from "ionicons/icons";
 import { SensorModal } from "./modals/SensorModal";
 
 const Sensors: React.FC = () => {
@@ -63,8 +49,6 @@ const Sensors: React.FC = () => {
     });
     let userID = userQuery.data?.user_email?.id;
     const [createUserMutation] = useMutation<createUser>(CREATE_USER);
-
-    // let isSubscribed: boolean | null | undefined = null;
 
     const [isSubscribed, setSubscribed] = useState(
         userQuery.data?.user_email?.machinesMaintaining?.some(function (machine) {
@@ -131,8 +115,6 @@ const Sensors: React.FC = () => {
         setSubscribedEmails(machine_data.data?.machine?.subscribers);
     }, [machine_data]);
 
-    console.log(machine_data.data?.machine?.notificationStatus);
-
     const [unacknowledged, setUnacknowledged] = useState(
         machine_data.data?.machine?.notificationStatus == "Unacknowledged",
     );
@@ -144,7 +126,6 @@ const Sensors: React.FC = () => {
     }, [machine_data]);
 
     function handleAcknowledgement() {
-        console.log(updateMachine({ variables: { id: id, input: { notificationStatus: "Acknowledged" } } }));
         setUnacknowledged(false);
         setAcknowledged(true);
     }
@@ -153,8 +134,6 @@ const Sensors: React.FC = () => {
         updateMachine({ variables: { id: id, input: { notificationStatus: "Working" } } });
         setAcknowledged(false);
     }
-
-    console.log(subscribedEmails);
 
     return (
         <IonPage>
