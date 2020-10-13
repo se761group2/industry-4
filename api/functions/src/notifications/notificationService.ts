@@ -9,6 +9,9 @@ if (process.env.NODE_ENV == 'development') {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
 }
 
+// Use this to instantly receive an email
+// notifyUsers(1, 1.1, 'KJPGkuNVivC5scheOIz0', '2hKLutzjE0ufQen8xTm3'); 
+
 export async function notifyUsers(
   threshold,
   recordedValue,
@@ -24,35 +27,37 @@ export async function notifyUsers(
   const machineDoc = await machineRef.get();
   const machine = machineDoc.data();
 
-  const senderEmail = 'industry4errornotification@gmail.com';
-  const subject = 'Error detected with Machine ' + machine!.name;
-  const html =
-    'Sensor ' +
-    sensorId +
-    ' on machine ' +
-    machineId +
-    ' has crossed its threshold.<br/>' +
-    'Threshold: ' +
-    threshold +
-    '<br/>' +
-    'Recorded Value: ' +
-    recordedValue +
-    '<br/>' +
-    // This will be updated to link the the application when we have it deployed
-    '<a>Click here to view the error</a>';
+  if (machine!.notificationStatus == 'Unacknowledged') {
+    const senderEmail = 'industry4errornotification@gmail.com';
+    const subject = 'Error detected with Machine ' + machine!.name;
+    const html =
+      'Sensor ' +
+      sensor.data()!.name +
+      ' on machine ' +
+      machine!.name +
+      ' has crossed its threshold.<br/>' +
+      'Threshold: ' +
+      threshold +
+      '<br/>' +
+      'Recorded Value: ' +
+      recordedValue +
+      '<br/>' +
+      // This will be updated to link the the application when we have it deployed
+      '<a>Click here to view the error</a>';
 
-  if (machine != undefined && machine != null) {
-    machine.subscribers.forEach((email) => {
-      const receiverEmail = email;
-      const msg = {
-        to: receiverEmail,
-        from: senderEmail,
-        subject: subject,
-        html: html,
-      };
+    if (machine != undefined && machine != null) {
+      machine.subscribers.forEach((email) => {
+        const receiverEmail = email;
+        const msg = {
+          to: receiverEmail,
+          from: senderEmail,
+          subject: subject,
+          html: html,
+        };
 
-      // sgMail.send(msg);
-    });
+        sgMail.send(msg);
+      });
+    }
   }
 }
 
@@ -100,7 +105,7 @@ export async function updateUsers() {
         html: emailMsg,
       };
 
-      // sgMail.send(msg);
+      sgMail.send(msg);
     }
   }
 }

@@ -1,5 +1,8 @@
 import { notifyUsers } from '../notifications/notificationService';
 import { updateMachineNotificationStatus } from './storeTofirebase';
+import { firebaseApp } from '../firebase';
+
+const firestore = firebaseApp.firestore();
 
 interface ThresholdDetectionState {
   thresholdValue: number;
@@ -10,7 +13,7 @@ interface ThresholdDetectionState {
   rmsValues: number[];
 }
 
-const state: ThresholdDetectionState = {
+let state: ThresholdDetectionState = {
   thresholdValue: 0,
   notified: false,
   processedFileCount: 0,
@@ -19,11 +22,44 @@ const state: ThresholdDetectionState = {
   rmsValues: [],
 };
 
-export function doThresholdDetection(
+export async function retrieveSensorState(machineId: string, sensorId: string) {
+  const sensorRef = firestore
+    .collection(`machines/${machineId}/sensors`)
+    .doc(sensorId);
+  const sensor = await sensorRef.get();
+  if (sensor == null || sensor == undefined) {
+    console.log('There was an issue retrieving the machine data');
+  } else {
+    // retrieve existing sensor state
+    // only set the state with existing state if it is found in firestore
+    if (sensor.get('state') == null || sensor.get('state') == undefined) {
+      // do nothing, we'll use the one defined above
+    } else {
+      state = sensor.get('state');
+    }
+  }
+}
+
+export async function pushState(
+  state: ThresholdDetectionState,
+  machineId: string,
+  sensorId: string
+) {
+  await firestore
+    .collection(`machines/${machineId}/sensors`)
+    .doc(sensorId)
+    .update({
+      state: state,
+    });
+}
+
+export async function doThresholdDetection(
   rmsValue: number,
   machineId: string,
   sensorId: string
 ) {
+  retrieveSensorState(machineId, sensorId);
+
   state.rmsValues.push(rmsValue);
   state.processedFileCount += 1;
 
@@ -45,10 +81,8 @@ export function doThresholdDetection(
 
       if (state.badReadingCounter >= 10) {
         // TODO: Update this section to set the corresponding sensor notificationStatus value to unacknowledged
-        if (!state.notified) {
-          updateMachineNotificationStatus(machineId);
-        }
-        sendNotification(state.thresholdValue, rmsValue, machineId, sensorId);
+        await updateMachineNotificationStatus(machineId);
+        notifyUsers(state.thresholdValue, rmsValue, machineId, sensorId);
       }
     } else {
       state.goodReadingCounter++;
@@ -71,6 +105,7 @@ export function doThresholdDetection(
         ' is being used to determine the threshold (first 200 records).'
     );
   }
+  pushState(state, machineId, sensorId);
 }
 
 function calculateThreshold() {
@@ -91,23 +126,4 @@ function calculateThreshold() {
   const standardDeviation = Math.sqrt(squaredDifferencesMean);
 
   return rmsMean + 6 * standardDeviation;
-}
-
-function sendNotification(
-  thresholdValue: number,
-  rmsValue: number,
-  machineId: string,
-  sensorId: string
-) {
-  /* TODO add checker for notification frequency (or do it somewhere else) 
-       Currently this is done using a state.notified flag which ensures the email is only sent once,
-       (for demo purposes)
-    */
-  // Update the db to reflect this issue.
-  if (!state.notified) {
-    // Hardcoded values for the sensor and machine ID were used, these will be changed
-    // The values used for the IDs are not reflective of realistic IDs within the system.
-    notifyUsers(thresholdValue, rmsValue, machineId, sensorId);
-    state.notified = true;
-  }
 }
