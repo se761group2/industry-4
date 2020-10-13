@@ -19,13 +19,14 @@ import React, { useState } from "react";
 import { useParams } from "react-router";
 import MachineContainer from "../components/MachineContainer";
 import "./Page.css";
-import { from, useQuery } from "@apollo/client";
+import { from, useQuery, useMutation } from "@apollo/client";
 import { add, ellipsisHorizontal, ellipsisVertical, personCircle, search } from "ionicons/icons";
 import Heading from "../components/Heading";
 import { Status } from "../types/globalTypes";
 import { getMachineById, getMachineById_machine } from "../types/getMachineById";
 import { getMachines, getMachines_machines } from "../types/getMachines";
 import { GET_MACHINES, GET_MACHINE_BY_ID } from "../common/graphql/queries/machines";
+import { UPDATE_MACHINE } from "../common/graphql/mutations/machines";
 import { Link } from "react-router-dom";
 import ColourKey from "../components/ColourKey";
 import Error404 from "../components/ErrorMessage";
@@ -41,6 +42,7 @@ const Machines: React.FC = () => {
     const [addMachineOpen, setAddMachineOpen] = useState<boolean>(false);
     const [showAll, setShow] = useState(true);
     const [selectedValue, setSelectedValue] = useState("all");
+    const [updateMachine] = useMutation(UPDATE_MACHINE);
 
     // sort machines by health status
     // (critical, moderate, nominal) happens to be alphabetical so currently just sorting alphabetically
@@ -66,6 +68,21 @@ const Machines: React.FC = () => {
         });
     });
 
+    function checkMachineStatus() {
+        const machineStatus = "Nominal";
+        if (allMachines && allMachines.length > 0) {
+            allMachines?.forEach((machine) => {
+                const sortedSensors = machine?.sensors
+                    ?.slice()
+                    .sort((a, b) => (a.healthStatus! > b.healthStatus! ? 1 : -1));
+                if (sortedSensors && sortedSensors.length > 0) {
+                    const machineStatus = sortedSensors[0].healthStatus;
+                    updateMachine({ variables: { id: machine.id, input: { healthStatus: machineStatus } } });
+                }
+            });
+        }
+    }
+
     const changeMachinesShown = (segment) => {
         userQuery.refetch();
         setSelectedValue(String(segment));
@@ -78,7 +95,7 @@ const Machines: React.FC = () => {
 
     // userQuery.refetch();
     // subscribedMachineRefs = userQuery.data?.user_email?.machinesMaintaining;
-
+    checkMachineStatus();
     return (
         <IonPage>
             <MachineModal
