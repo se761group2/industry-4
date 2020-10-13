@@ -9,6 +9,11 @@ export const GET_MACHINES = gql`
             notificationStatus
             healthStatus
             image
+            sensors {
+                id
+                name
+                healthStatus
+            }
         }
     }
 `;
