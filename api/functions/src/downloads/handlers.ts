@@ -1,4 +1,8 @@
+import { Response } from 'express';
 import { MachineStore } from '../graphql/MachineStore';
+import { firebaseApp } from '../firebase';
+
+const storage = firebaseApp.storage();
 
 export const generateSensorDataCSV = async (
   machineId: string,
@@ -26,4 +30,32 @@ export const generateSensorDataCSV = async (
   });
 
   return fileString;
+};
+
+export const streamRawFiles = async (
+  res: Response<any>,
+  machineId: string,
+  sensorId: string,
+  startTime: Date | null,
+  endTime: Date | null
+) => {
+  const bucket = storage.bucket(firebaseApp.options.storageBucket);
+
+  const files = await bucket.getFiles({
+    directory: `sensorData/${machineId}/${sensorId}`,
+  });
+
+  for (const f of files) {
+    
+  }
+
+  function write(data, cb) {
+    if (!res.write(data)) {
+      res.once('drain', cb);
+    } else {
+      process.nextTick(cb);
+    }
+  }
+
+  return;
 };

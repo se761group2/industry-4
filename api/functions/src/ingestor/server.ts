@@ -33,11 +33,10 @@ export function ConstructIngestorServer() {
       return;
     }
 
-    if (!req.headers)
-      if (!req.body || !Buffer.isBuffer(req.body)) {
-        res.status(400).send('No files were uploaded.');
-        return;
-      }
+    if (!req.body || !Buffer.isBuffer(req.body)) {
+      res.status(400).send('No files were uploaded.');
+      return;
+    }
 
     if (!req.params.sensorId) {
       res.status(400).send('No sensorId provided');

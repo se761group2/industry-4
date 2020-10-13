@@ -3,6 +3,7 @@ import admin from 'firebase-admin';
 import Timestamp = admin.firestore.Timestamp;
 
 const firestore = firebaseApp.firestore();
+const storage = firebaseApp.storage();
 
 interface SampleChunk {
   chunkNumber: number;
@@ -73,6 +74,18 @@ export async function storeSingleRMSValue(
       .doc(lastChunkId!)
       .set(lastChunk);
   }
+}
+
+export async function storeRawData(
+  timestampStr: string,
+  machineId: string,
+  sensorId: string,
+  data: Buffer
+): Promise<string> {
+  const key = `sensorData/${machineId}/${sensorId}/${timestampStr}.csv`;
+  const fileRef = storage.bucket(firebaseApp.options.storageBucket).file(key);
+  await fileRef.save(data);
+  return key;
 }
 
 export async function updateMachineNotificationStatus(machineId) {

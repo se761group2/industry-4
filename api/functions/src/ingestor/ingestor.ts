@@ -4,7 +4,7 @@
 // Authors: Alex Monk, Marc
 
 import csvParser from 'csv-parser';
-import { storeSingleRMSValue } from './storeTofirebase';
+import { storeRawData, storeSingleRMSValue } from './storeTofirebase';
 import { doThresholdDetection } from './thresholdDetection';
 import streamifier from 'streamifier';
 
@@ -14,6 +14,7 @@ export default async function processDataFromBuffer(
   sensorId: string,
   buffer: Buffer
 ) {
+  await storeRawData(timestampStr, machineId, sensorId, buffer);
   const rawDataFirstColumn = await readDataFromBuffer(buffer);
 
   const rmsValueFromFile = calculateRMS(rawDataFirstColumn);
