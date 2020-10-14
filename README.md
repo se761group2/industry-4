@@ -18,7 +18,7 @@ This should redirect you to your browser, where you can log in, provided you hav
 
 ## Run Instructions
 
-Open command line in the folder `api/functions`
+Open a command line in the folder `api/functions` and run
 
 `$ firebase use industry4-uoa`
 
