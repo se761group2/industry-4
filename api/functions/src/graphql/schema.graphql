@@ -148,7 +148,6 @@ input SensorUpdateInput {
 }
 
 type Mutation {
-  updateUser(id: ID!): MutationResponse
   updateMachine(id: ID!, input: MachineUpdateInput): MachineUpdatedResponse
   updateSensor(
     id: ID!

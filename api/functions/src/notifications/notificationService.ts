@@ -39,7 +39,6 @@ export async function notifyUsers(
       'Recorded Value: ' +
       recordedValue +
       '<br/>' +
-      // This will be updated to link the the application when we have it deployed
       '<a href="https://industry4-uoa.web.app/machine/"' +
       machineId +
       '>Click here to view the error</a>';

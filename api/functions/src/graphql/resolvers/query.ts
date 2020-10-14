@@ -1,9 +1,5 @@
-import { firebaseApp } from '../../firebase';
 import { QueryResolvers } from '../../generated/graphql';
-import { addIdToDoc } from './utils';
 import { MachineStore } from '../MachineStore';
-
-const firestore = firebaseApp.firestore();
 
 // Resolvers to handle the queries when a user attempts to retrieve something from the database
 export const queryResolvers: QueryResolvers = {

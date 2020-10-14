@@ -4,16 +4,22 @@ import fs from 'fs';
 import fetch, { RequestInit } from 'node-fetch';
 import * as os from 'os';
 
-const DELAY_IN_MILLISECONDS = 1000;
+const DELAY_IN_MILLISECONDS = 100;
+const usage = 'usage: \n\tts-node submitFiles.ts machineID sensorID';
 
 const ingestorBaseURL = process.env.INGESTOR_URL;
 if (ingestorBaseURL === undefined) {
-  console.log('No INGESTOR_URL environment variable found');
+  console.error('No INGESTOR_URL environment variable found');
   process.exit(1);
 }
 
-const machineId = '2hKLutzjE0ufQen8xTm3'; // TODO simulate multiple machines
-const sensorId = 'KJPGkuNVivC5scheOIz0';
+if (process.argv.length < 4) {
+  console.error(usage);
+  process.exit(1);
+}
+
+const machineId = process.argv[2];
+const sensorId = process.argv[3];
 
 const currentDir = __dirname;
 let directory = '';
@@ -58,17 +64,12 @@ async function processAllFiles(filePaths: string[]) {
 async function processInputDataFile(filePath: string) {
   let fileName = '';
 
-  if (isWindows) {
-    fileName = filePath.substr(
-      filePath.lastIndexOf('\\') + 1,
-      filePath.length - 1
-    );
-  } else {
-    fileName = filePath.substr(
-      filePath.lastIndexOf('/') + 1,
-      filePath.length - 1
-    );
-  }
+  const filepathDelimeter = isWindows ? '\\' : '/';
+  fileName = filePath.substr(
+    filePath.lastIndexOf(filepathDelimeter) + 1,
+    filePath.length - 1
+  );
+
   const timestamp = timestampFromFilename(fileName);
 
   const fileBuffer = readInputDataFile(filePath);
@@ -99,7 +100,6 @@ async function processInputDataFile(filePath: string) {
 
 function readInputDataFile(filePath: string): Buffer {
   const fileBuffer = fs.readFileSync(filePath);
-
   return fileBuffer;
 }
 
