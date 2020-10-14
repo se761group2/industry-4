@@ -2,12 +2,14 @@
 require('dotenv').config();
 import sgMail from '@sendgrid/mail';
 import { firebaseApp } from '../firebase';
+import * as functions from 'firebase-functions';
 
+const SENDGRID_API_KEY = functions.config().sendgrid.apikey;
 const firestore = firebaseApp.firestore();
 
-if (process.env.NODE_ENV == 'development') {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
-}
+console.log(SENDGRID_API_KEY);
+
+sgMail.setApiKey(SENDGRID_API_KEY || process.env.SENDGRID_API_KEY);
 
 // Use this to instantly receive an email
 // notifyUsers(1, 1.1, 'KJPGkuNVivC5scheOIz0', '2hKLutzjE0ufQen8xTm3');
@@ -43,7 +45,9 @@ export async function notifyUsers(
       recordedValue +
       '<br/>' +
       // This will be updated to link the the application when we have it deployed
-      '<a>Click here to view the error</a>';
+      '<a href="https://industry4-uoa.web.app/machine/"' +
+      machineId +
+      '>Click here to view the error</a>';
 
     if (machine != undefined && machine != null) {
       machine.subscribers.forEach((email) => {
@@ -95,8 +99,9 @@ export async function updateUsers() {
         emailMsg += 'Machine ' + machine + '<br/>';
       });
       emailMsg +=
-        'Please acknowledge and resolve these issues within the industry 4.0 application';
-      emailMsg += '<a>Click here to visit the application</a>';
+        'Please acknowledge and resolve these issues within the industry 4.0 application. <br/>';
+      emailMsg +=
+        '<a href="https://industry4-uoa.web.app/machine/">Click here to visit the application</a>';
 
       const msg = {
         to: receiverEmail,
