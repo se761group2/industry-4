@@ -63,12 +63,12 @@ export function ConstructIngestorServer() {
         );
         res.sendStatus(200);
       })
-      .catch((reason) => {
-        if (isError(reason)) {
-          if (reason.name === 'Timestamp_Invalid') {
-            res.status(400).send(reason.message);
+      .catch((error) => {
+        if (isError(error)) {
+          if (error.name === 'Timestamp_Invalid') {
+            res.status(400).send(error.message);
           } else {
-            console.log(reason);
+            console.log(error);
             res.sendStatus(500);
           }
         } else {

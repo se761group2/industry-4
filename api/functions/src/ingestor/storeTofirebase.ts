@@ -55,7 +55,6 @@ export async function storeSingleRMSValue(
       chunk.chunkNumber = lastChunk!.chunkNumber + 1;
     }
 
-    // errors thrown here will be caught in server.ts. The code there logs them but doesn't send them to the client
     await firestore
       .collection(`machines/${machineId}/sensors/${sensorId}/sampleChunks`)
       .add(chunk);
@@ -67,7 +66,6 @@ export async function storeSingleRMSValue(
       value: rmsValue,
     });
 
-    // same story as the previous request for throwing errors
     await firestore
       .collection(`machines/${machineId}/sensors/${sensorId}/sampleChunks`)
       .doc(lastChunkId!)
@@ -85,10 +83,8 @@ function timestampFromFilename(timestampStr: string): Timestamp | null {
   const date: Date = new Date(timestampStr);
 
   if (isNaN(date.getTime())) {
-    // date is not valid
     return null;
   } else {
-    // date is valid
     return Timestamp.fromDate(date);
   }
 }

@@ -17,7 +17,11 @@ export default async function processDataFromBuffer(
   const rawDataFirstColumn = await readDataFromBuffer(buffer);
 
   const rmsValueFromFile = calculateRMS(rawDataFirstColumn);
-  doThresholdDetection(rmsValueFromFile, machineId, sensorId);
+  await doThresholdDetection(rmsValueFromFile, machineId, sensorId).catch(
+    (e) => {
+      throw e;
+    }
+  );
 
   await storeSingleRMSValue(
     rmsValueFromFile,
@@ -41,9 +45,7 @@ async function readDataFromBuffer(buffer: Buffer) {
       .on('data', (row) => results.push(row))
       .on('end', async () => {
         for (let i = 0; i < results.length; i++) {
-          // first 1000 values used to speed things up  TODO remove this limitation
           singleValueFirstColumn = results[i]['0'] as string;
-          // let firstRowItem = singleRow.split('\t')[0];
           firstRowItemAsNum = Number(singleValueFirstColumn);
           rawDataFirstColumn.push(firstRowItemAsNum);
         }

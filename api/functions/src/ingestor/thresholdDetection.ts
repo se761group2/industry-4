@@ -22,43 +22,12 @@ let state: ThresholdDetectionState = {
   rmsValues: [],
 };
 
-export async function retrieveSensorState(machineId: string, sensorId: string) {
-  const sensorRef = firestore
-    .collection(`machines/${machineId}/sensors`)
-    .doc(sensorId);
-  const sensor = await sensorRef.get();
-  if (sensor == null || sensor == undefined) {
-    console.log('There was an issue retrieving the machine data');
-  } else {
-    // retrieve existing sensor state
-    // only set the state with existing state if it is found in firestore
-    if (sensor.get('state') == null || sensor.get('state') == undefined) {
-      // do nothing, we'll use the one defined above
-    } else {
-      state = sensor.get('state');
-    }
-  }
-}
-
-export async function pushState(
-  state: ThresholdDetectionState,
-  machineId: string,
-  sensorId: string
-) {
-  await firestore
-    .collection(`machines/${machineId}/sensors`)
-    .doc(sensorId)
-    .update({
-      state: state,
-    });
-}
-
 export async function doThresholdDetection(
   rmsValue: number,
   machineId: string,
   sensorId: string
 ) {
-  retrieveSensorState(machineId, sensorId);
+  await retrieveSensorState(machineId, sensorId);
 
   state.rmsValues.push(rmsValue);
   state.processedFileCount += 1;
@@ -80,7 +49,6 @@ export async function doThresholdDetection(
       state.goodReadingCounter = 0;
 
       if (state.badReadingCounter >= 10) {
-        // TODO: Update this section to set the corresponding sensor notificationStatus value to unacknowledged
         await updateMachineNotificationStatus(machineId);
         notifyUsers(state.thresholdValue, rmsValue, machineId, sensorId);
       }
@@ -105,7 +73,41 @@ export async function doThresholdDetection(
         ' is being used to determine the threshold (first 200 records).'
     );
   }
-  pushState(state, machineId, sensorId);
+  await pushState(machineId, sensorId);
+}
+
+async function retrieveSensorState(
+  machineId: string,
+  sensorId: string
+): Promise<ThresholdDetectionState> {
+  const sensorRef = firestore
+    .collection(`machines/${machineId}/sensors`)
+    .doc(sensorId);
+  const sensor = await sensorRef.get();
+
+  if (sensor == null || sensor == undefined) {
+    console.error(`There was an issue retrieving the sensor data \
+      for sensor ${sensorId} of machine ${machineId}`);
+    throw new Error('No sensor found');
+  } else {
+    // retrieve existing sensor state
+    // only set the state with existing state if it is found in firestore
+    if (sensor.get('state') == null || sensor.get('state') == undefined) {
+      // do nothing, we'll use the one defined at the top of the file
+    } else {
+      state = sensor.get('state');
+    }
+  }
+  return state;
+}
+
+async function pushState(machineId: string, sensorId: string) {
+  await firestore
+    .collection(`machines/${machineId}/sensors`)
+    .doc(sensorId)
+    .update({
+      state: state,
+    });
 }
 
 function calculateThreshold() {
