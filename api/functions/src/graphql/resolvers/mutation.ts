@@ -1,14 +1,7 @@
-import { firebaseApp } from '../../firebase';
 import { MutationResolvers } from '../../generated/graphql';
 import { MachineStore } from '../MachineStore';
 
-const firestore = firebaseApp.firestore();
-
 export const mutationResolvers: MutationResolvers = {
-  updateUser: async (parent, args) => {
-    return null;
-  },
-
   updateMachine: async (parent, args) => {
     const machine = await MachineStore.updateMachine(
       args.id,
