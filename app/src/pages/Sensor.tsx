@@ -17,6 +17,7 @@ const Sensor: React.FC = () => {
     const sensorQuery = useQuery<getSensorById>(GET_SENSOR_BY_ID, {
         variables: { machineId: machineid, id: id },
         fetchPolicy: "network-only",
+        pollInterval: 1000,
     });
     const sensor = sensorQuery.data?.sensor;
 

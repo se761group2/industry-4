@@ -28,6 +28,7 @@ const Sensors: React.FC = () => {
     const [updateMachine] = useMutation(UPDATE_MACHINE);
     const machine_data = useQuery<getMachineById>(GET_MACHINE_BY_ID, {
         variables: { id: id },
+        pollInterval: 1000,
     });
     const sensors = machine_data.data?.machine?.sensors;
     const stringCompare = (a: string | null, b: string | null) => {
