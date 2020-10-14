@@ -36,6 +36,22 @@ Optionally, instead of running the previous two commands in the project root, yo
 
 To view the database, you may go to https://console.firebase.google.com/project/industry4-uoa/firestore/data~2F, assuming you have been given access to view the database.
 
+### Running the sensor data upload script
+
+If you want to simulate data being sent to the system, you can run the script, `api/functions/src/ingestor/submitSensorData.ts`. 
+
+To do this, you have two options: use the ingestor firebase function that's in the cloud, or run it locally. To run it locally, follow the run instructions above. 
+
+To use the one in the cloud, you'll need to change the value of `INGESTOR_URL` inside `api/functions/.env` to `https://us-central1-industry4-uoa.cloudfunctions.net/ingestor`. (this URL will be different if you've deployed the app to a different Firebase project - look inside the functions page of the console)
+
+In order to run the script you'll need to install ts-node with `npm i -g ts-node`. 
+
+You will also need to get the machineID and sensorID for the sensor you want to "simulate". You can navigate to these inside the firestore database (link above). 
+
+Finally, to run the script, change directory to `api/functions` and run 
+
+`$ ts-node src/ingestor/submitSensorData.ts <machineID> <sensorID>`
+
 ## GraphQL Playground
 
 - You need to set `LOCAL_MOCK_USER` in `api/functions/.env` if you want to be able to use the playground. You can find your user id from the authentication tab in the firebase console.
