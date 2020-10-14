@@ -42,7 +42,6 @@ export async function notifyUsers(
       'Recorded Value: ' +
       recordedValue +
       '<br/>' +
-      // This will be updated to link the the application when we have it deployed
       '<a>Click here to view the error</a>';
 
     if (machine != undefined && machine != null) {
