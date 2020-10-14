@@ -11,9 +11,6 @@ console.log(SENDGRID_API_KEY);
 
 sgMail.setApiKey(SENDGRID_API_KEY || process.env.SENDGRID_API_KEY);
 
-// Use this to instantly receive an email
-// notifyUsers(1, 1.1, 'KJPGkuNVivC5scheOIz0', '2hKLutzjE0ufQen8xTm3');
-
 export async function notifyUsers(
   threshold,
   recordedValue,
