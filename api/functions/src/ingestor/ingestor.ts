@@ -17,11 +17,7 @@ export default async function processDataFromBuffer(
   const rawDataFirstColumn = await readDataFromBuffer(buffer);
 
   const rmsValueFromFile = calculateRMS(rawDataFirstColumn);
-  await doThresholdDetection(rmsValueFromFile, machineId, sensorId).catch(
-    (e) => {
-      throw e;
-    }
-  );
+  await doThresholdDetection(rmsValueFromFile, machineId, sensorId);
 
   await storeSingleRMSValue(
     rmsValueFromFile,
