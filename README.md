@@ -18,7 +18,7 @@ This should redirect you to your browser, where you can log in, provided you hav
 
 ## Run Instructions
 
-Open command line in the folder api/functions
+Open command line in the folder `api/functions`
 
 `$ firebase use industry4-uoa`
 
@@ -32,7 +32,7 @@ The frontend and firebase functions will start locally and the frontend will ope
 
 ### Separate terminals
 
-Optionally, instead of running the previous two commands in the project root, you can open two command lines inside api/functions and app and run both commands in each folder.
+Optionally, instead of running the previous two commands in the project root, you can open two command lines inside `api/functions` and `app` and run both commands in each folder.
 
 To view the database, you may go to https://console.firebase.google.com/project/industry4-uoa/firestore/data~2F, assuming you have been given access to view the database.
 
