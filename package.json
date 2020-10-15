@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "start": "lerna run --parallel start",
-    "postinstall": "(cd app && npm i) && (cd api/functions && npm i) lerna bootstrap"
+    "postinstall": "(cd app && npm i) && (cd api/functions && npm i) && lerna bootstrap"
   },
   "husky": {
     "hooks": {
